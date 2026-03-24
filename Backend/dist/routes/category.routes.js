@@ -1,0 +1,30 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const category_controller_1 = require("../controllers/category.controller");
+const auth_middleware_1 = require("../middleware/auth.middleware");
+const admin_middleware_1 = require("../middleware/admin.middleware");
+const router = (0, express_1.Router)();
+// Public routes
+router.get('/', category_controller_1.CategoryController.getAllCategories);
+router.get('/popular', category_controller_1.CategoryController.getPopularCategories);
+router.get('/search', category_controller_1.CategoryController.searchCategories);
+router.get('/suggestions', category_controller_1.CategoryController.getCategorySuggestions);
+router.get('/stats', category_controller_1.CategoryController.getCategoryStats);
+router.get('/tree', category_controller_1.CategoryController.getCategoryTree);
+router.get('/validate', category_controller_1.CategoryController.validateCategoryName);
+router.get('/usage', category_controller_1.CategoryController.getCategoryUsage);
+router.get('/usage/:id', category_controller_1.CategoryController.getCategoryUsage);
+router.get('/:id', category_controller_1.CategoryController.getCategoryById);
+router.get('/name/:name', category_controller_1.CategoryController.getCategoryByName);
+router.get('/:id/books', category_controller_1.CategoryController.getBooksByCategory);
+router.get('/:id/stats', category_controller_1.CategoryController.getCategoryStats);
+// Admin only routes
+router.post('/', auth_middleware_1.authenticate, admin_middleware_1.isAdmin, category_controller_1.CategoryController.createCategory);
+router.post('/bulk', auth_middleware_1.authenticate, admin_middleware_1.isAdmin, category_controller_1.CategoryController.bulkCreateCategories);
+router.post('/merge', auth_middleware_1.authenticate, admin_middleware_1.isAdmin, category_controller_1.CategoryController.mergeCategories);
+router.put('/:id', auth_middleware_1.authenticate, admin_middleware_1.isAdmin, category_controller_1.CategoryController.updateCategory);
+router.delete('/:id', auth_middleware_1.authenticate, admin_middleware_1.isAdmin, category_controller_1.CategoryController.deleteCategory);
+router.get('/export/all', auth_middleware_1.authenticate, admin_middleware_1.isAdmin, category_controller_1.CategoryController.exportCategories);
+router.post('/import/all', auth_middleware_1.authenticate, admin_middleware_1.isAdmin, category_controller_1.CategoryController.importCategories);
+exports.default = router;
