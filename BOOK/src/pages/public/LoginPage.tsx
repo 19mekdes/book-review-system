@@ -47,6 +47,7 @@ const LoginPage: React.FC = () => {
       await login(data.email, data.password);
       setNotification({ open: true, message: 'Login successful!', severity: 'success' });
       navigate('/dashboard');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       setNotification({ open: true, message: error.message || 'Login failed', severity: 'error' });
     } finally {

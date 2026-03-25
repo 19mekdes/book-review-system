@@ -1,5 +1,5 @@
 import React, { lazy, Suspense, useState } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -26,7 +26,7 @@ const ManageCategoriesPage = lazy(() => import('./pages/admin/ManageCategoriesPa
 const AllReviewsPage = lazy(() => import('./pages/admin/AllReviewsPage'));
 const ReportsPage = lazy(() => import('./pages/admin/ReportsPage'));
 
-// ✅ ADD THESE IMPORTS
+// ADD THESE IMPORTS
 const AboutPage = lazy(() => import('./pages/public/AboutPage'));
 const ContactPage = lazy(() => import('./pages/public/ContactPage'));
 
@@ -93,7 +93,12 @@ const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 // Main App Content
 const AppContent: React.FC = () => {
   const { user, isAuthenticated, login, logout } = useAuth();
+  const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Pages where Header and Footer should be hidden
+  const hideHeaderFooterPaths = ['/login', '/register'];
+  const shouldHideHeaderFooter = hideHeaderFooterPaths.includes(location.pathname);
 
   const handleLogin = async () => {
     await login('demo@example.com', 'password');
@@ -113,15 +118,19 @@ const AppContent: React.FC = () => {
 
   return (
     <>
-      <Header 
-        user={isAuthenticated ? user : undefined}
-        onLogout={handleLogout}
-        onLogin={handleLogin}
-        onMenuClick={handleMenuClick}
-        mobileMenuOpen={mobileMenuOpen}
-        onMobileMenuClose={handleMobileMenuClose}
-        showSearch={true}
-      />
+      {/* Conditionally render Header */}
+      {!shouldHideHeaderFooter && (
+        <Header 
+          user={isAuthenticated ? user : undefined}
+          onLogout={handleLogout}
+          onLogin={handleLogin}
+          onMenuClick={handleMenuClick}
+          mobileMenuOpen={mobileMenuOpen}
+          onMobileMenuClose={handleMobileMenuClose}
+          showSearch={true}
+        />
+      )}
+      
       <Suspense fallback={<LoadingFallback />}>
         <Routes>
           {/* Public Routes */}
@@ -153,7 +162,9 @@ const AppContent: React.FC = () => {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Suspense>
-      <Footer />
+      
+      {/* Conditionally render Footer */}
+      {!shouldHideHeaderFooter && <Footer />}
     </>
   );
 };
