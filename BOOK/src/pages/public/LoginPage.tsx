@@ -11,7 +11,7 @@ import {
   Login as LoginIcon,
   Person as PersonIcon
 } from '@mui/icons-material';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { useAuth } from '../../context/AuthContext';
 
@@ -23,7 +23,6 @@ interface LoginFormData {
 
 const LoginPage: React.FC = () => {
   const { login } = useAuth();
-  const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -44,12 +43,18 @@ const LoginPage: React.FC = () => {
   const onSubmit = async (data: LoginFormData) => {
     setIsSubmitting(true);
     try {
+      // ✅ REMOVED the hardcoded navigate - AuthContext handles redirects
       await login(data.email, data.password);
       setNotification({ open: true, message: 'Login successful!', severity: 'success' });
-      navigate('/dashboard');
+      // ❌ REMOVE THIS LINE: navigate('/dashboard');
+      // AuthContext will redirect based on user role
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      setNotification({ open: true, message: error.message || 'Login failed', severity: 'error' });
+      setNotification({ 
+        open: true, 
+        message: error.response?.data?.message || error.message || 'Login failed', 
+        severity: 'error' 
+      });
     } finally {
       setIsSubmitting(false);
     }

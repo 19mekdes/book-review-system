@@ -31,7 +31,6 @@ import {
   ContactMail as ContactIcon,
   Login as LoginIcon,
   AppRegistration as RegisterIcon,
-  Dashboard as DashboardIcon,
   Person as PersonIcon,
   Settings as SettingsIcon,
   Logout as LogoutIcon,
@@ -81,7 +80,7 @@ const Header: React.FC<HeaderProps> = ({
   const open = Boolean(anchorEl);
 
   // Check if user is admin
-  const isAdmin = user?.role === 'Admin' || user?.role === 'admin';
+  const isAdmin = user?.role === 'Admin' || user?.role === 'admin' || user?.roleId === 1;
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -91,14 +90,9 @@ const Header: React.FC<HeaderProps> = ({
     setAnchorEl(null);
   };
 
+  // User navigation handlers
   const handleProfile = () => {
     navigate('/profile');
-    handleClose();
-  };
-
-
-  const handleMyReviews = () => {
-    navigate('/my-reviews');
     handleClose();
   };
 
@@ -151,7 +145,7 @@ const Header: React.FC<HeaderProps> = ({
     }
   };
 
-  // Mobile menu items - typed as MenuItemType[]
+  // Mobile menu items
   const menuItems: MenuItemType[] = [
     { text: 'Home', icon: <HomeIcon />, path: '/' },
     { text: 'Books', icon: <BookIcon />, path: '/books' },
@@ -160,15 +154,13 @@ const Header: React.FC<HeaderProps> = ({
     { text: 'Contact', icon: <ContactIcon />, path: '/contact' },
   ];
 
-  // Regular user menu items - typed as MenuItemType[]
+  // ✅ Regular user menu items for mobile drawer (No Dashboard, No MyReviews)
   const userMenuItems: MenuItemType[] = [
-    { text: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
     { text: 'Profile', icon: <PersonIcon />, path: '/profile' },
-    { text: 'My Reviews', icon: <ReviewIcon />, path: '/my-reviews' },
     { text: 'Settings', icon: <SettingsIcon />, path: '/settings' },
   ];
 
-  // Admin menu items - typed as MenuItemType[] with badge
+  // Admin menu items for mobile drawer
   const adminMenuItems: MenuItemType[] = [
     { text: 'Admin Dashboard', icon: <AdminIcon />, path: '/admin' },
     { text: 'Manage Users', icon: <PeopleIcon />, path: '/admin/users', badge: 12 },
@@ -178,7 +170,7 @@ const Header: React.FC<HeaderProps> = ({
     { text: 'Reports', icon: <AssessmentIcon />, path: '/admin/reports' },
   ];
 
-  // Get menu items based on user role - returns MenuItemType[]
+  // Get menu items based on user role for mobile drawer
   const getAuthMenuItems = (): MenuItemType[] => {
     if (isAdmin) {
       return adminMenuItems;
@@ -308,13 +300,15 @@ const Header: React.FC<HeaderProps> = ({
                   anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                   PaperProps={{
                     sx: {
-                      minWidth: 200,
+                      minWidth: 220,
+                      mt: 1,
                       ...(isAdmin && {
                         borderTop: `3px solid ${theme.palette.secondary.main}`
                       })
                     }
                   }}
                 >
+                  {/* ADMIN PANEL Header - only for admin */}
                   {isAdmin && (
                     <Box sx={{ px: 2, py: 1, bgcolor: 'action.hover' }}>
                       <Typography variant="caption" color="secondary" fontWeight="bold">
@@ -323,81 +317,74 @@ const Header: React.FC<HeaderProps> = ({
                     </Box>
                   )}
 
-                  {isAdmin ? (
-                    // Admin Menu Items
+                  {/* Admin Menu Items */}
+                  {isAdmin && (
                     <>
                       <MenuItem onClick={handleAdminDashboard}>
                         <ListItemIcon>
                           <AdminIcon fontSize="small" color="secondary" />
                         </ListItemIcon>
-                        <Typography variant="inherit" sx={{ fontWeight: 500 }}>
-                          Admin Dashboard
-                        </Typography>
+                        <ListItemText>Admin Dashboard</ListItemText>
                       </MenuItem>
                       <MenuItem onClick={handleAdminUsers}>
                         <ListItemIcon>
                           <PeopleIcon fontSize="small" />
                         </ListItemIcon>
-                        Manage Users
-                        <Badge badgeContent={12} color="error" sx={{ ml: 2 }} />
+                        <ListItemText>Manage Users</ListItemText>
+                        <Badge badgeContent={12} color="error" sx={{ ml: 'auto' }} />
                       </MenuItem>
                       <MenuItem onClick={handleAdminBooks}>
                         <ListItemIcon>
                           <BookIcon fontSize="small" />
                         </ListItemIcon>
-                        Manage Books
+                        <ListItemText>Manage Books</ListItemText>
                       </MenuItem>
                       <MenuItem onClick={handleAdminReviews}>
                         <ListItemIcon>
                           <ReviewIcon fontSize="small" />
                         </ListItemIcon>
-                        All Reviews
+                        <ListItemText>All Reviews</ListItemText>
                       </MenuItem>
                       <MenuItem onClick={handleAdminCategories}>
                         <ListItemIcon>
                           <CategoryIcon fontSize="small" />
                         </ListItemIcon>
-                        Categories
+                        <ListItemText>Categories</ListItemText>
                       </MenuItem>
                       <MenuItem onClick={handleAdminReports}>
                         <ListItemIcon>
                           <AssessmentIcon fontSize="small" />
                         </ListItemIcon>
-                        Reports
-                      </MenuItem>
-                      <Divider />
-                    </>
-                  ) : (
-                    // Regular User Menu Items
-                    <>
-                      
-                      <MenuItem onClick={handleProfile}>
-                        <ListItemIcon>
-                          <PersonIcon fontSize="small" />
-                        </ListItemIcon>
-                        Profile
-                      </MenuItem>
-                      <MenuItem onClick={handleMyReviews}>
-                        <ListItemIcon>
-                          <ReviewIcon fontSize="small" />
-                        </ListItemIcon>
-                        My Reviews
+                        <ListItemText>Reports</ListItemText>
                       </MenuItem>
                       <Divider />
                     </>
                   )}
 
+                  {/* ✅ Regular User Menu Items - Only Profile and Settings */}
+                  {!isAdmin && (
+                    <>
+                      <MenuItem onClick={handleProfile}>
+                        <ListItemIcon>
+                          <PersonIcon fontSize="small" />
+                        </ListItemIcon>
+                        <ListItemText>Profile</ListItemText>
+                      </MenuItem>
+                    </>
+                  )}
+
+                  {/* Common Menu Items for Both */}
                   <MenuItem onClick={handleSettings}>
                     <ListItemIcon>
                       <SettingsIcon fontSize="small" />
                     </ListItemIcon>
-                    Settings
+                    <ListItemText>Settings</ListItemText>
                   </MenuItem>
                   <MenuItem onClick={handleLogout} sx={{ color: 'error.main' }}>
                     <ListItemIcon>
                       <LogoutIcon fontSize="small" color="error" />
                     </ListItemIcon>
-                    Logout
+                    <ListItemText>Logout</ListItemText>
                   </MenuItem>
                 </Menu>
               </>
@@ -413,7 +400,6 @@ const Header: React.FC<HeaderProps> = ({
                   <Button
                     color="inherit"
                     onClick={() => navigate('/register')}
-                    
                   >
                     Register
                   </Button>
@@ -468,6 +454,7 @@ const Header: React.FC<HeaderProps> = ({
         </Box>
 
         <List sx={{ pt: 2 }}>
+          {/* Public Menu Items */}
           {menuItems.map((item: MenuItemType) => (
             <ListItem key={item.text} disablePadding>
               <ListItemButton onClick={() => handleNavigation(item.path)}>
@@ -479,9 +466,9 @@ const Header: React.FC<HeaderProps> = ({
 
           <Divider sx={{ my: 2 }} />
 
+          {/* Authenticated User Menu Items */}
           {isAuthenticated ? (
             <>
-              {/* Show different menu items based on role */}
               {getAuthMenuItems().map((item: MenuItemType) => (
                 <ListItem key={item.text} disablePadding>
                   <ListItemButton onClick={() => handleNavigation(item.path)}>

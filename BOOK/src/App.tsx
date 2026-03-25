@@ -15,18 +15,18 @@ const LoginPage = lazy(() => import('./pages/public/LoginPage'));
 const RegisterPage = lazy(() => import('./pages/public/RegisterPage'));
 const ReviewsPage = lazy(() => import('./pages/public/ReviewsPage'));
 const ProfilePage = lazy(() => import('./pages/user/ProfilePage'));
-//const DashboardPage = lazy(() => import('./pages/user/DashboardPage'));
-//const MyReviewsPage = lazy(() => import('./pages/user/MyReviewsPage'));
 const SettingsPage = lazy(() => import('./pages/user/SettingsPage'));
 const NotificationsPage = lazy(() => import('./pages/notifications/NotificationsPage'));
-const AdminDashboardPage = lazy(() => import('./pages/admin/AdminDashboardPage'));
-const ManageUsersPage = lazy(() => import('./pages/admin/ManageUsersPage'));
-const ManageBooksPage = lazy(() => import('./pages/admin/ManageBooksPage'));
-const ManageCategoriesPage = lazy(() => import('./pages/admin/ManageCategoriesPage'));
-const AllReviewsPage = lazy(() => import('./pages/admin/AllReviewsPage'));
-const ReportsPage = lazy(() => import('./pages/admin/ReportsPage'));
 
-// ADD THESE IMPORTS
+// ✅ Admin Pages - Direct import to avoid loading delay
+import AdminDashboardPage from './pages/admin/AdminDashboardPage';
+import ManageUsersPage from './pages/admin/ManageUsersPage';
+import ManageBooksPage from './pages/admin/ManageBooksPage';
+import ManageCategoriesPage from './pages/admin/ManageCategoriesPage';
+import AllReviewsPage from './pages/admin/AllReviewsPage';
+import ReportsPage from './pages/admin/ReportsPage';
+
+// Public Pages
 const AboutPage = lazy(() => import('./pages/public/AboutPage'));
 const ContactPage = lazy(() => import('./pages/public/ContactPage'));
 
@@ -82,8 +82,8 @@ const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     user?.role === 'ADMIN';
   
   if (!isAdmin) {
-    console.log(`❌ Not admin - redirecting to dashboard`);
-    return <Navigate to="/dashboard" replace />;
+    console.log(`❌ Not admin - redirecting to home`);
+    return <Navigate to="/" replace />;
   }
   
   console.log('✅ Admin access granted - showing admin page');
@@ -131,37 +131,107 @@ const AppContent: React.FC = () => {
         />
       )}
       
-      <Suspense fallback={<LoadingFallback />}>
-        <Routes>
-          {/* Public Routes */}
-          <Route path="/" element={<HomePage />} />
-          <Route path="/books" element={<BooksPage />} />
-          <Route path="/books/:id" element={<BookDetailPage />} />
-          <Route path="/reviews" element={<ReviewsPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/contact" element={<ContactPage />} />
+      <Routes>
+        {/* Public Routes - Lazy loaded */}
+        <Route path="/" element={
+          <Suspense fallback={<LoadingFallback />}>
+            <HomePage />
+          </Suspense>
+        } />
+        <Route path="/books" element={
+          <Suspense fallback={<LoadingFallback />}>
+            <BooksPage />
+          </Suspense>
+        } />
+        <Route path="/books/:id" element={
+          <Suspense fallback={<LoadingFallback />}>
+            <BookDetailPage />
+          </Suspense>
+        } />
+        <Route path="/reviews" element={
+          <Suspense fallback={<LoadingFallback />}>
+            <ReviewsPage />
+          </Suspense>
+        } />
+        <Route path="/login" element={
+          <Suspense fallback={<LoadingFallback />}>
+            <LoginPage />
+          </Suspense>
+        } />
+        <Route path="/register" element={
+          <Suspense fallback={<LoadingFallback />}>
+            <RegisterPage />
+          </Suspense>
+        } />
+        <Route path="/about" element={
+          <Suspense fallback={<LoadingFallback />}>
+            <AboutPage />
+          </Suspense>
+        } />
+        <Route path="/contact" element={
+          <Suspense fallback={<LoadingFallback />}>
+            <ContactPage />
+          </Suspense>
+        } />
 
-          {/* Protected User Routes */}
-          <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
-          {/* <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} /> */}
-          {/* <Route path="/my-reviews" element={<ProtectedRoute><MyReviewsPage /></ProtectedRoute>} /> */}
-          <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
-          <Route path="/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
+        {/* Protected User Routes - Lazy loaded */}
+        <Route path="/profile" element={
+          <ProtectedRoute>
+            <Suspense fallback={<LoadingFallback />}>
+              <ProfilePage />
+            </Suspense>
+          </ProtectedRoute>
+        } />
+        <Route path="/settings" element={
+          <ProtectedRoute>
+            <Suspense fallback={<LoadingFallback />}>
+              <SettingsPage />
+            </Suspense>
+          </ProtectedRoute>
+        } />
+        <Route path="/notifications" element={
+          <ProtectedRoute>
+            <Suspense fallback={<LoadingFallback />}>
+              <NotificationsPage />
+            </Suspense>
+          </ProtectedRoute>
+        } />
 
-          {/* Admin Routes */}
-          <Route path="/admin" element={<AdminRoute><AdminDashboardPage /></AdminRoute>} />
-          <Route path="/admin/users" element={<AdminRoute><ManageUsersPage /></AdminRoute>} />
-          <Route path="/admin/books" element={<AdminRoute><ManageBooksPage /></AdminRoute>} />
-          <Route path="/admin/categories" element={<AdminRoute><ManageCategoriesPage /></AdminRoute>} />
-          <Route path="/admin/reviews" element={<AdminRoute><AllReviewsPage /></AdminRoute>} />
-          <Route path="/admin/reports" element={<AdminRoute><ReportsPage /></AdminRoute>} />
-          
-          {/* Fallback Route - 404 */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </Suspense>
+        {/* ✅ Admin Routes - Direct import (no lazy loading, faster) */}
+        <Route path="/admin" element={
+          <AdminRoute>
+            <AdminDashboardPage />
+          </AdminRoute>
+        } />
+        <Route path="/admin/users" element={
+          <AdminRoute>
+            <ManageUsersPage />
+          </AdminRoute>
+        } />
+        <Route path="/admin/books" element={
+          <AdminRoute>
+            <ManageBooksPage />
+          </AdminRoute>
+        } />
+        <Route path="/admin/categories" element={
+          <AdminRoute>
+            <ManageCategoriesPage />
+          </AdminRoute>
+        } />
+        <Route path="/admin/reviews" element={
+          <AdminRoute>
+            <AllReviewsPage />
+          </AdminRoute>
+        } />
+        <Route path="/admin/reports" element={
+          <AdminRoute>
+            <ReportsPage />
+          </AdminRoute>
+        } />
+        
+        {/* Fallback Route - 404 */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
       
       {/* Conditionally render Footer */}
       {!shouldHideHeaderFooter && <Footer />}

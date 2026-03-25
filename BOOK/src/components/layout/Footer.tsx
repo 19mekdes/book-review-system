@@ -1,4 +1,3 @@
-// src/components/layout/Footer.tsx
 import React from 'react';
 import {
   Box,
@@ -9,7 +8,7 @@ import {
   Divider,
   Stack,
 } from '@mui/material';
-import Grid from '@mui/material/Grid'; // ✅ Import from Grid2
+import Grid from '@mui/material/Grid';
 import {
   Facebook as FacebookIcon,
   Twitter as TwitterIcon,
@@ -40,15 +39,19 @@ export interface FooterProps {
 const FooterWrapper = styled(Box, {
   shouldForwardProp: (prop) => prop !== '$variant' && prop !== '$bgColor',
 })<{ $variant?: string; $bgColor?: string }>(({ theme, $variant, $bgColor }) => {
-  let bg = $bgColor || theme.palette.background.paper;
-  let textColor = theme.palette.text.primary;
+  // Default to primary.main (same blue as header)
+  let bg = $bgColor || theme.palette.primary.main;
+  let textColor = '#ffffff';
 
-  if ($variant === 'dark') {
-    bg = theme.palette.grey[900];
-    textColor = '#fff';
+  if ($variant === 'light') {
+    bg = $bgColor || theme.palette.background.paper;
+    textColor = theme.palette.text.primary;
+  } else if ($variant === 'dark') {
+    bg = $bgColor || theme.palette.primary.dark;
+    textColor = '#ffffff';
   } else if ($variant === 'primary') {
-    bg = theme.palette.primary.main;
-    textColor = '#fff';
+    bg = $bgColor || theme.palette.primary.main;
+    textColor = '#ffffff';
   }
 
   return {
@@ -69,7 +72,6 @@ const FooterLink = styled(Link)(({ theme }) => ({
   },
 }));
 
-// Don't style the IconButton - use it directly
 // Main Footer Component
 const Footer: React.FC<FooterProps> = ({
   companyName = 'Book Review System',
@@ -82,7 +84,7 @@ const Footer: React.FC<FooterProps> = ({
     { label: 'Contact', url: '/contact' },
     { label: 'Privacy', url: '/privacy' },
   ],
-  variant = 'dark',
+  variant = 'primary',
   backgroundColor,
 }) => {
   const currentYear = new Date().getFullYear();
@@ -106,7 +108,7 @@ const Footer: React.FC<FooterProps> = ({
               {description}
             </Typography>
 
-            {/* Social Icons - Using direct IconButton without styled wrapper */}
+            {/* Social Icons */}
             <Stack direction="row" spacing={1.5}>
               {socialLinks.facebook && (
                 <IconButton
@@ -117,8 +119,9 @@ const Footer: React.FC<FooterProps> = ({
                   aria-label="Facebook"
                   sx={{
                     color: 'inherit',
+                    backgroundColor: 'rgba(255,255,255,0.1)',
                     '&:hover': {
-                      backgroundColor: 'rgba(255,255,255,0.12)',
+                      backgroundColor: 'rgba(255,255,255,0.2)',
                       transform: 'translateY(-2px)',
                     },
                     transition: 'all 0.2s',
@@ -137,8 +140,9 @@ const Footer: React.FC<FooterProps> = ({
                   aria-label="Twitter"
                   sx={{
                     color: 'inherit',
+                    backgroundColor: 'rgba(255,255,255,0.1)',
                     '&:hover': {
-                      backgroundColor: 'rgba(255,255,255,0.12)',
+                      backgroundColor: 'rgba(255,255,255,0.2)',
                       transform: 'translateY(-2px)',
                     },
                     transition: 'all 0.2s',
@@ -157,8 +161,9 @@ const Footer: React.FC<FooterProps> = ({
                   aria-label="Instagram"
                   sx={{
                     color: 'inherit',
+                    backgroundColor: 'rgba(255,255,255,0.1)',
                     '&:hover': {
-                      backgroundColor: 'rgba(255,255,255,0.12)',
+                      backgroundColor: 'rgba(255,255,255,0.2)',
                       transform: 'translateY(-2px)',
                     },
                     transition: 'all 0.2s',
@@ -177,8 +182,9 @@ const Footer: React.FC<FooterProps> = ({
                   aria-label="LinkedIn"
                   sx={{
                     color: 'inherit',
+                    backgroundColor: 'rgba(255,255,255,0.1)',
                     '&:hover': {
-                      backgroundColor: 'rgba(255,255,255,0.12)',
+                      backgroundColor: 'rgba(255,255,255,0.2)',
                       transform: 'translateY(-2px)',
                     },
                     transition: 'all 0.2s',
@@ -197,8 +203,9 @@ const Footer: React.FC<FooterProps> = ({
                   aria-label="GitHub"
                   sx={{
                     color: 'inherit',
+                    backgroundColor: 'rgba(255,255,255,0.1)',
                     '&:hover': {
-                      backgroundColor: 'rgba(255,255,255,0.12)',
+                      backgroundColor: 'rgba(255,255,255,0.2)',
                       transform: 'translateY(-2px)',
                     },
                     transition: 'all 0.2s',
