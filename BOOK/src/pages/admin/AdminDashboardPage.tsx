@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-// C:\Users\PC_1\OneDrive\Desktop\Book Review\BOOK\src\pages\admin\AdminDashboardPage.tsx
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   Box,
@@ -15,7 +13,13 @@ import {
   Chip,
   LinearProgress,
   useTheme,
-  alpha
+  alpha,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Alert,
+  Snackbar
 } from '@mui/material';
 import {
   People as PeopleIcon,
@@ -24,13 +28,11 @@ import {
   Category as CategoryIcon,
   Refresh as RefreshIcon,
   Download as DownloadIcon,
-  Settings as SettingsIcon,
-  Warning as WarningIcon,
-  Error as ErrorIcon,
-  Schedule as ScheduleIcon,
   Star as StarIcon,
   ArrowUpward as ArrowUpwardIcon,
-  ArrowDownward as ArrowDownwardIcon
+  ArrowDownward as ArrowDownwardIcon,
+  Delete as DeleteIcon,
+  Visibility as VisibilityIcon
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -39,8 +41,6 @@ import {
   PieChart,
   Pie,
   Cell,
-  BarChart,
-  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -72,11 +72,17 @@ interface DashboardStats {
   newBooksToday: number;
   newReviewsToday: number;
   averageRating: number;
-  totalViews: number;
-  totalLikes: number;
-  responseTime: number;
-  uptime: number;
-  errorRate: number;
+}
+
+interface Review {
+  id: number;
+  userId: number;
+  userName: string;
+  bookId: number;
+  bookTitle: string;
+  rating: number;
+  comment: string;
+  createdAt: string;
 }
 
 interface ActivityItem {
@@ -84,7 +90,6 @@ interface ActivityItem {
   type: 'user' | 'book' | 'review' | 'category' | 'system';
   action: string;
   user: string;
-  userAvatar?: string;
   target?: string;
   timestamp: string;
   status?: 'success' | 'warning' | 'error' | 'info';
@@ -197,57 +202,124 @@ const StatCard: React.FC<StatCardProps> = ({
 };
 
 // ============================================
-// Activity Component
+// Review List Component for Admin
 // ============================================
 
-interface ActivityItemComponentProps {
-  activity: ActivityItem;
+interface ReviewListProps {
+  reviews: Review[];
+  onDeleteReview: (reviewId: number, bookTitle: string) => void;
+  onViewBook: (bookId: number) => void;
 }
 
-const ActivityItemComponent: React.FC<ActivityItemComponentProps> = ({ activity }) => {
-  const getIcon = () => {
-    switch (activity.type) {
-      case 'user':
-        return <PeopleIcon />;
-      case 'book':
-        return <BookIcon />;
-      case 'review':
-        return <ReviewIcon />;
-      case 'category':
-        return <CategoryIcon />;
-      default:
-        return <ScheduleIcon />;
-    }
+const ReviewList: React.FC<ReviewListProps> = ({ reviews, onDeleteReview, onViewBook }) => {
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [selectedReview, setSelectedReview] = useState<Review | null>(null);
+
+  const handleDeleteClick = (review: Review) => {
+    setSelectedReview(review);
+    setDeleteDialogOpen(true);
   };
 
-  const getColor = () => {
-    switch (activity.status) {
-      case 'success':
-        return 'success.main';
-      case 'warning':
-        return 'warning.main';
-      case 'error':
-        return 'error.main';
-      default:
-        return 'info.main';
+  const handleConfirmDelete = () => {
+    if (selectedReview) {
+      onDeleteReview(selectedReview.id, selectedReview.bookTitle);
+      setDeleteDialogOpen(false);
+      setSelectedReview(null);
     }
   };
 
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, py: 1, borderBottom: 1, borderColor: 'divider' }}>
-      <Avatar sx={{ bgcolor: getColor(), width: 40, height: 40 }}>
-        {getIcon()}
-      </Avatar>
-      <Box sx={{ flex: 1 }}>
-        <Typography variant="subtitle2">{activity.user}</Typography>
-        <Typography variant="body2" color="text.secondary">
-          {activity.action} {activity.target && `• ${activity.target}`}
+    <>
+      <Typography variant="h6" fontWeight={600} gutterBottom sx={{ mt: 2, mb: 2 }}>
+        Recent Reviews
+      </Typography>
+      
+      {reviews.length === 0 ? (
+        <Typography color="text.secondary" align="center" sx={{ py: 4 }}>
+          No reviews to display
         </Typography>
-        <Typography variant="caption" color="text.secondary">
-          {format(new Date(activity.timestamp), 'MMM dd, yyyy HH:mm')}
-        </Typography>
-      </Box>
-    </Box>
+      ) : (
+        reviews.map((review) => (
+          <Paper 
+            key={review.id} 
+            sx={{ 
+              p: 2, 
+              mb: 2, 
+              display: 'flex', 
+              alignItems: 'flex-start',
+              justifyContent: 'space-between',
+              '&:hover': { bgcolor: 'action.hover' }
+            }}
+          >
+            <Box sx={{ flex: 1 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main' }}>
+                  {review.userName?.charAt(0) || 'U'}
+                </Avatar>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  {review.userName}
+                </Typography>
+                <Chip 
+                  size="small" 
+                  label={`${review.rating} ★`} 
+                  color={review.rating >= 4 ? 'success' : review.rating >= 3 ? 'warning' : 'error'}
+                  sx={{ ml: 1 }}
+                />
+              </Box>
+              
+              <Typography variant="body2" color="text.secondary" gutterBottom>
+                on "{review.bookTitle}"
+              </Typography>
+              
+              <Typography variant="body2" sx={{ mt: 1 }}>
+                {review.comment}
+              </Typography>
+              
+              <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
+                {format(new Date(review.createdAt), 'MMM dd, yyyy HH:mm')}
+              </Typography>
+            </Box>
+            
+            <Box sx={{ display: 'flex', gap: 1 }}>
+              <IconButton 
+                size="small" 
+                onClick={() => onViewBook(review.bookId)}
+                title="View Book"
+              >
+                <VisibilityIcon fontSize="small" />
+              </IconButton>
+              <IconButton 
+                size="small" 
+                color="error" 
+                onClick={() => handleDeleteClick(review)}
+                title="Delete Review"
+              >
+                <DeleteIcon fontSize="small" />
+              </IconButton>
+            </Box>
+          </Paper>
+        ))
+      )}
+      
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
+        <DialogTitle>Delete Review</DialogTitle>
+        <DialogContent>
+          <Alert severity="warning" sx={{ mb: 2 }}>
+            This action cannot be undone.
+          </Alert>
+          <Typography>
+            Are you sure you want to delete the review for <strong>"{selectedReview?.bookTitle}"</strong> by <strong>{selectedReview?.userName}</strong>?
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
+          <Button onClick={handleConfirmDelete} color="error" variant="contained">
+            Delete Review
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 };
 
@@ -258,265 +330,238 @@ const ActivityItemComponent: React.FC<ActivityItemComponentProps> = ({ activity 
 const AdminDashboardPage: React.FC = () => {
   const theme = useTheme();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   
   const [loading, setLoading] = useState(true);
   const [, setError] = useState<string | null>(null);
   const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [recentReviews, setRecentReviews] = useState<Review[]>([]);
   const [activities, setActivities] = useState<ActivityItem[]>([]);
   const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
-  const [categoryData, setCategoryData] = useState<CategoryDataPoint[]>([]);
+  const [, setCategoryData] = useState<CategoryDataPoint[]>([]);
   const [ratingData, setRatingData] = useState<RatingDataPoint[]>([]);
-  const [authChecked, setAuthChecked] = useState(false);
+  const [notification, setNotification] = useState({ open: false, message: '', severity: 'success' as 'success' | 'error' });
 
-  // Check authentication and admin role
+  // Check if user is admin
+  const isAdmin = user?.role === 'admin' || user?.role === 'Admin' || user?.roleId === 1;
+
+  // Redirect if not admin
   useEffect(() => {
-    const checkAuth = () => {
-      const storedToken = localStorage.getItem('token') || sessionStorage.getItem('token');
-      const userStr = localStorage.getItem('user') || sessionStorage.getItem('user');
-      
-      if (!storedToken || !userStr) {
-        navigate('/login', { replace: true });
-        return false;
-      }
-
-      try {
-        const parsedUser = JSON.parse(userStr);
-        const isAdmin = parsedUser.role === 'admin' || parsedUser.role === 'Admin' || parsedUser.roleId === 1;
-        
-        if (!isAdmin) {
-          navigate('/dashboard', { replace: true });
-          return false;
-        }
-        
-        return true;
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      } catch (e) {
-        navigate('/login', { replace: true });
-        return false;
-      }
-    };
-
-    const isValid = checkAuth();
-    setAuthChecked(true);
-    
-    if (isValid) {
-      fetchDashboardData();
+    if (!loading && !isAdmin && isAuthenticated) {
+      navigate('/dashboard', { replace: true });
     }
-  }, [navigate]);
+    if (!isAuthenticated && !loading) {
+      navigate('/login', { replace: true });
+    }
+  }, [isAdmin, isAuthenticated, loading, navigate]);
 
   const fetchDashboardData = useCallback(async () => {
     setLoading(true);
     setError(null);
     
     try {
-      const storedToken = localStorage.getItem('token') || sessionStorage.getItem('token');
-      if (!storedToken) {
-        throw new Error('No authentication token found');
+      // Fetch books to get stats
+      const booksResponse = await api.get('/books', { params: { limit: 1000 } });
+      let booksData = [];
+      if (booksResponse.data?.data?.books) {
+        booksData = booksResponse.data.data.books;
+      } else if (booksResponse.data?.books) {
+        booksData = booksResponse.data.books;
+      } else if (Array.isArray(booksResponse.data)) {
+        booksData = booksResponse.data;
+      } else if (booksResponse.data?.data && Array.isArray(booksResponse.data.data)) {
+        booksData = booksResponse.data.data;
       }
-
-      // Fetch dashboard stats - using /admin/dashboard endpoint
-      let statsData = null;
-      try {
-        const response = await api.get('/admin/dashboard');
-        statsData = response.data?.data || response.data;
-        setStats(statsData);
+      const totalBooks = booksData.length || 0;
+      
+      // Fetch reviews to get stats
+      const reviewsResponse = await api.get('/reviews', { params: { limit: 1000 } });
+      let reviewsData = [];
+      if (reviewsResponse.data?.data?.reviews) {
+        reviewsData = reviewsResponse.data.data.reviews;
+      } else if (reviewsResponse.data?.reviews) {
+        reviewsData = reviewsResponse.data.reviews;
+      } else if (Array.isArray(reviewsResponse.data)) {
+        reviewsData = reviewsResponse.data;
+      } else if (reviewsResponse.data?.data && Array.isArray(reviewsResponse.data.data)) {
+        reviewsData = reviewsResponse.data.data;
+      }
+      const totalReviews = reviewsData.length || 0;
+      
+      // Calculate average rating
+      const avgRating = totalReviews > 0 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ? reviewsData.reduce((sum: number, r: any) => sum + (r.rating || 0), 0) / totalReviews 
+        : 0;
+      
+      // Get recent reviews (last 5)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (err: any) {
-        console.warn('Dashboard endpoint not available:', err.message);
-      }
-
-      // Fetch users to get activity data
-      try {
-        const response = await api.get('/admin/users', {
-          params: { page: 1, limit: 5 }
-        });
-        const usersData = response.data?.data?.data || response.data?.data || [];
-        
-        // Convert users to activities
-        if (Array.isArray(usersData)) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const userActivities = usersData.map((user: any) => ({
-            id: `user-${user.id}`,
-            type: 'user' as const,
-            action: user.created_at ? 'registered a new account' : 'joined the platform',
-            user: user.name,
-            target: user.email,
-            timestamp: user.created_at || new Date().toISOString(),
-            status: 'success' as const
-          }));
-          setActivities(userActivities.slice(0, 5));
+      const sortedReviews = [...reviewsData].sort((a: any, b: any) => 
+        new Date(b.created_at || b.createdAt).getTime() - new Date(a.created_at || a.createdAt).getTime()
+      ).slice(0, 5);
+      
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const formattedReviews: Review[] = sortedReviews.map((r: any) => ({
+        id: r.id,
+        userId: r.user_id || r.userId,
+        userName: r.user_name || r.userName || 'Anonymous',
+        bookId: r.book_id || r.bookId,
+        bookTitle: r.book_title || r.bookTitle || 'Unknown Book',
+        rating: r.rating,
+        comment: r.comment,
+        createdAt: r.created_at || r.createdAt
+      }));
+      
+      setRecentReviews(formattedReviews);
+      
+      // Set stats
+      setStats({
+        totalUsers: 0, // Will be fetched separately if user endpoint exists
+        totalBooks,
+        totalReviews,
+        totalCategories: 8, // Default categories count
+        userChange: 12.5,
+        bookChange: 8.3,
+        reviewChange: 23.7,
+        categoryChange: 5.2,
+        activeUsers: 0,
+        pendingReviews: 0,
+        flaggedReviews: 0,
+        newUsersToday: 0,
+        newBooksToday: 0,
+        newReviewsToday: 0,
+        averageRating: avgRating
+      });
+      
+      // Generate mock chart data
+      const days = 7;
+      setChartData(Array.from({ length: days }).map((_, i) => ({
+        name: format(subDays(new Date(), days - 1 - i), 'EEE'),
+        users: Math.floor(Math.random() * 500) + 1000,
+        books: Math.floor(Math.random() * 100) + 200,
+        reviews: Math.floor(Math.random() * 300) + 500
+      })));
+      
+      setCategoryData([
+        { name: 'Fiction', value: 2345, color: '#8884d8' },
+        { name: 'Non-Fiction', value: 1876, color: '#82ca9d' },
+        { name: 'Science Fiction', value: 1234, color: '#ffc658' },
+        { name: 'Mystery', value: 987, color: '#ff8042' }
+      ]);
+      
+      setRatingData([
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        { name: '5 Stars', value: reviewsData.filter((r: any) => r.rating === 5).length || 0, color: '#4caf50' },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        { name: '4 Stars', value: reviewsData.filter((r: any) => r.rating === 4).length || 0, color: '#8bc34a' },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        { name: '3 Stars', value: reviewsData.filter((r: any) => r.rating === 3).length || 0, color: '#ffc107' },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        { name: '2 Stars', value: reviewsData.filter((r: any) => r.rating === 2).length || 0, color: '#ff9800' },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        { name: '1 Star', value: reviewsData.filter((r: any) => r.rating === 1).length || 0, color: '#f44336' }
+      ]);
+      
+      // Set mock activities
+      setActivities([
+        {
+          id: '1',
+          type: 'user',
+          action: 'registered a new account',
+          user: 'New User',
+          timestamp: new Date().toISOString(),
+          status: 'success'
+        },
+        {
+          id: '2',
+          type: 'book',
+          action: 'added a new book',
+          user: 'Admin',
+          target: booksData[0]?.title || 'New Book',
+          timestamp: new Date(Date.now() - 86400000).toISOString(),
+          status: 'success'
         }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (err: any) {
-        console.warn('Could not fetch users for activities:', err.message);
-      }
-
-      // Generate mock chart data if no real data
-      if (!statsData) {
-        setMockData();
-      } else {
-        // Generate chart data based on stats
-        const days = 7;
-        const newChartData = Array.from({ length: days }).map((_, i) => ({
-          name: format(subDays(new Date(), days - 1 - i), 'EEE'),
-          users: Math.floor(Math.random() * 500) + 1000,
-          books: Math.floor(Math.random() * 100) + 200,
-          reviews: Math.floor(Math.random() * 300) + 500
-        }));
-        setChartData(newChartData);
-        
-        // Mock category and rating data
-        setCategoryData([
-          { name: 'Fiction', value: 2345, color: '#8884d8' },
-          { name: 'Non-Fiction', value: 1876, color: '#82ca9d' },
-          { name: 'Science Fiction', value: 1234, color: '#ffc658' },
-          { name: 'Mystery', value: 987, color: '#ff8042' }
-        ]);
-        
-        setRatingData([
-          { name: '5 Stars', value: 15432, color: '#4caf50' },
-          { name: '4 Stars', value: 12345, color: '#8bc34a' },
-          { name: '3 Stars', value: 8765, color: '#ffc107' },
-          { name: '2 Stars', value: 4321, color: '#ff9800' },
-          { name: '1 Star', value: 2347, color: '#f44336' }
-        ]);
-      }
-
+      ]);
+      
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error('Failed to load dashboard data:', err);
-      setMockData();
+      setError(err.message || 'Failed to load data');
+      // Set fallback data
+      setStats({
+        totalUsers: 15234,
+        totalBooks: 8765,
+        totalReviews: 43210,
+        totalCategories: 45,
+        userChange: 12.5,
+        bookChange: 8.3,
+        reviewChange: 23.7,
+        categoryChange: 5.2,
+        activeUsers: 5678,
+        pendingReviews: 234,
+        flaggedReviews: 56,
+        newUsersToday: 89,
+        newBooksToday: 23,
+        newReviewsToday: 156,
+        averageRating: 4.2
+      });
+      setRecentReviews([]);
     } finally {
       setLoading(false);
     }
   }, []);
 
-  const setMockData = () => {
-    setStats({
-      totalUsers: 15234,
-      totalBooks: 8765,
-      totalReviews: 43210,
-      totalCategories: 45,
-      userChange: 12.5,
-      bookChange: 8.3,
-      reviewChange: 23.7,
-      categoryChange: 5.2,
-      activeUsers: 5678,
-      pendingReviews: 234,
-      flaggedReviews: 56,
-      newUsersToday: 89,
-      newBooksToday: 23,
-      newReviewsToday: 156,
-      averageRating: 4.2,
-      totalViews: 234567,
-      totalLikes: 45678,
-      responseTime: 234,
-      uptime: 99.98,
-      errorRate: 0.02
-    });
+  // Handle delete review
+  const handleDeleteReview = async (reviewId: number, bookTitle: string) => {
+    try {
+      await api.delete(`/reviews/${reviewId}`);
+      setNotification({
+        open: true,
+        message: `Review for "${bookTitle}" deleted successfully`,
+        severity: 'success'
+      });
+      // Refresh data
+      fetchDashboardData();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      console.error('Failed to delete review:', err);
+      setNotification({
+        open: true,
+        message: err.response?.data?.message || 'Failed to delete review',
+        severity: 'error'
+      });
+    }
+  };
 
-    setActivities([
-      {
-        id: '1',
-        type: 'user',
-        action: 'registered a new account',
-        user: 'John Doe',
-        timestamp: new Date().toISOString(),
-        status: 'success'
-      },
-      {
-        id: '2',
-        type: 'book',
-        action: 'added a new book',
-        user: 'Jane Smith',
-        target: 'The Great Gatsby',
-        timestamp: new Date(Date.now() - 86400000).toISOString(),
-        status: 'success'
-      },
-      {
-        id: '3',
-        type: 'review',
-        action: 'flagged a review',
-        user: 'Moderator',
-        target: 'Review #1234',
-        timestamp: new Date(Date.now() - 172800000).toISOString(),
-        status: 'warning'
-      }
-    ]);
-
-    const days = 7;
-    setChartData(Array.from({ length: days }).map((_, i) => ({
-      name: format(subDays(new Date(), days - 1 - i), 'EEE'),
-      users: Math.floor(Math.random() * 500) + 1000,
-      books: Math.floor(Math.random() * 100) + 200,
-      reviews: Math.floor(Math.random() * 300) + 500
-    })));
-
-    setCategoryData([
-      { name: 'Fiction', value: 2345, color: '#8884d8' },
-      { name: 'Non-Fiction', value: 1876, color: '#82ca9d' },
-      { name: 'Science Fiction', value: 1234, color: '#ffc658' },
-      { name: 'Mystery', value: 987, color: '#ff8042' }
-    ]);
-
-    setRatingData([
-      { name: '5 Stars', value: 15432, color: '#4caf50' },
-      { name: '4 Stars', value: 12345, color: '#8bc34a' },
-      { name: '3 Stars', value: 8765, color: '#ffc107' },
-      { name: '2 Stars', value: 4321, color: '#ff9800' },
-      { name: '1 Star', value: 2347, color: '#f44336' }
-    ]);
+  const handleViewBook = (bookId: number) => {
+    navigate(`/books/${bookId}`);
   };
 
   const handleRefresh = () => {
     fetchDashboardData();
   };
 
-  const handleExport = async () => {
-    try {
-      // Generate CSV from current data
-      const csvData = [
-        ['Metric', 'Value'],
-        ['Total Users', stats?.totalUsers || 0],
-        ['Total Books', stats?.totalBooks || 0],
-        ['Total Reviews', stats?.totalReviews || 0],
-        ['Total Categories', stats?.totalCategories || 0],
-        ['Active Users', stats?.activeUsers || 0],
-        ['Average Rating', stats?.averageRating || 0],
-        ['Pending Reviews', stats?.pendingReviews || 0],
-        ['Flagged Reviews', stats?.flaggedReviews || 0],
-        ['', ''],
-        ['Report Generated', new Date().toLocaleString()]
-      ];
-      
-      const csvContent = csvData.map(row => row.join(',')).join('\n');
-      const blob = new Blob([csvContent], { type: 'text/csv' });
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `dashboard-report-${format(new Date(), 'yyyy-MM-dd')}.csv`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    } catch (err) {
-      console.error('Export failed:', err);
-    }
+  const handleExport = () => {
+    // Generate CSV report
+    const csvData = [
+      ['Metric', 'Value'],
+      ['Total Books', stats?.totalBooks || 0],
+      ['Total Reviews', stats?.totalReviews || 0],
+      ['Average Rating', stats?.averageRating?.toFixed(2) || 0],
+      ['Report Generated', new Date().toLocaleString()]
+    ];
+    
+    const csvContent = csvData.map(row => row.join(',')).join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `dashboard-report-${format(new Date(), 'yyyy-MM-dd')}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
   };
 
-  // Show loading while checking auth
-  if (!authChecked || loading) {
-    return (
-      <Container maxWidth="xl" sx={{ py: 4 }}>
-        <LinearProgress />
-        <Typography variant="body2" color="text.secondary" sx={{ mt: 2, textAlign: 'center' }}>
-          {!authChecked ? 'Verifying authentication...' : 'Loading dashboard...'}
-        </Typography>
-      </Container>
-    );
-  }
-
-  // Use mock data if stats is null
   const displayStats = stats || {
     totalUsers: 0,
     totalBooks: 0,
@@ -532,13 +577,33 @@ const AdminDashboardPage: React.FC = () => {
     newUsersToday: 0,
     newBooksToday: 0,
     newReviewsToday: 0,
-    averageRating: 0,
-    totalViews: 0,
-    totalLikes: 0,
-    responseTime: 0,
-    uptime: 0,
-    errorRate: 0
+    averageRating: 0
   };
+
+  if (loading) {
+    return (
+      <Container maxWidth="xl" sx={{ py: 4 }}>
+        <LinearProgress />
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 2, textAlign: 'center' }}>
+          Loading dashboard...
+        </Typography>
+      </Container>
+    );
+  }
+
+  // Show access denied if not admin
+  if (!isAdmin && !loading) {
+    return (
+      <Container maxWidth="md" sx={{ py: 8 }}>
+        <Alert severity="error" sx={{ mb: 2 }}>
+          Access Denied. You do not have permission to view this page.
+        </Alert>
+        <Button variant="contained" onClick={() => navigate('/dashboard')}>
+          Go to Dashboard
+        </Button>
+      </Container>
+    );
+  }
 
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
@@ -547,10 +612,10 @@ const AdminDashboardPage: React.FC = () => {
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
           <Box>
             <Typography variant="h4" component="h1" fontWeight={700} gutterBottom>
-              Dashboard Overview
+              Admin Dashboard
             </Typography>
             <Typography variant="body1" color="text.secondary">
-              Welcome back, {user?.name || 'Admin'}! Here's what's happening with your platform.
+              Welcome back, {user?.name || 'Admin'}! Manage and moderate the platform.
             </Typography>
           </Box>
           
@@ -561,27 +626,12 @@ const AdminDashboardPage: React.FC = () => {
             <IconButton onClick={handleExport} title="Export Report">
               <DownloadIcon />
             </IconButton>
-            <IconButton onClick={() => navigate('/admin/settings')} title="Settings">
-              <SettingsIcon />
-            </IconButton>
           </Box>
         </Box>
       </Box>
 
       {/* Stats Grid */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <StatCard
-            title="Total Users"
-            value={displayStats.totalUsers}
-            icon={<PeopleIcon />}
-            color={theme.palette.primary.main}
-            change={displayStats.userChange}
-            changeLabel="vs last month"
-            subtitle={`${displayStats.newUsersToday} new today`}
-            onClick={() => navigate('/admin/users')}
-          />
-        </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <StatCard
             title="Total Books"
@@ -617,61 +667,14 @@ const AdminDashboardPage: React.FC = () => {
             onClick={() => navigate('/admin/categories')}
           />
         </Grid>
-      </Grid>
-
-      {/* Secondary Stats */}
-      <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <Paper sx={{ p: 2, textAlign: 'center' }}>
-            <Avatar sx={{ bgcolor: alpha(theme.palette.primary.main, 0.1), color: 'primary.main', mx: 'auto', mb: 1 }}>
-              <PeopleIcon />
-            </Avatar>
-            <Typography variant="h6" fontWeight={600}>
-              {displayStats.activeUsers.toLocaleString()}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Active Users
-            </Typography>
-          </Paper>
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <Paper sx={{ p: 2, textAlign: 'center' }}>
-            <Avatar sx={{ bgcolor: alpha(theme.palette.warning.main, 0.1), color: 'warning.main', mx: 'auto', mb: 1 }}>
-              <WarningIcon />
-            </Avatar>
-            <Typography variant="h6" fontWeight={600}>
-              {displayStats.pendingReviews}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Pending Reviews
-            </Typography>
-          </Paper>
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <Paper sx={{ p: 2, textAlign: 'center' }}>
-            <Avatar sx={{ bgcolor: alpha(theme.palette.error.main, 0.1), color: 'error.main', mx: 'auto', mb: 1 }}>
-              <ErrorIcon />
-            </Avatar>
-            <Typography variant="h6" fontWeight={600}>
-              {displayStats.flaggedReviews}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Flagged Reviews
-            </Typography>
-          </Paper>
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <Paper sx={{ p: 2, textAlign: 'center' }}>
-            <Avatar sx={{ bgcolor: alpha(theme.palette.success.main, 0.1), color: 'success.main', mx: 'auto', mb: 1 }}>
-              <StarIcon />
-            </Avatar>
-            <Typography variant="h6" fontWeight={600}>
-              {displayStats.averageRating.toFixed(1)}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Average Rating
-            </Typography>
-          </Paper>
+          <StatCard
+            title="Average Rating"
+            value={displayStats.averageRating.toFixed(1)}
+            icon={<StarIcon />}
+            color={theme.palette.warning.main}
+            subtitle="out of 5 stars"
+          />
         </Grid>
       </Grid>
 
@@ -689,9 +692,8 @@ const AdminDashboardPage: React.FC = () => {
                 <YAxis />
                 <RechartsTooltip />
                 <Legend />
-                <Line type="monotone" dataKey="users" stroke={theme.palette.primary.main} strokeWidth={2} />
-                <Line type="monotone" dataKey="books" stroke={theme.palette.success.main} strokeWidth={2} />
-                <Line type="monotone" dataKey="reviews" stroke={theme.palette.warning.main} strokeWidth={2} />
+                <Line type="monotone" dataKey="books" stroke={theme.palette.success.main} strokeWidth={2} name="Books" />
+                <Line type="monotone" dataKey="reviews" stroke={theme.palette.warning.main} strokeWidth={2} name="Reviews" />
               </LineChart>
             </ResponsiveContainer>
           </Paper>
@@ -700,12 +702,12 @@ const AdminDashboardPage: React.FC = () => {
         <Grid size={{ xs: 12, md: 4 }}>
           <Paper sx={{ p: 3, height: '100%' }}>
             <Typography variant="h6" fontWeight={600} gutterBottom>
-              Category Distribution
+              Rating Distribution
             </Typography>
             <ResponsiveContainer width="100%" height={250}>
               <PieChart>
                 <Pie
-                  data={categoryData}
+                  data={ratingData.filter(r => r.value > 0)}
                   cx="50%"
                   cy="50%"
                   innerRadius={60}
@@ -715,7 +717,7 @@ const AdminDashboardPage: React.FC = () => {
                   dataKey="value"
                   label
                 >
-                  {categoryData.map((entry, index) => (
+                  {ratingData.filter(r => r.value > 0).map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
@@ -724,92 +726,57 @@ const AdminDashboardPage: React.FC = () => {
             </ResponsiveContainer>
           </Paper>
         </Grid>
-
-        <Grid size={{ xs: 12 }}>
-          <Paper sx={{ p: 3 }}>
-            <Typography variant="h6" fontWeight={600} gutterBottom>
-              Rating Distribution
-            </Typography>
-            <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={ratingData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <RechartsTooltip />
-                <Bar dataKey="value">
-                  {ratingData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </Paper>
-        </Grid>
       </Grid>
 
-      {/* Activity Section */}
-      <Grid container spacing={3}>
-        <Grid size={{ xs: 12 }}>
-          <Paper sx={{ p: 3 }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-              <Typography variant="h6" fontWeight={600}>
-                Recent Activity
-              </Typography>
-              <Button size="small" onClick={() => navigate('/admin/activity')}>
-                View All
-              </Button>
-            </Box>
-            {activities.length > 0 ? (
-              activities.map((activity) => (
-                <ActivityItemComponent key={activity.id} activity={activity} />
-              ))
-            ) : (
-              <Typography color="text.secondary" align="center" sx={{ py: 2 }}>
-                No recent activity
-              </Typography>
-            )}
-          </Paper>
-        </Grid>
-      </Grid>
+      {/* Recent Reviews Section - Admin can delete any review */}
+      <Paper sx={{ p: 3 }}>
+        <ReviewList 
+          reviews={recentReviews} 
+          onDeleteReview={handleDeleteReview}
+          onViewBook={handleViewBook}
+        />
+      </Paper>
 
-      {/* System Health */}
+      {/* Recent Activity */}
       <Paper sx={{ p: 3, mt: 3 }}>
         <Typography variant="h6" fontWeight={600} gutterBottom>
-          System Health
+          Recent Activity
         </Typography>
-        <Grid container spacing={3}>
-          <Grid size={{ xs: 12, sm: 4 }}>
-            <Box sx={{ textAlign: 'center' }}>
-              <Typography variant="h4" color="success.main" fontWeight={600}>
-                {displayStats.uptime}%
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Uptime
-              </Typography>
+        {activities.length > 0 ? (
+          activities.map((activity) => (
+            <Box key={activity.id} sx={{ display: 'flex', alignItems: 'center', gap: 2, py: 1, borderBottom: 1, borderColor: 'divider' }}>
+              <Avatar sx={{ bgcolor: alpha(theme.palette.primary.main, 0.1), color: 'primary.main' }}>
+                {activity.type === 'user' ? <PeopleIcon /> : <BookIcon />}
+              </Avatar>
+              <Box sx={{ flex: 1 }}>
+                <Typography variant="subtitle2">{activity.user}</Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {activity.action} {activity.target && `• ${activity.target}`}
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  {format(new Date(activity.timestamp), 'MMM dd, yyyy HH:mm')}
+                </Typography>
+              </Box>
             </Box>
-          </Grid>
-          <Grid size={{ xs: 12, sm: 4 }}>
-            <Box sx={{ textAlign: 'center' }}>
-              <Typography variant="h4" color="info.main" fontWeight={600}>
-                {displayStats.responseTime}ms
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Avg Response Time
-              </Typography>
-            </Box>
-          </Grid>
-          <Grid size={{ xs: 12, sm: 4 }}>
-            <Box sx={{ textAlign: 'center' }}>
-              <Typography variant="h4" color="success.main" fontWeight={600}>
-                {displayStats.errorRate}%
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Error Rate
-              </Typography>
-            </Box>
-          </Grid>
-        </Grid>
+          ))
+        ) : (
+          <Typography color="text.secondary" align="center" sx={{ py: 2 }}>
+            No recent activity
+          </Typography>
+        )}
       </Paper>
+
+      {/* Notification Snackbar */}
+      <Snackbar
+        open={notification.open}
+        autoHideDuration={4000}
+        onClose={() => setNotification({ ...notification, open: false })}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      >
+        <Alert severity={notification.severity} variant="filled">
+          {notification.message}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };

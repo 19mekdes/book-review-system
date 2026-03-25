@@ -452,7 +452,7 @@ const Header: React.FC<HeaderProps> = ({
           color: 'white' 
         }}>
           <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            📚 Book Review
+             Book Review
           </Typography>
           {isAuthenticated && user && (
             <>
