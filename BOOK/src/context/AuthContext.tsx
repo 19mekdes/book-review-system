@@ -11,6 +11,8 @@ interface User {
   roleId: number;
   avatar?: string;
   bio?: string;
+  location?: string;
+  created_at?: string;
 }
 
 interface AuthContextType {
@@ -18,6 +20,7 @@ interface AuthContextType {
   token: string | null;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
+  updateUser: (userData: Partial<User>) => void;
   isAuthenticated: boolean;
   loading: boolean;
 }
@@ -39,7 +42,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // Check if user is admin
   // Load stored auth
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
@@ -63,7 +65,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setLoading(false);
   }, []);
 
-  // ✅ LOGIN - Redirects admin to admin dashboard, regular users to home
+  // LOGIN - Redirects admin to admin dashboard, regular users to home
   const login = async (email: string, password: string) => {
     try {
       const res = await api.post('/auth/login', { email, password });
@@ -82,7 +84,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       // Set auth header for future requests
       api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
 
-      // ✅ Redirect based on user role
+      // Redirect based on user role
       if (userData.roleId === 1 || userData.role === 'admin' || userData.role === 'Admin') {
         // Admin users go to admin dashboard
         navigate('/admin');
@@ -105,6 +107,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     navigate('/login');
   };
 
+  // ✅ UPDATE USER - Add this function
+  const updateUser = (userData: Partial<User>) => {
+    if (user) {
+      const updatedUser = { ...user, ...userData };
+      setUser(updatedUser);
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+    }
+  };
+
   const isAuthenticated = !!token && !!user;
 
   if (loading) {
@@ -116,7 +127,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, isAuthenticated, loading }}>
+    <AuthContext.Provider value={{ user, token, login, logout, updateUser, isAuthenticated, loading }}>
       {children}
     </AuthContext.Provider>
   );

@@ -4,7 +4,6 @@ import {
   Container,
   Typography,
   Paper,
-  Button,
   Box,
   AppBar,
   Toolbar,
@@ -33,6 +32,7 @@ import api from '../../services/api';
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [user, setUser] = useState<any>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [stats, setStats] = useState({
@@ -53,6 +53,7 @@ const Dashboard: React.FC = () => {
 
     if (userStr) {
       const userData = JSON.parse(userStr);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setUser(userData);
       
       // Redirect admin to admin dashboard
@@ -168,7 +169,7 @@ const Dashboard: React.FC = () => {
             </ListItemIcon>
             <ListItemText primary="Profile" />
           </ListItem>
-          <ListItem button onClick={handleLogout}>
+          <ListItem onClick={handleLogout} sx={{ cursor: 'pointer' }}>
             <ListItemIcon>
               <LogoutIcon />
             </ListItemIcon>

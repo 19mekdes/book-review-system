@@ -9,7 +9,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  TablePagination,
   IconButton,
   Button,
   TextField,
@@ -34,10 +33,8 @@ import {
   Switch,
   FormControlLabel,
   Divider,
-  Stack,
   Card,
   CardContent,
-  CardMedia,
   useTheme,
   alpha,
   Checkbox,
@@ -45,13 +42,8 @@ import {
   ListItemText,
   Fab,
   Zoom,
-  Breadcrumbs,
-  Link,
-  TreeView,
-  TreeItem,
   Collapse,
   List,
-  ListItem,
   ListItemButton
 } from '@mui/material';
 import {
@@ -63,32 +55,22 @@ import {
   Clear as ClearIcon,
   Refresh as RefreshIcon,
   Download as DownloadIcon,
-  FilterList as FilterIcon,
   Category as CategoryIcon,
   Book as BookIcon,
   ExpandMore as ExpandMoreIcon,
   ChevronRight as ChevronRightIcon,
   Folder as FolderIcon,
-  FolderOpen as FolderOpenIcon,
-  InsertDriveFile as FileIcon,
   Save as SaveIcon,
-  Cancel as CancelIcon,
   PhotoCamera as PhotoCameraIcon,
   ColorLens as ColorLensIcon,
-  DragIndicator as DragIndicatorIcon,
-  ArrowUpward as ArrowUpwardIcon,
-  ArrowDownward as ArrowDownwardIcon,
-  Home as HomeIcon,
   Visibility as VisibilityIcon,
   VisibilityOff as VisibilityOffIcon,
   Star as StarIcon,
   StarBorder as StarBorderIcon,
   TrendingUp as TrendingUpIcon,
   TrendingDown as TrendingDownIcon,
-  ChevronLeft as ChevronLeftIcon,
-  ChevronRight as ChevronRightIcon
+  
 } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { ChromePicker } from 'react-color';
 
@@ -187,6 +169,7 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({
 
   useEffect(() => {
     if (category) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setFormData({
         name: category.name || '',
         slug: category.slug || '',
@@ -223,6 +206,7 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({
     setErrors({});
   }, [category, categories.length, open]);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleChange = (field: keyof Category, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     
@@ -274,30 +258,54 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({
     }
   };
 
-  const handleSubmit = async () => {
-    // Validate form
-    const newErrors: Record<string, string> = {};
-    
-    if (!formData.name?.trim()) {
-      newErrors.name = 'Category name is required';
-    }
-    if (!formData.slug?.trim()) {
-      newErrors.slug = 'Slug is required';
-    }
-    
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
+ const handleSubmit = async () => {
+  // Validate form
+  const newErrors: Record<string, string> = {};
+  
+  if (!formData.name?.trim()) {
+    newErrors.name = 'Category name is required';
+  }
+  if (!formData.slug?.trim()) {
+    newErrors.slug = 'Slug is required';
+  }
+  
+  if (Object.keys(newErrors).length > 0) {
+    setErrors(newErrors);
+    return;
+  }
 
-    const submitData = {
-      ...formData,
-      image: imageFile || imagePreview
-    };
+  // ✅ Convert File to Base64 string if needed
+  let imageValue: string | undefined = undefined;
+  
+  if (imagePreview && typeof imagePreview === 'string') {
+    // If it's already a string (URL or Base64), use it
+    imageValue = imagePreview;
+  } else if (imageFile instanceof File) {
+    // Convert File to Base64
+    imageValue = await new Promise<string>((resolve) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        resolve(reader.result as string);
+      };
+      reader.readAsDataURL(imageFile);
+    });
+  }
 
+  const submitData = {
+    ...formData,
+    image: imageValue,
+    parentId: formData.parentId || undefined,
+    description: formData.description || undefined
+  };
+
+  try {
     await onSave(submitData);
     onClose();
-  };
+  } catch (error) {
+    console.error('Error saving category:', error);
+    setErrors({ submit: 'Failed to save category' });
+  }
+};
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
@@ -350,7 +358,7 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({
           </Grid>
 
           {/* Name */}
-          <Grid size={{ xs: 12 }} size={{ md: 6 }}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <TextField
               fullWidth
               label="Category Name *"
@@ -363,7 +371,7 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({
           </Grid>
 
           {/* Slug */}
-          <Grid size={{ xs: 12 }} size={{ md: 6 }}>
+          <Grid size={{ xs: 12 , md: 6 }}>
             <TextField
               fullWidth
               label="Slug *"
@@ -376,7 +384,7 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({
           </Grid>
 
           {/* Parent Category */}
-          <Grid size={{ xs: 12 }} size={{ md: 6 }}>
+          <Grid size={{ xs: 12 , md: 6 }}>
             <FormControl fullWidth>
               <InputLabel>Parent Category</InputLabel>
               <Select
@@ -398,7 +406,7 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({
           </Grid>
 
           {/* Color Picker */}
-          <Grid size={{ xs: 12 }} size={{ md: 6 }}>
+          <Grid size={{ xs: 12 , md: 6 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <TextField
                 fullWidth
@@ -433,7 +441,8 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({
               <Box sx={{ mt: 1, position: 'relative', zIndex: 10 }}>
                 <ChromePicker
                   color={formData.color || '#1976d2'}
-                  onChange={(color) => handleChange('color', color.hex)}
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  onChange={(color: { hex: any; }) => handleChange('color', color.hex)}
                 />
               </Box>
             )}
@@ -477,7 +486,7 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({
           </Grid>
 
           {/* Sort Order */}
-          <Grid size={{ xs: 12 }} size={{ md: 4 }}>
+          <Grid size={{ xs: 12 , md: 4 }}>
             <TextField
               fullWidth
               label="Sort Order"
@@ -489,7 +498,7 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({
           </Grid>
 
           {/* Icon */}
-          <Grid size={{ xs: 12 }} size={{ md: 8 }}>
+          <Grid size={{ xs: 12,md: 8 }}>
             <TextField
               fullWidth
               label="Icon Name (Material Icon)"
@@ -1005,7 +1014,6 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({
   className
 }) => {
   const theme = useTheme();
-  const navigate = useNavigate();
   
   // State
   const [selected, setSelected] = useState<number[]>([]);
@@ -1040,6 +1048,7 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({
     const featured = categories.filter(c => c.isFeatured).length;
     const withBooks = categories.filter(c => (c.booksCount || 0) > 0).length;
     
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setStats({ total, active, featured, withBooks });
   }, [categories]);
 
@@ -1113,7 +1122,8 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({
     setDraggedItem(id);
   };
 
-  const handleDragOver = (id: number) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleDragOver = (_id: number) => {
     // Visual feedback for drag over
   };
 
@@ -1142,13 +1152,6 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({
     setAnchorEl(null);
   };
 
-  const handleBreadcrumbClick = (categoryId?: number) => {
-    if (categoryId) {
-      navigate(`/categories/${categoryId}`);
-    } else {
-      navigate('/categories');
-    }
-  };
 
   return (
     <Box className={className}>
@@ -1164,7 +1167,7 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({
 
       {/* Stats Cards */}
       <Grid container spacing={3} sx={{ mb: 3 }}>
-        <Grid size={{ xs: 12 }} size={{ sm: 6 }} size={{ md: 3 }}>
+        <Grid size={{ xs: 12 ,sm: 6 , md: 3 }}>
           <StatsCard
             title="Total Categories"
             value={stats.total}
@@ -1172,7 +1175,7 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({
             color={theme.palette.primary.main}
           />
         </Grid>
-        <Grid size={{ xs: 12 }} size={{ sm: 6 }} size={{ md: 3 }}>
+        <Grid size={{ xs: 12 , sm: 6 , md: 3 }}>
           <StatsCard
             title="Active"
             value={stats.active}
@@ -1182,7 +1185,7 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({
             trendLabel="of total"
           />
         </Grid>
-        <Grid size={{ xs: 12 }} size={{ sm: 6 }} size={{ md: 3 }}>
+        <Grid size={{ xs: 12 , sm: 6 , md: 3 }}>
           <StatsCard
             title="Featured"
             value={stats.featured}
@@ -1190,7 +1193,7 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({
             color={theme.palette.warning.main}
           />
         </Grid>
-        <Grid size={{ xs: 12 }} size={{ sm: 6 }} size={{ md: 3 }}>
+        <Grid size={{ xs: 12 , sm: 6 , md: 3 }}>
           <StatsCard
             title="With Books"
             value={stats.withBooks}
@@ -1204,7 +1207,7 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({
       <Paper sx={{ p: 2, mb: 3 }}>
         <Grid container spacing={2} alignItems="center">
           {/* Search */}
-          <Grid size={{ xs: 12 }} size={{ md: 4 }}>
+          <Grid size={{ xs: 12 , md: 4 }}>
             <TextField
               fullWidth
               size="small"
@@ -1229,7 +1232,7 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({
           </Grid>
 
           {/* View Toggle */}
-          <Grid size={{ xs: 6 }} size={{ md: 2 }}>
+          <Grid size={{ xs: 6 , md: 2 }}>
             <Button
               fullWidth
               variant={viewMode === 'tree' ? 'contained' : 'outlined'}
@@ -1239,7 +1242,7 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({
               Tree View
             </Button>
           </Grid>
-          <Grid size={{ xs: 6 }} size={{ md: 2 }}>
+          <Grid size={{ xs: 6, md: 2 }}>
             <Button
               fullWidth
               variant={viewMode === 'list' ? 'contained' : 'outlined'}
@@ -1251,7 +1254,7 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({
           </Grid>
 
           {/* Action Buttons */}
-          <Grid size={{ xs: 12 }} size={{ md: 4 }}>
+          <Grid size={{ xs: 12 , md: 4 }}>
             <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
               {selected.length > 0 && (
                 <>

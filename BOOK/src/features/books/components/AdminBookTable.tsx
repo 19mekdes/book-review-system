@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Paper,
@@ -41,8 +41,8 @@ import {
   ListItemText,
   Fab,
   Zoom,
-  SelectChangeEvent
-} from '@mui/material';
+  SelectChangeEvent,
+} from "@mui/material";
 import {
   Add as AddIcon,
   Edit as EditIcon,
@@ -58,12 +58,12 @@ import {
   Warning as WarningIcon,
   Archive as ArchiveIcon,
   PhotoCamera as PhotoCameraIcon,
-  Image as ImageIcon
-} from '@mui/icons-material';
-import { format } from 'date-fns';
-import { useForm, Controller } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
+  Image as ImageIcon,
+} from "@mui/icons-material";
+import { format } from "date-fns";
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
 // ============================================
 // Types
@@ -81,10 +81,10 @@ export interface Book {
   publishDate?: string;
   pages?: number;
   language: string;
-  format: 'paperback' | 'hardcover' | 'ebook' | 'audiobook';
+  format: "paperback" | "hardcover" | "ebook" | "audiobook";
   price?: number;
   coverImage?: string;
-  status: 'published' | 'draft' | 'archived' | 'pending';
+  status: "published" | "draft" | "archived" | "pending";
   reviewsCount: number;
   averageRating: number;
   views: number;
@@ -101,9 +101,9 @@ export interface Category {
 
 export interface BookFilters {
   categoryId?: number;
-  status?: Book['status'] | 'all';
+  status?: Book["status"] | "all";
   language?: string;
-  format?: Book['format'] | 'all';
+  format?: Book["format"] | "all";
   minRating?: number;
   maxRating?: number;
   dateFrom?: string;
@@ -120,17 +120,17 @@ export interface AdminBookTableProps {
   onLimitChange: (limit: number) => void;
   onSearch: (query: string) => void;
   onFilter: (filters: BookFilters) => void;
-  onSort: (field: string, direction: 'asc' | 'desc') => void;
+  onSort: (field: string, direction: "asc" | "desc") => void;
   onAdd: (book: Partial<Book>) => Promise<void>;
   onEdit: (id: number, book: Partial<Book>) => Promise<void>;
   onDelete: (id: number) => Promise<void>;
   onBulkDelete: (ids: number[]) => Promise<void>;
-  onBulkStatusChange: (ids: number[], status: Book['status']) => Promise<void>;
-  onExport: (format: 'csv' | 'pdf' | 'excel') => void;
+  onBulkStatusChange: (ids: number[], status: Book["status"]) => Promise<void>;
+  onExport: (format: "csv" | "pdf" | "excel") => void;
   page: number;
   limit: number;
   sortField?: string;
-  sortDirection?: 'asc' | 'desc';
+  sortDirection?: "asc" | "desc";
   searchQuery?: string;
   filters?: BookFilters;
   className?: string;
@@ -141,19 +141,37 @@ export interface AdminBookTableProps {
 // ============================================
 
 const bookSchema = yup.object().shape({
-  title: yup.string().required('Title is required').min(2, 'Title must be at least 2 characters'),
-  author: yup.string().required('Author is required').min(2, 'Author must be at least 2 characters'),
-  isbn: yup.string().optional().matches(/^(?:\d[- ]?){9}[\dX]$|^(?:\d[- ]?){13}$/, 'Invalid ISBN format'),
-  description: yup.string().required('Description is required').min(10, 'Description must be at least 10 characters'),
-  categoryId: yup.number().required('Category is required').positive(),
+  title: yup
+    .string()
+    .required("Title is required")
+    .min(2, "Title must be at least 2 characters"),
+  author: yup
+    .string()
+    .required("Author is required")
+    .min(2, "Author must be at least 2 characters"),
+  isbn: yup
+    .string()
+    .optional()
+    .matches(/^(?:\d[- ]?){9}[\dX]$|^(?:\d[- ]?){13}$/, "Invalid ISBN format"),
+  description: yup
+    .string()
+    .required("Description is required")
+    .min(10, "Description must be at least 10 characters"),
+  categoryId: yup.number().required("Category is required").positive(),
   publisher: yup.string().optional(),
   publishDate: yup.string().optional(),
   pages: yup.number().optional().positive().integer(),
-  language: yup.string().required('Language is required'),
-  format: yup.string().required('Format is required').oneOf(['paperback', 'hardcover', 'ebook', 'audiobook']),
+  language: yup.string().required("Language is required"),
+  format: yup
+    .string()
+    .required("Format is required")
+    .oneOf(["paperback", "hardcover", "ebook", "audiobook"]),
   price: yup.number().optional().positive(),
-  status: yup.string().required('Status is required').oneOf(['published', 'draft', 'archived', 'pending']),
-  tags: yup.array().of(yup.string()).optional()
+  status: yup
+    .string()
+    .required("Status is required")
+    .oneOf(["published", "draft", "archived", "pending"]),
+  tags: yup.array().of(yup.string()).optional(),
 });
 
 // ============================================
@@ -175,7 +193,7 @@ const BookDialog: React.FC<BookDialogProps> = ({
   onSave,
   book,
   categories,
-  loading = false
+  loading = false,
 }) => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [tags, setTags] = useState<string[]>([]);
@@ -185,63 +203,62 @@ const BookDialog: React.FC<BookDialogProps> = ({
     handleSubmit,
     formState: { errors, isDirty },
     reset,
-    setValue
+    setValue,
   } = useForm({
     resolver: yupResolver(bookSchema),
     defaultValues: {
-      title: '',
-      author: '',
-      isbn: '',
-      description: '',
+      title: "",
+      author: "",
+      isbn: "",
+      description: "",
       categoryId: 0,
-      publisher: '',
-      publishDate: '',
+      publisher: "",
+      publishDate: "",
       pages: 0,
-      language: 'English',
-      format: 'paperback',
+      language: "English",
+      format: "paperback",
       price: 0,
-      status: 'draft',
-      tags: []
-    }
+      status: "draft",
+      tags: [],
+    },
   });
 
-  // Using useMemo or useCallback to avoid unnecessary re-renders, but keeping the effect
   useEffect(() => {
     if (open) {
       if (book) {
         reset({
-          title: book.title || '',
-          author: book.author || '',
-          isbn: book.isbn || '',
-          description: book.description || '',
+          title: book.title || "",
+          author: book.author || "",
+          isbn: book.isbn || "",
+          description: book.description || "",
           categoryId: book.categoryId || 0,
-          publisher: book.publisher || '',
-          publishDate: book.publishDate || '',
+          publisher: book.publisher || "",
+          publishDate: book.publishDate || "",
           pages: book.pages || 0,
-          language: book.language || 'English',
-          format: book.format || 'paperback',
+          language: book.language || "English",
+          format: book.format || "paperback",
           price: book.price || 0,
-          status: book.status || 'draft',
-          tags: book.tags || []
+          status: book.status || "draft",
+          tags: book.tags || [],
         });
         // eslint-disable-next-line react-hooks/set-state-in-effect
         setTags(book.tags || []);
         setPreviewUrl(book.coverImage || null);
       } else {
         reset({
-          title: '',
-          author: '',
-          isbn: '',
-          description: '',
+          title: "",
+          author: "",
+          isbn: "",
+          description: "",
           categoryId: 0,
-          publisher: '',
-          publishDate: '',
+          publisher: "",
+          publishDate: "",
           pages: 0,
-          language: 'English',
-          format: 'paperback',
+          language: "English",
+          format: "paperback",
           price: 0,
-          status: 'draft',
-          tags: []
+          status: "draft",
+          tags: [],
         });
         setTags([]);
         setPreviewUrl(null);
@@ -249,6 +266,7 @@ const BookDialog: React.FC<BookDialogProps> = ({
     }
   }, [open, book, reset]);
 
+  // ✅ FIXED: Simplified file change handler
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -261,22 +279,27 @@ const BookDialog: React.FC<BookDialogProps> = ({
   };
 
   const handleAddTag = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
+    if (event.key === "Enter") {
       const input = event.target as HTMLInputElement;
       const value = input.value.trim();
       if (value && !tags.includes(value)) {
         const newTags = [...tags, value];
         setTags(newTags);
-        setValue('tags', newTags);
+        setValue("tags", newTags);
       }
-      input.value = '';
+      input.value = "";
     }
   };
 
   const handleRemoveTag = (tagToRemove: string) => {
-    const newTags = tags.filter(tag => tag !== tagToRemove);
+    const newTags = tags.filter((tag) => tag !== tagToRemove);
     setTags(newTags);
-    setValue('tags', newTags);
+    setValue("tags", newTags);
+  };
+
+  // ✅ FIXED: Handle category select properly
+  const handleCategoryChange = (value: string) => {
+    setValue("categoryId", Number(value));
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -286,7 +309,7 @@ const BookDialog: React.FC<BookDialogProps> = ({
       tags,
       pages: data.pages ? Number(data.pages) : undefined,
       price: data.price ? Number(data.price) : undefined,
-      categoryId: Number(data.categoryId)
+      categoryId: Number(data.categoryId),
     };
     await onSave(formData);
     onClose();
@@ -294,49 +317,47 @@ const BookDialog: React.FC<BookDialogProps> = ({
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle>
-        {book ? 'Edit Book' : 'Add New Book'}
-      </DialogTitle>
+      <DialogTitle>{book ? "Edit Book" : "Add New Book"}</DialogTitle>
       <form onSubmit={handleSubmit(onSubmit)}>
         <DialogContent dividers>
           <Grid container spacing={2}>
             {/* Cover Image */}
             <Grid size={{ xs: 12 }}>
-              <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
-                <Box sx={{ position: 'relative' }}>
+              <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
+                <Box sx={{ position: "relative" }}>
                   <Avatar
                     src={previewUrl || undefined}
                     variant="rounded"
                     sx={{
                       width: 200,
                       height: 200,
-                      bgcolor: 'action.hover',
-                      border: '2px dashed',
-                      borderColor: 'divider'
+                      bgcolor: "action.hover",
+                      border: "2px dashed",
+                      borderColor: "divider",
                     }}
                   >
-                    <ImageIcon sx={{ fontSize: 60, color: 'text.secondary' }} />
+                    <ImageIcon sx={{ fontSize: 60, color: "text.secondary" }} />
                   </Avatar>
                   <IconButton
                     component="label"
                     sx={{
-                      position: 'absolute',
+                      position: "absolute",
                       bottom: 0,
                       right: 0,
-                      bgcolor: 'primary.main',
-                      color: 'white',
-                      '&:hover': {
-                        bgcolor: 'primary.dark'
-                      }
+                      bgcolor: "primary.main",
+                      color: "white",
+                      "&:hover": {
+                        bgcolor: "primary.dark",
+                      },
                     }}
                   >
+                    <PhotoCameraIcon />
                     <input
                       type="file"
                       hidden
                       accept="image/*"
                       onChange={handleFileChange}
                     />
-                    <PhotoCameraIcon />
                   </IconButton>
                 </Box>
               </Box>
@@ -396,7 +417,7 @@ const BookDialog: React.FC<BookDialogProps> = ({
               />
             </Grid>
 
-            {/* Category */}
+            {/* ✅ FIXED: Category Select */}
             <Grid size={{ xs: 12, md: 6 }}>
               <Controller
                 name="categoryId"
@@ -405,14 +426,13 @@ const BookDialog: React.FC<BookDialogProps> = ({
                   <FormControl fullWidth error={!!errors.categoryId}>
                     <InputLabel>Category</InputLabel>
                     <Select
-                      {...field}
+                      value={field.value?.toString() || ""}
                       label="Category"
-                      value={field.value || 0}
+                      onChange={(e) => handleCategoryChange(e.target.value)}
                       disabled={loading}
-                      onChange={(e: SelectChangeEvent) => field.onChange(Number(e.target.value))}
                     >
                       {categories.map((cat) => (
-                        <MenuItem key={cat.id} value={cat.id}>
+                        <MenuItem key={cat.id} value={cat.id.toString()}>
                           {cat.name}
                         </MenuItem>
                       ))}
@@ -471,8 +491,12 @@ const BookDialog: React.FC<BookDialogProps> = ({
                     fullWidth
                     label="Pages"
                     type="number"
-                    value={field.value || ''}
-                    onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : '')}
+                    value={field.value || ""}
+                    onChange={(e) =>
+                      field.onChange(
+                        e.target.value ? Number(e.target.value) : ""
+                      )
+                    }
                     error={!!errors.pages}
                     helperText={errors.pages?.message}
                     disabled={loading}
@@ -493,7 +517,9 @@ const BookDialog: React.FC<BookDialogProps> = ({
                       {...field}
                       label="Language"
                       disabled={loading}
-                      onChange={(e: SelectChangeEvent) => field.onChange(e.target.value)}
+                      onChange={(e: SelectChangeEvent) =>
+                        field.onChange(e.target.value)
+                      }
                     >
                       <MenuItem value="English">English</MenuItem>
                       <MenuItem value="Spanish">Spanish</MenuItem>
@@ -519,7 +545,9 @@ const BookDialog: React.FC<BookDialogProps> = ({
                       {...field}
                       label="Format"
                       disabled={loading}
-                      onChange={(e: SelectChangeEvent) => field.onChange(e.target.value)}
+                      onChange={(e: SelectChangeEvent) =>
+                        field.onChange(e.target.value)
+                      }
                     >
                       <MenuItem value="paperback">Paperback</MenuItem>
                       <MenuItem value="hardcover">Hardcover</MenuItem>
@@ -542,12 +570,18 @@ const BookDialog: React.FC<BookDialogProps> = ({
                     fullWidth
                     label="Price"
                     type="number"
-                    value={field.value || ''}
-                    onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : '')}
+                    value={field.value || ""}
+                    onChange={(e) =>
+                      field.onChange(
+                        e.target.value ? Number(e.target.value) : ""
+                      )
+                    }
                     slotProps={{
                       input: {
-                        startAdornment: <InputAdornment position="start">$</InputAdornment>
-                      }
+                        startAdornment: (
+                          <InputAdornment position="start">$</InputAdornment>
+                        ),
+                      },
                     }}
                     error={!!errors.price}
                     helperText={errors.price?.message}
@@ -569,7 +603,9 @@ const BookDialog: React.FC<BookDialogProps> = ({
                       {...field}
                       label="Status"
                       disabled={loading}
-                      onChange={(e: SelectChangeEvent) => field.onChange(e.target.value)}
+                      onChange={(e: SelectChangeEvent) =>
+                        field.onChange(e.target.value)
+                      }
                     >
                       <MenuItem value="published">Published</MenuItem>
                       <MenuItem value="draft">Draft</MenuItem>
@@ -590,7 +626,7 @@ const BookDialog: React.FC<BookDialogProps> = ({
                 onKeyDown={handleAddTag}
                 disabled={loading}
               />
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mt: 1 }}>
+              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5, mt: 1 }}>
                 {tags.map((tag) => (
                   <Chip
                     key={tag}
@@ -630,7 +666,7 @@ const BookDialog: React.FC<BookDialogProps> = ({
             variant="contained"
             disabled={loading || !isDirty}
           >
-            {loading ? 'Saving...' : (book ? 'Update' : 'Create')}
+            {loading ? "Saving..." : book ? "Update" : "Create"}
           </Button>
         </DialogActions>
       </form>
@@ -655,7 +691,7 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({
   onClose,
   onConfirm,
   count,
-  loading = false
+  loading = false,
 }) => {
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
@@ -665,7 +701,8 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({
           This action cannot be undone.
         </Alert>
         <Typography>
-          Are you sure you want to delete {count} {count === 1 ? 'book' : 'books'}?
+          Are you sure you want to delete {count}{" "}
+          {count === 1 ? "book" : "books"}?
         </Typography>
       </DialogContent>
       <DialogActions>
@@ -676,7 +713,7 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({
           color="error"
           disabled={loading}
         >
-          {loading ? 'Deleting...' : 'Delete'}
+          {loading ? "Deleting..." : "Delete"}
         </Button>
       </DialogActions>
     </Dialog>
@@ -690,7 +727,7 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({
 interface BulkStatusDialogProps {
   open: boolean;
   onClose: () => void;
-  onConfirm: (status: Book['status']) => void;
+  onConfirm: (status: Book["status"]) => void;
   count: number;
   loading?: boolean;
 }
@@ -700,23 +737,25 @@ const BulkStatusDialog: React.FC<BulkStatusDialogProps> = ({
   onClose,
   onConfirm,
   count,
-  loading = false
+  loading = false,
 }) => {
-  const [status, setStatus] = useState<Book['status']>('published');
+  const [status, setStatus] = useState<Book["status"]>("published");
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>Change Status</DialogTitle>
       <DialogContent>
         <Typography gutterBottom>
-          Change status for {count} selected {count === 1 ? 'book' : 'books'}
+          Change status for {count} selected {count === 1 ? "book" : "books"}
         </Typography>
         <FormControl fullWidth sx={{ mt: 2 }}>
           <InputLabel>Status</InputLabel>
           <Select
             value={status}
             label="Status"
-            onChange={(e: SelectChangeEvent) => setStatus(e.target.value as Book['status'])}
+            onChange={(e: SelectChangeEvent) =>
+              setStatus(e.target.value as Book["status"])
+            }
           >
             <MenuItem value="published">Published</MenuItem>
             <MenuItem value="draft">Draft</MenuItem>
@@ -732,7 +771,7 @@ const BulkStatusDialog: React.FC<BulkStatusDialogProps> = ({
           variant="contained"
           disabled={loading}
         >
-          {loading ? 'Applying...' : 'Apply'}
+          {loading ? "Applying..." : "Apply"}
         </Button>
       </DialogActions>
     </Dialog>
@@ -763,17 +802,18 @@ const AdminBookTable: React.FC<AdminBookTableProps> = ({
   page,
   limit,
   sortField,
-  sortDirection = 'asc',
-  searchQuery = '',
+  sortDirection = "asc",
+  searchQuery = "",
   filters = {},
-  className
+  className,
 }) => {
   const theme = useTheme();
-  
-  // State
+
   const [selected, setSelected] = useState<number[]>([]);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [filterAnchorEl, setFilterAnchorEl] = useState<null | HTMLElement>(null);
+  const [filterAnchorEl, setFilterAnchorEl] = useState<null | HTMLElement>(
+    null
+  );
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [bulkStatusDialogOpen, setBulkStatusDialogOpen] = useState(false);
@@ -783,27 +823,25 @@ const AdminBookTable: React.FC<AdminBookTableProps> = ({
   const [notification, setNotification] = useState<{
     open: boolean;
     message: string;
-    severity: 'success' | 'error' | 'info' | 'warning';
+    severity: "success" | "error" | "info" | "warning";
   }>({
     open: false,
-    message: '',
-    severity: 'info'
+    message: "",
+    severity: "info",
   });
 
   // Handle selection
   const handleSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      setSelected(books.map(book => book.id));
+      setSelected(books.map((book) => book.id));
     } else {
       setSelected([]);
     }
   };
 
   const handleSelect = (id: number) => {
-    setSelected(prev =>
-      prev.includes(id)
-        ? prev.filter(item => item !== id)
-        : [...prev, id]
+    setSelected((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
     );
   };
 
@@ -833,13 +871,13 @@ const AdminBookTable: React.FC<AdminBookTableProps> = ({
   const handleFilterClear = () => {
     const cleared: BookFilters = {
       categoryId: undefined,
-      status: 'all',
+      status: "all",
       language: undefined,
-      format: 'all',
+      format: "all",
       minRating: undefined,
       maxRating: undefined,
       dateFrom: undefined,
-      dateTo: undefined
+      dateTo: undefined,
     };
     setLocalFilters(cleared);
     onFilter(cleared);
@@ -851,21 +889,23 @@ const AdminBookTable: React.FC<AdminBookTableProps> = ({
     setLocalSearch(event.target.value);
   };
 
-  const handleSearchKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
+  const handleSearchKeyDown = (
+    event: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (event.key === "Enter") {
       onSearch(localSearch);
     }
   };
 
   const handleClearSearch = () => {
-    setLocalSearch('');
-    onSearch('');
+    setLocalSearch("");
+    onSearch("");
   };
 
   // Handle sort
   const handleSort = (field: string) => {
     const direction =
-      sortField === field && sortDirection === 'asc' ? 'desc' : 'asc';
+      sortField === field && sortDirection === "asc" ? "desc" : "asc";
     onSort(field, direction);
   };
 
@@ -873,18 +913,18 @@ const AdminBookTable: React.FC<AdminBookTableProps> = ({
   const handleAdd = async (book: Partial<Book>) => {
     try {
       await onAdd(book);
-      showNotification('Book added successfully', 'success');
+      showNotification("Book added successfully", "success");
     } catch {
-      showNotification('Failed to add book', 'error');
+      showNotification("Failed to add book", "error");
     }
   };
 
   const handleEdit = async (id: number, book: Partial<Book>) => {
     try {
       await onEdit(id, book);
-      showNotification('Book updated successfully', 'success');
+      showNotification("Book updated successfully", "success");
     } catch {
-      showNotification('Failed to update book', 'error');
+      showNotification("Failed to update book", "error");
     }
   };
 
@@ -896,59 +936,62 @@ const AdminBookTable: React.FC<AdminBookTableProps> = ({
       } else if (editingBook) {
         await onDelete(editingBook.id);
       }
-      showNotification('Book(s) deleted successfully', 'success');
+      showNotification("Book(s) deleted successfully", "success");
       setDeleteDialogOpen(false);
       setEditingBook(null);
     } catch {
-      showNotification('Failed to delete book(s)', 'error');
+      showNotification("Failed to delete book(s)", "error");
     }
   };
 
-  const handleBulkStatusChange = async (status: Book['status']) => {
+  const handleBulkStatusChange = async (status: Book["status"]) => {
     try {
       await onBulkStatusChange(selected, status);
       setSelected([]);
-      showNotification(`Status updated to ${status}`, 'success');
+      showNotification(`Status updated to ${status}`, "success");
       setBulkStatusDialogOpen(false);
     } catch {
-      showNotification('Failed to update status', 'error');
+      showNotification("Failed to update status", "error");
     }
   };
 
-  const showNotification = (message: string, severity: 'success' | 'error' | 'info' | 'warning') => {
+  const showNotification = (
+    message: string,
+    severity: "success" | "error" | "info" | "warning"
+  ) => {
     setNotification({
       open: true,
       message,
-      severity
+      severity,
     });
   };
 
   // Get status color
-  const getStatusColor = (status: Book['status']) => {
+  const getStatusColor = (status: Book["status"]) => {
     switch (status) {
-      case 'published':
-        return 'success';
-      case 'draft':
-        return 'warning';
-      case 'archived':
-        return 'error';
-      case 'pending':
-        return 'info';
+      case "published":
+        return "success";
+      case "draft":
+        return "warning";
+      case "archived":
+        return "error";
+      case "pending":
+        return "info";
       default:
-        return 'default';
+        return "default";
     }
   };
 
   // Get status icon
-  const getStatusIcon = (status: Book['status']) => {
+  const getStatusIcon = (status: Book["status"]) => {
     switch (status) {
-      case 'published':
+      case "published":
         return <CheckCircleIcon />;
-      case 'draft':
+      case "draft":
         return <EditIcon />;
-      case 'archived':
+      case "archived":
         return <ArchiveIcon />;
-      case 'pending':
+      case "pending":
         return <WarningIcon />;
       default:
         return null;
@@ -956,10 +999,10 @@ const AdminBookTable: React.FC<AdminBookTableProps> = ({
   };
 
   // Convert number to string for Select components
-  const categoryValue = localFilters.categoryId?.toString() || '';
-  const statusValue = localFilters.status || 'all';
-  const languageValue = localFilters.language || '';
-  const formatValue = localFilters.format || 'all';
+  const categoryValue = localFilters.categoryId?.toString() || "";
+  const statusValue = localFilters.status || "all";
+  const languageValue = localFilters.language || "";
+  const formatValue = localFilters.format || "all";
 
   return (
     <Box className={className}>
@@ -969,7 +1012,8 @@ const AdminBookTable: React.FC<AdminBookTableProps> = ({
           Book Management
         </Typography>
         <Typography variant="body1" color="text.secondary">
-          Manage books, add new titles, edit existing ones, and track their status.
+          Manage books, add new titles, edit existing ones, and track their
+          status.
         </Typography>
       </Box>
 
@@ -998,8 +1042,8 @@ const AdminBookTable: React.FC<AdminBookTableProps> = ({
                         <ClearIcon />
                       </IconButton>
                     </InputAdornment>
-                  )
-                }
+                  ),
+                },
               }}
             />
           </Grid>
@@ -1011,10 +1055,14 @@ const AdminBookTable: React.FC<AdminBookTableProps> = ({
               variant="outlined"
               startIcon={<FilterIcon />}
               onClick={handleFilterOpen}
-              color={Object.keys(localFilters).some(key => {
-                const value = localFilters[key as keyof BookFilters];
-                return value !== undefined && value !== 'all';
-              }) ? 'primary' : 'inherit'}
+              color={
+                Object.keys(localFilters).some((key) => {
+                  const value = localFilters[key as keyof BookFilters];
+                  return value !== undefined && value !== "all";
+                })
+                  ? "primary"
+                  : "inherit"
+              }
             >
               Filter
             </Button>
@@ -1034,7 +1082,7 @@ const AdminBookTable: React.FC<AdminBookTableProps> = ({
 
           {/* Add Button */}
           <Grid size={{ xs: 12, md: 4 }}>
-            <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
+            <Box sx={{ display: "flex", gap: 1, justifyContent: "flex-end" }}>
               {selected.length > 0 && (
                 <>
                   <Button
@@ -1085,14 +1133,20 @@ const AdminBookTable: React.FC<AdminBookTableProps> = ({
             <Select
               value={categoryValue}
               label="Category"
-              onChange={(e: SelectChangeEvent) => setLocalFilters({
-                ...localFilters,
-                categoryId: e.target.value ? Number(e.target.value) : undefined
-              })}
+              onChange={(e: SelectChangeEvent) =>
+                setLocalFilters({
+                  ...localFilters,
+                  categoryId: e.target.value
+                    ? Number(e.target.value)
+                    : undefined,
+                })
+              }
             >
               <MenuItem value="">All Categories</MenuItem>
-              {categories.map(cat => (
-                <MenuItem key={cat.id} value={cat.id.toString()}>{cat.name}</MenuItem>
+              {categories.map((cat) => (
+                <MenuItem key={cat.id} value={cat.id.toString()}>
+                  {cat.name}
+                </MenuItem>
               ))}
             </Select>
           </FormControl>
@@ -1103,10 +1157,12 @@ const AdminBookTable: React.FC<AdminBookTableProps> = ({
             <Select
               value={statusValue}
               label="Status"
-              onChange={(e: SelectChangeEvent) => setLocalFilters({
-                ...localFilters,
-                status: e.target.value as Book['status'] | 'all'
-              })}
+              onChange={(e: SelectChangeEvent) =>
+                setLocalFilters({
+                  ...localFilters,
+                  status: e.target.value as Book["status"] | "all",
+                })
+              }
             >
               <MenuItem value="all">All Status</MenuItem>
               <MenuItem value="published">Published</MenuItem>
@@ -1122,10 +1178,12 @@ const AdminBookTable: React.FC<AdminBookTableProps> = ({
             <Select
               value={languageValue}
               label="Language"
-              onChange={(e: SelectChangeEvent) => setLocalFilters({
-                ...localFilters,
-                language: e.target.value || undefined
-              })}
+              onChange={(e: SelectChangeEvent) =>
+                setLocalFilters({
+                  ...localFilters,
+                  language: e.target.value || undefined,
+                })
+              }
             >
               <MenuItem value="">All Languages</MenuItem>
               <MenuItem value="English">English</MenuItem>
@@ -1141,10 +1199,12 @@ const AdminBookTable: React.FC<AdminBookTableProps> = ({
             <Select
               value={formatValue}
               label="Format"
-              onChange={(e: SelectChangeEvent) => setLocalFilters({
-                ...localFilters,
-                format: e.target.value as Book['format'] | 'all'
-              })}
+              onChange={(e: SelectChangeEvent) =>
+                setLocalFilters({
+                  ...localFilters,
+                  format: e.target.value as Book["format"] | "all",
+                })
+              }
             >
               <MenuItem value="all">All Formats</MenuItem>
               <MenuItem value="paperback">Paperback</MenuItem>
@@ -1159,27 +1219,35 @@ const AdminBookTable: React.FC<AdminBookTableProps> = ({
             <Typography variant="caption" color="text.secondary" gutterBottom>
               Rating Range
             </Typography>
-            <Box sx={{ display: 'flex', gap: 1 }}>
+            <Box sx={{ display: "flex", gap: 1 }}>
               <TextField
                 size="small"
                 label="Min"
                 type="number"
-                value={localFilters.minRating || ''}
-                onChange={(e) => setLocalFilters({
-                  ...localFilters,
-                  minRating: e.target.value ? Number(e.target.value) : undefined
-                })}
+                value={localFilters.minRating || ""}
+                onChange={(e) =>
+                  setLocalFilters({
+                    ...localFilters,
+                    minRating: e.target.value
+                      ? Number(e.target.value)
+                      : undefined,
+                  })
+                }
                 inputProps={{ min: 0, max: 5, step: 0.5 }}
               />
               <TextField
                 size="small"
                 label="Max"
                 type="number"
-                value={localFilters.maxRating || ''}
-                onChange={(e) => setLocalFilters({
-                  ...localFilters,
-                  maxRating: e.target.value ? Number(e.target.value) : undefined
-                })}
+                value={localFilters.maxRating || ""}
+                onChange={(e) =>
+                  setLocalFilters({
+                    ...localFilters,
+                    maxRating: e.target.value
+                      ? Number(e.target.value)
+                      : undefined,
+                  })
+                }
                 inputProps={{ min: 0, max: 5, step: 0.5 }}
               />
             </Box>
@@ -1190,38 +1258,46 @@ const AdminBookTable: React.FC<AdminBookTableProps> = ({
             <Typography variant="caption" color="text.secondary" gutterBottom>
               Date Range
             </Typography>
-            <Box sx={{ display: 'flex', gap: 1 }}>
+            <Box sx={{ display: "flex", gap: 1 }}>
               <TextField
                 size="small"
                 label="From"
                 type="date"
-                value={localFilters.dateFrom || ''}
-                onChange={(e) => setLocalFilters({
-                  ...localFilters,
-                  dateFrom: e.target.value || undefined
-                })}
+                value={localFilters.dateFrom || ""}
+                onChange={(e) =>
+                  setLocalFilters({
+                    ...localFilters,
+                    dateFrom: e.target.value || undefined,
+                  })
+                }
                 slotProps={{ inputLabel: { shrink: true } }}
               />
               <TextField
                 size="small"
                 label="To"
                 type="date"
-                value={localFilters.dateTo || ''}
-                onChange={(e) => setLocalFilters({
-                  ...localFilters,
-                  dateTo: e.target.value || undefined
-                })}
+                value={localFilters.dateTo || ""}
+                onChange={(e) =>
+                  setLocalFilters({
+                    ...localFilters,
+                    dateTo: e.target.value || undefined,
+                  })
+                }
                 slotProps={{ inputLabel: { shrink: true } }}
               />
             </Box>
           </Box>
 
           {/* Filter Actions */}
-          <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
+          <Box sx={{ display: "flex", gap: 1, justifyContent: "flex-end" }}>
             <Button size="small" onClick={handleFilterClear}>
               Clear
             </Button>
-            <Button size="small" variant="contained" onClick={handleFilterApply}>
+            <Button
+              size="small"
+              variant="contained"
+              onClick={handleFilterApply}
+            >
               Apply
             </Button>
           </Box>
@@ -1234,19 +1310,34 @@ const AdminBookTable: React.FC<AdminBookTableProps> = ({
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
       >
-        <MenuItem onClick={() => { onExport('csv'); handleMenuClose(); }}>
+        <MenuItem
+          onClick={() => {
+            onExport("csv");
+            handleMenuClose();
+          }}
+        >
           <ListItemIcon>
             <DownloadIcon fontSize="small" />
           </ListItemIcon>
           <ListItemText>Export as CSV</ListItemText>
         </MenuItem>
-        <MenuItem onClick={() => { onExport('pdf'); handleMenuClose(); }}>
+        <MenuItem
+          onClick={() => {
+            onExport("pdf");
+            handleMenuClose();
+          }}
+        >
           <ListItemIcon>
             <DownloadIcon fontSize="small" />
           </ListItemIcon>
           <ListItemText>Export as PDF</ListItemText>
         </MenuItem>
-        <MenuItem onClick={() => { onExport('excel'); handleMenuClose(); }}>
+        <MenuItem
+          onClick={() => {
+            onExport("excel");
+            handleMenuClose();
+          }}
+        >
           <ListItemIcon>
             <DownloadIcon fontSize="small" />
           </ListItemIcon>
@@ -1256,9 +1347,13 @@ const AdminBookTable: React.FC<AdminBookTableProps> = ({
 
       {/* Loading State */}
       {loading && (
-        <Box sx={{ width: '100%', mb: 2 }}>
+        <Box sx={{ width: "100%", mb: 2 }}>
           <LinearProgress />
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 1, textAlign: 'center' }}>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ mt: 1, textAlign: "center" }}
+          >
             Loading books...
           </Typography>
         </Box>
@@ -1278,7 +1373,9 @@ const AdminBookTable: React.FC<AdminBookTableProps> = ({
             <TableRow>
               <TableCell padding="checkbox">
                 <Checkbox
-                  indeterminate={selected.length > 0 && selected.length < books.length}
+                  indeterminate={
+                    selected.length > 0 && selected.length < books.length
+                  }
                   checked={books.length > 0 && selected.length === books.length}
                   onChange={handleSelectAll}
                 />
@@ -1286,9 +1383,9 @@ const AdminBookTable: React.FC<AdminBookTableProps> = ({
               <TableCell>Cover</TableCell>
               <TableCell>
                 <TableSortLabel
-                  active={sortField === 'title'}
-                  direction={sortField === 'title' ? sortDirection : 'asc'}
-                  onClick={() => handleSort('title')}
+                  active={sortField === "title"}
+                  direction={sortField === "title" ? sortDirection : "asc"}
+                  onClick={() => handleSort("title")}
                 >
                   Title
                 </TableSortLabel>
@@ -1297,18 +1394,22 @@ const AdminBookTable: React.FC<AdminBookTableProps> = ({
               <TableCell>Category</TableCell>
               <TableCell>
                 <TableSortLabel
-                  active={sortField === 'averageRating'}
-                  direction={sortField === 'averageRating' ? sortDirection : 'asc'}
-                  onClick={() => handleSort('averageRating')}
+                  active={sortField === "averageRating"}
+                  direction={
+                    sortField === "averageRating" ? sortDirection : "asc"
+                  }
+                  onClick={() => handleSort("averageRating")}
                 >
                   Rating
                 </TableSortLabel>
               </TableCell>
               <TableCell>
                 <TableSortLabel
-                  active={sortField === 'reviewsCount'}
-                  direction={sortField === 'reviewsCount' ? sortDirection : 'asc'}
-                  onClick={() => handleSort('reviewsCount')}
+                  active={sortField === "reviewsCount"}
+                  direction={
+                    sortField === "reviewsCount" ? sortDirection : "asc"
+                  }
+                  onClick={() => handleSort("reviewsCount")}
                 >
                   Reviews
                 </TableSortLabel>
@@ -1317,9 +1418,9 @@ const AdminBookTable: React.FC<AdminBookTableProps> = ({
               <TableCell>Format</TableCell>
               <TableCell>
                 <TableSortLabel
-                  active={sortField === 'createdAt'}
-                  direction={sortField === 'createdAt' ? sortDirection : 'asc'}
-                  onClick={() => handleSort('createdAt')}
+                  active={sortField === "createdAt"}
+                  direction={sortField === "createdAt" ? sortDirection : "asc"}
+                  onClick={() => handleSort("createdAt")}
                 >
                   Added
                 </TableSortLabel>
@@ -1330,16 +1431,16 @@ const AdminBookTable: React.FC<AdminBookTableProps> = ({
           <TableBody>
             {books.map((book) => {
               const isSelected = selected.includes(book.id);
-              
+
               return (
                 <TableRow
                   key={book.id}
                   hover
                   selected={isSelected}
                   sx={{
-                    '&:hover': {
-                      backgroundColor: alpha(theme.palette.primary.main, 0.04)
-                    }
+                    "&:hover": {
+                      backgroundColor: alpha(theme.palette.primary.main, 0.04),
+                    },
                   }}
                 >
                   <TableCell padding="checkbox">
@@ -1368,7 +1469,9 @@ const AdminBookTable: React.FC<AdminBookTableProps> = ({
                     )}
                   </TableCell>
                   <TableCell>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                    <Box
+                      sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
+                    >
                       <PersonIcon fontSize="small" color="action" />
                       {book.author}
                     </Box>
@@ -1381,15 +1484,26 @@ const AdminBookTable: React.FC<AdminBookTableProps> = ({
                     />
                   </TableCell>
                   <TableCell>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                      <Rating value={book.averageRating} precision={0.1} readOnly size="small" />
+                    <Box
+                      sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
+                    >
+                      <Rating
+                        value={book.averageRating}
+                        precision={0.1}
+                        readOnly
+                        size="small"
+                      />
                       <Typography variant="caption">
                         ({book.averageRating.toFixed(1)})
                       </Typography>
                     </Box>
                   </TableCell>
                   <TableCell align="center">
-                    <Badge badgeContent={book.reviewsCount} color="primary" max={999}>
+                    <Badge
+                      badgeContent={book.reviewsCount}
+                      color="primary"
+                      max={999}
+                    >
                       <Typography variant="body2">
                         {book.reviewsCount}
                       </Typography>
@@ -1404,17 +1518,15 @@ const AdminBookTable: React.FC<AdminBookTableProps> = ({
                     />
                   </TableCell>
                   <TableCell>
-                    <Chip
-                      size="small"
-                      label={book.format}
-                      variant="outlined"
-                    />
+                    <Chip size="small" label={book.format} variant="outlined" />
                   </TableCell>
                   <TableCell>
-                    <Tooltip title={format(new Date(book.createdAt), 'PPpp')}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                    <Tooltip title={format(new Date(book.createdAt), "PPpp")}>
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
+                      >
                         <CalendarIcon fontSize="small" color="action" />
-                        {format(new Date(book.createdAt), 'MMM dd, yyyy')}
+                        {format(new Date(book.createdAt), "MMM dd, yyyy")}
                       </Box>
                     </Tooltip>
                   </TableCell>
@@ -1442,7 +1554,7 @@ const AdminBookTable: React.FC<AdminBookTableProps> = ({
                 </TableRow>
               );
             })}
-            
+
             {books.length === 0 && !loading && (
               <TableRow>
                 <TableCell colSpan={11} align="center" sx={{ py: 3 }}>
@@ -1474,9 +1586,8 @@ const AdminBookTable: React.FC<AdminBookTableProps> = ({
           setDialogOpen(false);
           setEditingBook(null);
         }}
-        onSave={editingBook 
-          ? (data) => handleEdit(editingBook.id, data)
-          : handleAdd
+        onSave={
+          editingBook ? (data) => handleEdit(editingBook.id, data) : handleAdd
         }
         book={editingBook}
         categories={categories}
@@ -1509,10 +1620,10 @@ const AdminBookTable: React.FC<AdminBookTableProps> = ({
         <Fab
           color="primary"
           sx={{
-            position: 'fixed',
+            position: "fixed",
             bottom: 16,
             right: 16,
-            display: { xs: 'flex', md: 'none' }
+            display: { xs: "flex", md: "none" },
           }}
           onClick={() => {
             setEditingBook(null);
@@ -1528,7 +1639,7 @@ const AdminBookTable: React.FC<AdminBookTableProps> = ({
         open={notification.open}
         autoHideDuration={4000}
         onClose={() => setNotification({ ...notification, open: false })}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
       >
         <Alert
           onClose={() => setNotification({ ...notification, open: false })}

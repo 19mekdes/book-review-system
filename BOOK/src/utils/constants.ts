@@ -2,7 +2,8 @@
 // Application Constants
 // ============================================
 
-import process from "process";
+// ❌ Remove this line:
+// import process from "process";
 
 export const APP_NAME = 'Book Review System';
 export const APP_VERSION = '1.0.0';
@@ -15,7 +16,8 @@ export const WEBSITE_URL = 'https://bookreview.com';
 // API Configuration
 // ============================================
 
-export const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
+// ✅ Use import.meta.env instead of process.env
+export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 export const API_TIMEOUT = 30000; // 30 seconds
 export const API_RETRY_COUNT = 3;
 export const API_RETRY_DELAY = 1000; // 1 second
@@ -451,7 +453,7 @@ export const FONT_SIZES = {
 export const STORAGE_KEYS = {
   THEME: 'theme',
   VIEW_MODE: 'viewMode',
-  AUTH_TOKEN: 'authToken',
+  AUTH_TOKEN: 'token',
   REFRESH_TOKEN: 'refreshToken',
   USER: 'user',
   SETTINGS: 'settings',

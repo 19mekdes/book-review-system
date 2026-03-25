@@ -390,7 +390,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
                   <Chip
                     size="small"
                     label={review.status}
-                    color={getStatusColor(review.status) as unknown}
+                    color={getStatusColor(review.status) as 'success' | 'error' | 'warning' | 'info' | 'default'}
                   />
                   <IconButton size="small" onClick={(e) => {
                     e.stopPropagation();
@@ -600,24 +600,23 @@ const MyReviewsPage: React.FC = () => {
       await new Promise(resolve => setTimeout(resolve, 1500));
 
       // Mock reviews data
-      const mockReviews: Review[] = Array.from({ length: 25 }).map((_, i) => ({
-        id: i + 1,
-        bookId: i + 1,
-        bookTitle: `Book Title ${i + 1}`,
-        bookAuthor: `Author ${Math.floor(Math.random() * 10) + 1}`,
-        bookCover: undefined,
-        bookCategory: ['Fiction', 'Non-Fiction', 'Sci-Fi', 'Mystery'][Math.floor(Math.random() * 4)],
-        rating: Math.floor(Math.random() * 5) + 1,
-        title: i % 3 === 0 ? `Review Title ${i + 1}` : undefined,
-        content: `This is a sample review content for book ${i + 1}. It contains my thoughts about the plot, characters, and writing style.`,
-        helpful: Math.floor(Math.random() * 50),
-        notHelpful: Math.floor(Math.random() * 10),
-        comments: Math.floor(Math.random() * 20),
-        createdAt: subDays(new Date(), Math.floor(Math.random() * 90)).toISOString(),
-        updatedAt: subDays(new Date(), Math.floor(Math.random() * 30)).toISOString(),
-        status: ['published', 'published', 'published', 'draft', 'flagged'][Math.floor(Math.random() * 5)] as unknown
-      }));
-
+const mockReviews: Review[] = Array.from({ length: 25 }).map((_, i) => ({
+  id: i + 1,
+  bookId: i + 1,
+  bookTitle: `Book Title ${i + 1}`,
+  bookAuthor: `Author ${Math.floor(Math.random() * 10) + 1}`,
+  bookCover: undefined,
+  bookCategory: ['Fiction', 'Non-Fiction', 'Sci-Fi', 'Mystery'][Math.floor(Math.random() * 4)],
+  rating: Math.floor(Math.random() * 5) + 1,
+  title: i % 3 === 0 ? `Review Title ${i + 1}` : undefined,
+  content: `This is a sample review content for book ${i + 1}. It contains my thoughts about the plot, characters, and writing style.`,
+  helpful: Math.floor(Math.random() * 50),
+  notHelpful: Math.floor(Math.random() * 10),
+  comments: Math.floor(Math.random() * 20),
+  createdAt: subDays(new Date(), Math.floor(Math.random() * 90)).toISOString(),
+  updatedAt: subDays(new Date(), Math.floor(Math.random() * 30)).toISOString(),
+  status: (['published', 'published', 'published', 'draft', 'flagged'][Math.floor(Math.random() * 5)]) as 'published' | 'draft' | 'flagged'
+}));
       // Calculate stats
       const totalReviews = mockReviews.length;
       const averageRating = mockReviews.reduce((acc, r) => acc + r.rating, 0) / totalReviews;

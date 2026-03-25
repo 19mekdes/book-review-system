@@ -1,4 +1,5 @@
 export interface Book {
+  coverImage: any;
   id: number;
   title: string;
   author: string;

@@ -1,5 +1,5 @@
 // C:\Users\PC_1\OneDrive\Desktop\Book Review\BOOK\src\hooks\useRole.ts
-import { useAuth } from './useAuth';
+import { useAuth } from '../context/AuthContext';
 
 export type UserRole = 'admin' | 'user' | 'moderator';
 

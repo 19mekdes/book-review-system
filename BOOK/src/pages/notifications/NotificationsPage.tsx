@@ -19,9 +19,7 @@ import {
   Badge,
   useTheme,
   alpha,
-  CircularProgress,
-  Alert
-} from '@mui/material';
+  CircularProgress} from '@mui/material';
 import {
   Favorite as FavoriteIcon,
   Comment as CommentIcon,
@@ -74,9 +72,10 @@ const NotificationsPage: React.FC = () => {
 
   useEffect(() => {
     fetchNotifications();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
   };
 
@@ -105,6 +104,7 @@ const NotificationsPage: React.FC = () => {
     }
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleNotificationClick = (notification: any) => {
     if (!notification.read) {
       markAsRead(notification.id);
@@ -186,10 +186,7 @@ const NotificationsPage: React.FC = () => {
             <List>
               {filteredNotifications.map((notification, index) => (
                 <React.Fragment key={notification.id}>
-                  <ListItem
-                    button
-                    onClick={() => handleNotificationClick(notification)}
-                    sx={{
+                  <ListItem onClick={() => handleNotificationClick(notification)} sx={{
                       bgcolor: notification.read ? 'transparent' : alpha(theme.palette.primary.main, 0.04),
                       borderRadius: 1,
                       mb: 0.5,
@@ -288,10 +285,7 @@ const NotificationsPage: React.FC = () => {
             <List>
               {filteredNotifications.map((notification, index) => (
                 <React.Fragment key={notification.id}>
-                  <ListItem
-                    button
-                    onClick={() => handleNotificationClick(notification)}
-                    sx={{
+                  <ListItem onClick={() => handleNotificationClick(notification)} sx={{
                       bgcolor: alpha(theme.palette.primary.main, 0.04),
                       borderRadius: 1,
                       mb: 0.5

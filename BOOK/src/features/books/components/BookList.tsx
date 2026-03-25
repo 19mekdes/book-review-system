@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Box,
-  Container,
   Grid,
   Paper,
   Typography,
@@ -10,7 +9,6 @@ import {
   IconButton,
   Button,
   FormControl,
-  InputLabel,
   Select,
   MenuItem,
   Chip,
@@ -23,14 +21,11 @@ import {
   useMediaQuery,
   Badge,
   Tooltip,
-  Slider,
   Rating,
-  Divider,
-  Collapse,
   Fade,
   Zoom,
-  Fab
-} from '@mui/material';
+  Fab,
+} from "@mui/material";
 import {
   Search as SearchIcon,
   Clear as ClearIcon,
@@ -41,11 +36,6 @@ import {
   ViewCompact as ViewCompactIcon,
   Close as CloseIcon,
   Refresh as RefreshIcon,
-  Bookmark as BookmarkIcon,
-  BookmarkBorder as BookmarkBorderIcon,
-  Favorite as FavoriteIcon,
-  FavoriteBorder as FavoriteBorderIcon,
-  Category as CategoryIcon,
   Person as PersonIcon,
   Star as StarIcon,
   StarBorder as StarBorderIcon,
@@ -54,12 +44,10 @@ import {
   SortByAlpha as SortByAlphaIcon,
   DateRange as DateRangeIcon,
   TrendingUp as TrendingUpIcon,
-  TrendingDown as TrendingDownIcon
-} from '@mui/icons-material';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { debounce } from 'lodash';
-import BookCard from './BookCard';
-import { Book } from '../../../types/book.types';
+} from "@mui/icons-material";
+import { debounce } from "lodash";
+import BookCard from "./BookCard";
+import { Book } from "../../../types/book.types";
 
 // ============================================
 // Types
@@ -71,8 +59,15 @@ export interface BookFilters {
   author?: string;
   minRating?: number;
   maxRating?: number;
-  sortBy?: 'title' | 'author' | 'rating' | 'reviews' | 'createdAt' | 'price' | 'popularity';
-  sortOrder?: 'asc' | 'desc';
+  sortBy?:
+    | "title"
+    | "author"
+    | "rating"
+    | "reviews"
+    | "createdAt"
+    | "price"
+    | "popularity";
+  sortOrder?: "asc" | "desc";
   page?: number;
   limit?: number;
   minPrice?: number;
@@ -112,7 +107,7 @@ export interface BookListProps {
   showSort?: boolean;
   showSearch?: boolean;
   showPagination?: boolean;
-  defaultView?: 'grid' | 'list' | 'compact';
+  defaultView?: "grid" | "list" | "compact";
   pageSize?: number;
   className?: string;
   bookmarkedIds?: number[];
@@ -141,17 +136,17 @@ const FilterDrawer: React.FC<FilterDrawerProps> = ({
   filters,
   categories,
   onApplyFilters,
-  onClearFilters
+  onClearFilters,
 }) => {
-  const theme = useTheme();
   const [localFilters, setLocalFilters] = useState<BookFilters>(filters);
 
   useEffect(() => {
     setLocalFilters(filters);
   }, [filters]);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleChange = (key: keyof BookFilters, value: any) => {
-    setLocalFilters(prev => ({ ...prev, [key]: value }));
+    setLocalFilters((prev) => ({ ...prev, [key]: value }));
   };
 
   const handleApply = () => {
@@ -160,15 +155,23 @@ const FilterDrawer: React.FC<FilterDrawerProps> = ({
   };
 
   const formatOptions = [
-    { value: 'paperback', label: 'Paperback' },
-    { value: 'hardcover', label: 'Hardcover' },
-    { value: 'ebook', label: 'E-Book' },
-    { value: 'audiobook', label: 'Audiobook' }
+    { value: "paperback", label: "Paperback" },
+    { value: "hardcover", label: "Hardcover" },
+    { value: "ebook", label: "E-Book" },
+    { value: "audiobook", label: "Audiobook" },
   ];
 
   const languageOptions = [
-    'English', 'Spanish', 'French', 'German', 'Italian',
-    'Portuguese', 'Russian', 'Chinese', 'Japanese', 'Korean'
+    "English",
+    "Spanish",
+    "French",
+    "German",
+    "Italian",
+    "Portuguese",
+    "Russian",
+    "Chinese",
+    "Japanese",
+    "Korean",
   ];
 
   return (
@@ -178,12 +181,19 @@ const FilterDrawer: React.FC<FilterDrawerProps> = ({
       onClose={onClose}
       PaperProps={{
         sx: {
-          width: { xs: '100%', sm: 400 },
-          p: 3
-        }
+          width: { xs: "100%", sm: 400 },
+          p: 3,
+        },
       }}
     >
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 3,
+        }}
+      >
         <Typography variant="h6" fontWeight={600}>
           Filters
         </Typography>
@@ -200,14 +210,16 @@ const FilterDrawer: React.FC<FilterDrawerProps> = ({
           </Typography>
           <FormControl fullWidth size="small">
             <Select
-              value={localFilters.categoryId || ''}
-              onChange={(e) => handleChange('categoryId', e.target.value || undefined)}
+              value={localFilters.categoryId || ""}
+              onChange={(e) =>
+                handleChange("categoryId", e.target.value || undefined)
+              }
               displayEmpty
             >
               <MenuItem value="">All Categories</MenuItem>
               {categories.map((cat) => (
                 <MenuItem key={cat.id} value={cat.id}>
-                  {cat.name} {cat.count ? `(${cat.count})` : ''}
+                  {cat.name} {cat.count ? `(${cat.count})` : ""}
                 </MenuItem>
               ))}
             </Select>
@@ -219,14 +231,19 @@ const FilterDrawer: React.FC<FilterDrawerProps> = ({
           <Typography variant="subtitle2" gutterBottom>
             Minimum Rating
           </Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
             <Rating
               value={localFilters.minRating || 0}
-              onChange={(_, value) => handleChange('minRating', value || undefined)}
+              onChange={(_, value) =>
+                handleChange("minRating", value || undefined)
+              }
               precision={0.5}
             />
             {localFilters.minRating && (
-              <IconButton size="small" onClick={() => handleChange('minRating', undefined)}>
+              <IconButton
+                size="small"
+                onClick={() => handleChange("minRating", undefined)}
+              >
                 <ClearIcon />
               </IconButton>
             )}
@@ -238,22 +255,40 @@ const FilterDrawer: React.FC<FilterDrawerProps> = ({
           <Typography variant="subtitle2" gutterBottom>
             Price Range
           </Typography>
-          <Box sx={{ display: 'flex', gap: 1 }}>
+          <Box sx={{ display: "flex", gap: 1 }}>
             <TextField
               size="small"
               label="Min"
               type="number"
-              value={localFilters.minPrice || ''}
-              onChange={(e) => handleChange('minPrice', e.target.value ? Number(e.target.value) : undefined)}
-              InputProps={{ startAdornment: <InputAdornment position="start">$</InputAdornment> }}
+              value={localFilters.minPrice || ""}
+              onChange={(e) =>
+                handleChange(
+                  "minPrice",
+                  e.target.value ? Number(e.target.value) : undefined
+                )
+              }
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">$</InputAdornment>
+                ),
+              }}
             />
             <TextField
               size="small"
               label="Max"
               type="number"
-              value={localFilters.maxPrice || ''}
-              onChange={(e) => handleChange('maxPrice', e.target.value ? Number(e.target.value) : undefined)}
-              InputProps={{ startAdornment: <InputAdornment position="start">$</InputAdornment> }}
+              value={localFilters.maxPrice || ""}
+              onChange={(e) =>
+                handleChange(
+                  "maxPrice",
+                  e.target.value ? Number(e.target.value) : undefined
+                )
+              }
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">$</InputAdornment>
+                ),
+              }}
             />
           </Box>
         </Box>
@@ -263,22 +298,36 @@ const FilterDrawer: React.FC<FilterDrawerProps> = ({
           <Typography variant="subtitle2" gutterBottom>
             Publication Year
           </Typography>
-          <Box sx={{ display: 'flex', gap: 1 }}>
+          <Box sx={{ display: "flex", gap: 1 }}>
             <TextField
               size="small"
               label="From"
               type="number"
-              value={localFilters.yearFrom || ''}
-              onChange={(e) => handleChange('yearFrom', e.target.value ? Number(e.target.value) : undefined)}
-              InputProps={{ inputProps: { min: 1000, max: new Date().getFullYear() } }}
+              value={localFilters.yearFrom || ""}
+              onChange={(e) =>
+                handleChange(
+                  "yearFrom",
+                  e.target.value ? Number(e.target.value) : undefined
+                )
+              }
+              InputProps={{
+                inputProps: { min: 1000, max: new Date().getFullYear() },
+              }}
             />
             <TextField
               size="small"
               label="To"
               type="number"
-              value={localFilters.yearTo || ''}
-              onChange={(e) => handleChange('yearTo', e.target.value ? Number(e.target.value) : undefined)}
-              InputProps={{ inputProps: { min: 1000, max: new Date().getFullYear() } }}
+              value={localFilters.yearTo || ""}
+              onChange={(e) =>
+                handleChange(
+                  "yearTo",
+                  e.target.value ? Number(e.target.value) : undefined
+                )
+              }
+              InputProps={{
+                inputProps: { min: 1000, max: new Date().getFullYear() },
+              }}
             />
           </Box>
         </Box>
@@ -288,7 +337,7 @@ const FilterDrawer: React.FC<FilterDrawerProps> = ({
           <Typography variant="subtitle2" gutterBottom>
             Format
           </Typography>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
             {formatOptions.map((format) => (
               <Chip
                 key={format.value}
@@ -296,12 +345,20 @@ const FilterDrawer: React.FC<FilterDrawerProps> = ({
                 onClick={() => {
                   const current = localFilters.format || [];
                   const updated = current.includes(format.value)
-                    ? current.filter(f => f !== format.value)
+                    ? current.filter((f) => f !== format.value)
                     : [...current, format.value];
-                  handleChange('format', updated);
+                  handleChange("format", updated);
                 }}
-                color={localFilters.format?.includes(format.value) ? 'primary' : 'default'}
-                variant={localFilters.format?.includes(format.value) ? 'filled' : 'outlined'}
+                color={
+                  localFilters.format?.includes(format.value)
+                    ? "primary"
+                    : "default"
+                }
+                variant={
+                  localFilters.format?.includes(format.value)
+                    ? "filled"
+                    : "outlined"
+                }
                 size="small"
               />
             ))}
@@ -317,9 +374,9 @@ const FilterDrawer: React.FC<FilterDrawerProps> = ({
             <Select
               multiple
               value={localFilters.language || []}
-              onChange={(e) => handleChange('language', e.target.value)}
+              onChange={(e) => handleChange("language", e.target.value)}
               renderValue={(selected) => (
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
                   {(selected as string[]).map((value) => (
                     <Chip key={value} label={value} size="small" />
                   ))}
@@ -340,20 +397,24 @@ const FilterDrawer: React.FC<FilterDrawerProps> = ({
           <Typography variant="subtitle2" gutterBottom>
             Status
           </Typography>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-            {['published', 'draft', 'archived'].map((status) => (
+          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+            {["published", "draft", "archived"].map((status) => (
               <Chip
                 key={status}
                 label={status}
                 onClick={() => {
                   const current = localFilters.status || [];
                   const updated = current.includes(status)
-                    ? current.filter(s => s !== status)
+                    ? current.filter((s) => s !== status)
                     : [...current, status];
-                  handleChange('status', updated);
+                  handleChange("status", updated);
                 }}
-                color={localFilters.status?.includes(status) ? 'primary' : 'default'}
-                variant={localFilters.status?.includes(status) ? 'filled' : 'outlined'}
+                color={
+                  localFilters.status?.includes(status) ? "primary" : "default"
+                }
+                variant={
+                  localFilters.status?.includes(status) ? "filled" : "outlined"
+                }
                 size="small"
               />
             ))}
@@ -366,7 +427,7 @@ const FilterDrawer: React.FC<FilterDrawerProps> = ({
             control={
               <Switch
                 checked={localFilters.featured || false}
-                onChange={(e) => handleChange('featured', e.target.checked)}
+                onChange={(e) => handleChange("featured", e.target.checked)}
               />
             }
             label="Show featured only"
@@ -374,19 +435,11 @@ const FilterDrawer: React.FC<FilterDrawerProps> = ({
         </Box>
 
         {/* Action Buttons */}
-        <Box sx={{ display: 'flex', gap: 1, mt: 2 }}>
-          <Button
-            fullWidth
-            variant="outlined"
-            onClick={onClearFilters}
-          >
+        <Box sx={{ display: "flex", gap: 1, mt: 2 }}>
+          <Button fullWidth variant="outlined" onClick={onClearFilters}>
             Clear All
           </Button>
-          <Button
-            fullWidth
-            variant="contained"
-            onClick={handleApply}
-          >
+          <Button fullWidth variant="contained" onClick={handleApply}>
             Apply Filters
           </Button>
         </Box>
@@ -400,12 +453,19 @@ const FilterDrawer: React.FC<FilterDrawerProps> = ({
 // ============================================
 
 interface SortMenuProps {
-  sortBy: BookFilters['sortBy'];
-  sortOrder: BookFilters['sortOrder'];
-  onSortChange: (sortBy: BookFilters['sortBy'], sortOrder: BookFilters['sortOrder']) => void;
+  sortBy: BookFilters["sortBy"];
+  sortOrder: BookFilters["sortOrder"];
+  onSortChange: (
+    sortBy: BookFilters["sortBy"],
+    sortOrder: BookFilters["sortOrder"]
+  ) => void;
 }
 
-const SortMenu: React.FC<SortMenuProps> = ({ sortBy, sortOrder, onSortChange }) => {
+const SortMenu: React.FC<SortMenuProps> = ({
+  sortBy,
+  sortOrder,
+  onSortChange,
+}) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -416,56 +476,53 @@ const SortMenu: React.FC<SortMenuProps> = ({ sortBy, sortOrder, onSortChange }) 
     setAnchorEl(null);
   };
 
-  const handleSort = (newSortBy: BookFilters['sortBy']) => {
-    const newSortOrder = sortBy === newSortBy && sortOrder === 'asc' ? 'desc' : 'asc';
+  const handleSort = (newSortBy: BookFilters["sortBy"]) => {
+    const newSortOrder =
+      sortBy === newSortBy && sortOrder === "asc" ? "desc" : "asc";
     onSortChange(newSortBy, newSortOrder);
     handleClose();
   };
 
-  const sortOptions: Array<{ value: BookFilters['sortBy']; label: string; icon: React.ReactNode }> = [
-    { value: 'title', label: 'Title', icon: <SortByAlphaIcon /> },
-    { value: 'author', label: 'Author', icon: <PersonIcon /> },
-    { value: 'rating', label: 'Rating', icon: <StarIcon /> },
-    { value: 'reviews', label: 'Reviews', icon: <StarBorderIcon /> },
-    { value: 'createdAt', label: 'Date Added', icon: <DateRangeIcon /> },
-    { value: 'price', label: 'Price', icon: <DateRangeIcon /> },
-    { value: 'popularity', label: 'Popularity', icon: <TrendingUpIcon /> }
+  const sortOptions: Array<{
+    value: BookFilters["sortBy"];
+    label: string;
+    icon: React.ReactNode;
+  }> = [
+    { value: "title", label: "Title", icon: <SortByAlphaIcon /> },
+    { value: "author", label: "Author", icon: <PersonIcon /> },
+    { value: "rating", label: "Rating", icon: <StarIcon /> },
+    { value: "reviews", label: "Reviews", icon: <StarBorderIcon /> },
+    { value: "createdAt", label: "Date Added", icon: <DateRangeIcon /> },
+    { value: "price", label: "Price", icon: <DateRangeIcon /> },
+    { value: "popularity", label: "Popularity", icon: <TrendingUpIcon /> },
   ];
 
   return (
     <>
       <Tooltip title="Sort">
         <IconButton onClick={handleClick}>
-          <Badge
-            color="primary"
-            variant="dot"
-            invisible={!sortBy}
-          >
+          <Badge color="primary" variant="dot" invisible={!sortBy}>
             <SortIcon />
           </Badge>
         </IconButton>
       </Tooltip>
 
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleClose}
-      >
+      <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
         {sortOptions.map((option) => (
           <MenuItem
             key={option.value}
             onClick={() => handleSort(option.value)}
             selected={sortBy === option.value}
           >
-            <ListItemIcon>
-              {option.icon}
-            </ListItemIcon>
-            <ListItemText>
-              {option.label}
-            </ListItemText>
+            <ListItemIcon>{option.icon}</ListItemIcon>
+            <ListItemText>{option.label}</ListItemText>
             {sortBy === option.value && (
-              <ListItemIcon sx={{ minWidth: 'auto', ml: 1 }}>
-                {sortOrder === 'asc' ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />}
+              <ListItemIcon sx={{ minWidth: "auto", ml: 1 }}>
+                {sortOrder === "asc" ? (
+                  <ArrowUpwardIcon />
+                ) : (
+                  <ArrowDownwardIcon />
+                )}
               </ListItemIcon>
             )}
           </MenuItem>
@@ -479,12 +536,15 @@ const SortMenu: React.FC<SortMenuProps> = ({ sortBy, sortOrder, onSortChange }) 
 // Skeleton Loader
 // ============================================
 
-const BookListSkeleton: React.FC<{ viewMode: string; count?: number }> = ({ viewMode, count = 6 }) => {
-  if (viewMode === 'grid') {
+const BookListSkeleton: React.FC<{ viewMode: string; count?: number }> = ({
+  viewMode,
+  count = 6,
+}) => {
+  if (viewMode === "grid") {
     return (
       <Grid container spacing={3}>
         {Array.from({ length: count }).map((_, index) => (
-          <Grid size={{ xs: 12 }} size={{ sm: 6 }} size={{ md: 4 }} key={index}>
+          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={index}>
             <Skeleton variant="rounded" height={300} />
             <Skeleton variant="text" sx={{ mt: 1 }} />
             <Skeleton variant="text" width="60%" />
@@ -525,27 +585,28 @@ const BookList: React.FC<BookListProps> = ({
   showSort = true,
   showSearch = true,
   showPagination = true,
-  defaultView = 'grid',
+  defaultView = "grid",
   pageSize = 12,
   className,
   bookmarkedIds = [],
   likedIds = [],
-  enableVirtualization = false,
-  emptyMessage = 'No books found',
-  headerActions
+  emptyMessage = "No books found",
+  headerActions,
 }) => {
   const theme = useTheme();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
   // State
-  const [viewMode, setViewMode] = useState<'grid' | 'list' | 'compact'>(defaultView);
+  const [viewMode, setViewMode] = useState<"grid" | "list" | "compact">(
+    defaultView
+  );
   const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
-  const [searchInput, setSearchInput] = useState(filters.search || '');
-  const [showFiltersCollapse, setShowFiltersCollapse] = useState(false);
+  const [searchInput, setSearchInput] = useState(filters.search || "");
+  // eslint-disable-next-line no-empty-pattern
+  const [] = useState(false);
 
   // Debounced search
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSearch = useCallback(
     debounce((value: string) => {
       onFilterChange({ ...filters, search: value || undefined, page: 1 });
@@ -566,7 +627,7 @@ const BookList: React.FC<BookListProps> = ({
   };
 
   const handleClearSearch = () => {
-    setSearchInput('');
+    setSearchInput("");
     onFilterChange({ ...filters, search: undefined, page: 1 });
   };
 
@@ -594,31 +655,41 @@ const BookList: React.FC<BookListProps> = ({
       tags: undefined,
       yearFrom: undefined,
       yearTo: undefined,
-      featured: undefined
+      featured: undefined,
     });
-    setSearchInput('');
+    setSearchInput("");
   };
 
   // Handle sort change
-  const handleSortChange = (sortBy: BookFilters['sortBy'], sortOrder: BookFilters['sortOrder']) => {
+  const handleSortChange = (
+    sortBy: BookFilters["sortBy"],
+    sortOrder: BookFilters["sortOrder"]
+  ) => {
     onFilterChange({ ...filters, sortBy, sortOrder, page: 1 });
   };
 
   // Handle page change
-  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+  const handlePageChange = (
+    _event: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
     onPageChange(value);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   // Handle view mode change
-  const handleViewModeChange = (mode: 'grid' | 'list' | 'compact') => {
+  const handleViewModeChange = (mode: "grid" | "list" | "compact") => {
     setViewMode(mode);
-    localStorage.setItem('bookViewMode', mode);
+    localStorage.setItem("bookViewMode", mode);
   };
 
   // Load view mode from localStorage
   useEffect(() => {
-    const savedMode = localStorage.getItem('bookViewMode') as 'grid' | 'list' | 'compact' | null;
+    const savedMode = localStorage.getItem("bookViewMode") as
+      | "grid"
+      | "list"
+      | "compact"
+      | null;
     if (savedMode) {
       setViewMode(savedMode);
     }
@@ -648,7 +719,14 @@ const BookList: React.FC<BookListProps> = ({
     <Box className={className}>
       {/* Header */}
       <Box sx={{ mb: 3 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            mb: 2,
+          }}
+        >
           <Typography variant="h4" component="h1" fontWeight={600}>
             Books
           </Typography>
@@ -660,7 +738,7 @@ const BookList: React.FC<BookListProps> = ({
           <Grid container spacing={2} alignItems="center">
             {/* Search */}
             {showSearch && (
-              <Grid size={{ xs: 12 }} size={{ md: 6 }}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <TextField
                   fullWidth
                   size="small"
@@ -679,15 +757,15 @@ const BookList: React.FC<BookListProps> = ({
                           <ClearIcon />
                         </IconButton>
                       </InputAdornment>
-                    )
+                    ),
                   }}
                 />
               </Grid>
             )}
 
             {/* Actions */}
-            <Grid size={{ xs: 12 }} size={{ md: 6 }}>
-              <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <Box sx={{ display: "flex", gap: 1, justifyContent: "flex-end" }}>
                 {/* Refresh */}
                 {onRefresh && (
                   <Tooltip title="Refresh">
@@ -711,9 +789,12 @@ const BookList: React.FC<BookListProps> = ({
                   <Tooltip title="Filters">
                     <IconButton
                       onClick={() => setFilterDrawerOpen(true)}
-                      color={getActiveFilterCount() > 0 ? 'primary' : 'default'}
+                      color={getActiveFilterCount() > 0 ? "primary" : "default"}
                     >
-                      <Badge badgeContent={getActiveFilterCount()} color="primary">
+                      <Badge
+                        badgeContent={getActiveFilterCount()}
+                        color="primary"
+                      >
                         <FilterIcon />
                       </Badge>
                     </IconButton>
@@ -722,27 +803,27 @@ const BookList: React.FC<BookListProps> = ({
 
                 {/* View Mode Toggle */}
                 {showViewToggle && (
-                  <Box sx={{ display: { xs: 'none', sm: 'flex' }, gap: 0.5 }}>
+                  <Box sx={{ display: { xs: "none", sm: "flex" }, gap: 0.5 }}>
                     <Tooltip title="Grid view">
                       <IconButton
-                        onClick={() => handleViewModeChange('grid')}
-                        color={viewMode === 'grid' ? 'primary' : 'default'}
+                        onClick={() => handleViewModeChange("grid")}
+                        color={viewMode === "grid" ? "primary" : "default"}
                       >
                         <ViewModuleIcon />
                       </IconButton>
                     </Tooltip>
                     <Tooltip title="List view">
                       <IconButton
-                        onClick={() => handleViewModeChange('list')}
-                        color={viewMode === 'list' ? 'primary' : 'default'}
+                        onClick={() => handleViewModeChange("list")}
+                        color={viewMode === "list" ? "primary" : "default"}
                       >
                         <ViewListIcon />
                       </IconButton>
                     </Tooltip>
                     <Tooltip title="Compact view">
                       <IconButton
-                        onClick={() => handleViewModeChange('compact')}
-                        color={viewMode === 'compact' ? 'primary' : 'default'}
+                        onClick={() => handleViewModeChange("compact")}
+                        color={viewMode === "compact" ? "primary" : "default"}
                       >
                         <ViewCompactIcon />
                       </IconButton>
@@ -755,39 +836,55 @@ const BookList: React.FC<BookListProps> = ({
             {/* Active Filters Chips */}
             {getActiveFilterCount() > 0 && (
               <Grid size={{ xs: 12 }}>
-                <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', alignItems: 'center' }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    gap: 1,
+                    flexWrap: "wrap",
+                    alignItems: "center",
+                  }}
+                >
                   <Typography variant="body2" color="text.secondary">
                     Active filters:
                   </Typography>
                   {filters.categoryId && (
                     <Chip
                       size="small"
-                      label={`Category: ${categories.find(c => c.id === filters.categoryId)?.name}`}
-                      onDelete={() => handleApplyFilters({ ...filters, categoryId: undefined })}
+                      label={`Category: ${
+                        categories.find((c) => c.id === filters.categoryId)
+                          ?.name
+                      }`}
+                      onDelete={() =>
+                        handleApplyFilters({
+                          ...filters,
+                          categoryId: undefined,
+                        })
+                      }
                     />
                   )}
                   {filters.minRating && (
                     <Chip
                       size="small"
                       label={`Rating: ${filters.minRating}+`}
-                      onDelete={() => handleApplyFilters({ ...filters, minRating: undefined })}
+                      onDelete={() =>
+                        handleApplyFilters({ ...filters, minRating: undefined })
+                      }
                     />
                   )}
-                  {filters.format?.map(format => (
+                  {filters.format?.map((format) => (
                     <Chip
                       key={format}
                       size="small"
                       label={`Format: ${format}`}
                       onDelete={() => {
-                        const updated = filters.format?.filter(f => f !== format);
+                        const updated = filters.format?.filter(
+                          (f) => f !== format
+                        );
                         handleApplyFilters({ ...filters, format: updated });
                       }}
                     />
                   ))}
-                  <Button
-                    size="small"
-                    onClick={handleClearFilters}
-                  >
+                  <Button size="small" onClick={handleClearFilters}>
                     Clear all
                   </Button>
                 </Box>
@@ -809,7 +906,7 @@ const BookList: React.FC<BookListProps> = ({
 
       {/* Empty State */}
       {!loading && !error && books.length === 0 && (
-        <Paper sx={{ p: 4, textAlign: 'center' }}>
+        <Paper sx={{ p: 4, textAlign: "center" }}>
           <Typography variant="body1" color="text.secondary" gutterBottom>
             {emptyMessage}
           </Typography>
@@ -829,41 +926,71 @@ const BookList: React.FC<BookListProps> = ({
       {!loading && !error && books.length > 0 && (
         <Fade in={true} timeout={500}>
           <Box>
-            {viewMode === 'grid' && (
-              <Grid container spacing={3}>
-                {books.map((book, index) => (
-                  <Grid size={{ xs: 12 }} size={{ sm: 6 }} size={{ md: 4 }} size={{ lg: 3 }} key={book.id}>
-                    <Zoom in={true} style={{ transitionDelay: `${index * 50}ms` }}>
-                      <Box>
-                        <BookCard
-                          book={book}
-                          variant="grid"
-                          isBookmarked={bookmarkedIds.includes(book.id)}
-                          isLiked={likedIds.includes(book.id)}
-                          onBookmark={onBookmark}
-                          onLike={onLike}
-                          onShare={onShare}
-                        />
-                      </Box>
-                    </Zoom>
-                  </Grid>
-                ))}
-              </Grid>
-            )}
+            {viewMode === "grid" && (
+  <Grid container spacing={3}>
+    {books.map((book, index) => (
+      <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={book.id}>
+        <Zoom
+          in={true}
+          style={{ transitionDelay: `${index * 50}ms` }}
+        >
+          <Box>
+            <BookCard
+              book={{
+                ...book,
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                averageRating: book.avg_rating || (book as any).avg_rating || 0,
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                reviewsCount: book.review_count || (book as any).review_count || 0,
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                coverImage: book.coverImage || (book as any).cover_image,
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                category: book.category || (book as any).category_name
+              }}
+              variant="default"
+              isBookmarked={bookmarkedIds?.includes(book.id) || false}
+              isLiked={likedIds?.includes(book.id) || false}
+              onBookmark={() => onBookmark?.(book.id)}
+              onLike={() => onLike?.(book.id)}
+               onShare={() => onShare?.(book)}  
+            />
+          </Box>
+        </Zoom>
+      </Grid>
+    ))}
+  </Grid>
+)}
+            
 
-            {viewMode === 'list' && (
+            {viewMode === "list" && (
               <Stack spacing={2}>
                 {books.map((book, index) => (
-                  <Zoom in={true} style={{ transitionDelay: `${index * 50}ms` }} key={book.id}>
+                  <Zoom
+                    in={true}
+                    style={{ transitionDelay: `${index * 50}ms` }}
+                    key={book.id}
+                  >
                     <Box>
                       <BookCard
-                        book={book}
-                        variant="list"
+                        book={{
+                          ...book,
+                        
+                          averageRating:
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                            book.avg_rating || (book as any).avg_rating || 0,
+                          
+                          reviewsCount:
+                            book.review_count ||
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                            (book as any).review_count ||
+                            0,
+                        }}
+                        variant="default"
                         isBookmarked={bookmarkedIds.includes(book.id)}
                         isLiked={likedIds.includes(book.id)}
-                        onBookmark={onBookmark}
-                        onLike={onLike}
-                        onShare={onShare}
+                        onBookmark={() => onBookmark?.(book.id)}
+                        onLike={() => onLike?.(book.id)}
+                        onShare={() => onShare?.(book)}
                       />
                     </Box>
                   </Zoom>
@@ -871,20 +998,44 @@ const BookList: React.FC<BookListProps> = ({
               </Stack>
             )}
 
-            {viewMode === 'compact' && (
+            {viewMode === "compact" && (
               <Paper sx={{ p: 2 }}>
                 <Stack spacing={1}>
                   {books.map((book, index) => (
-                    <Fade in={true} style={{ transitionDelay: `${index * 50}ms` }} key={book.id}>
+                    <Fade
+                      in={true}
+                      style={{ transitionDelay: `${index * 50}ms` }}
+                      key={book.id}
+                    >
                       <Box>
                         <BookCard
-                          book={book}
+                          book={{
+                            ...book,
+                            
+                            averageRating:
+                              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                              book.avg_rating || (book as any).avg_rating || 0,
+                            
+                            reviewsCount:
+                              book.review_count ||
+                              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                              (book as any).review_count ||
+                              0,
+                            
+                            coverImage:
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                              book.coverImage || (book as any).cover_image,
+                            
+                            category:
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                              book.category || (book as any).category_name,
+                          }}
                           variant="compact"
                           isBookmarked={bookmarkedIds.includes(book.id)}
                           isLiked={likedIds.includes(book.id)}
-                          onBookmark={onBookmark}
-                          onLike={onLike}
-                          onShare={onShare}
+                          onBookmark={() => onBookmark?.(book.id)}
+                          onLike={() => onLike?.(book.id)}
+                          onShare={() => onShare?.(book)}
                         />
                       </Box>
                     </Fade>
@@ -898,13 +1049,13 @@ const BookList: React.FC<BookListProps> = ({
 
       {/* Pagination */}
       {showPagination && totalPages > 1 && (
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
           <Pagination
             count={totalPages}
             page={currentPage}
             onChange={handlePageChange}
             color="primary"
-            size={isMobile ? 'small' : 'medium'}
+            size={isMobile ? "small" : "medium"}
             showFirstButton
             showLastButton
           />
@@ -925,7 +1076,7 @@ const BookList: React.FC<BookListProps> = ({
       {isMobile && showFilters && (
         <Fab
           color="primary"
-          sx={{ position: 'fixed', bottom: 16, right: 16 }}
+          sx={{ position: "fixed", bottom: 16, right: 16 }}
           onClick={() => setFilterDrawerOpen(true)}
         >
           <Badge badgeContent={getActiveFilterCount()} color="error">
@@ -943,7 +1094,7 @@ import {
   ListItemIcon,
   ListItemText,
   FormControlLabel,
-  Switch
-} from '@mui/material';
+  Switch,
+} from "@mui/material";
 
 export default BookList;

@@ -699,7 +699,7 @@ const ReportsPage: React.FC = () => {
     setShareDialogOpen(true);
   };
 
-  const handleDownload = (id: string, format: ReportFormat) => {
+  const handleDownload = (_id: string, format: ReportFormat) => {
     showNotification(`Downloading report as ${format.toUpperCase()}...`, 'info');
   };
 
@@ -1016,7 +1016,8 @@ const ReportsPage: React.FC = () => {
                           label
                         >
                           {pieData.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.color} />
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                            <Cell key={`cell-${index}`} fill={(entry as any).color} />
                           ))}
                         </Pie>
                         <RechartsTooltip />

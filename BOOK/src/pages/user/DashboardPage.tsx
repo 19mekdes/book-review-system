@@ -529,7 +529,8 @@ const DashboardPage: React.FC = () => {
           id: authUser?.id || 1,
           name: authUser?.name || 'John Doe',
           email: authUser?.email || 'john.doe@example.com',
-          username: authUser?.username || '@johndoe',
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          username: (authUser as any)?.username || authUser?.name || '@johndoe',
           avatar: undefined,
           bio: authUser?.bio || 'Avid reader and book enthusiast',
           location: 'New York, NY',

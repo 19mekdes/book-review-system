@@ -1,5 +1,5 @@
 // C:\Users\PC_1\OneDrive\Desktop\Book Review\BOOK\src\pages\admin\AllReviewsPage.tsx
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Box,
   Container,
@@ -43,8 +43,8 @@ import {
   ListItemText,
   Switch,
   FormControlLabel,
-  SelectChangeEvent
-} from '@mui/material';
+  SelectChangeEvent,
+} from "@mui/material";
 import {
   Search as SearchIcon,
   Clear as ClearIcon,
@@ -56,9 +56,9 @@ import {
   ThumbUp as ThumbUpIcon,
   Person as PersonIcon,
   Book as BookIcon,
-  Refresh as RefreshIcon
-} from '@mui/icons-material';
-import { format, formatDistance } from 'date-fns';
+  Refresh as RefreshIcon,
+} from "@mui/icons-material";
+import { format, formatDistance } from "date-fns";
 
 // ============================================
 // Types
@@ -82,7 +82,7 @@ export interface Review {
   helpful: number;
   notHelpful: number;
   reports: number;
-  status: 'approved' | 'pending' | 'flagged' | 'rejected' | 'spam';
+  status: "approved" | "pending" | "flagged" | "rejected" | "spam";
   moderationNotes?: string;
   createdAt: string;
   updatedAt: string;
@@ -92,15 +92,15 @@ export interface Review {
 
 export interface ReviewFilters {
   search?: string;
-  status?: Review['status'] | 'all';
+  status?: Review["status"] | "all";
   minRating?: number;
   maxRating?: number;
   bookId?: number;
   userId?: number;
   dateFrom?: string;
   dateTo?: string;
-  sortBy?: 'createdAt' | 'rating' | 'helpful' | 'reports';
-  sortOrder?: 'asc' | 'desc';
+  sortBy?: "createdAt" | "rating" | "helpful" | "reports";
+  sortOrder?: "asc" | "desc";
   page?: number;
   limit?: number;
   hasReports?: boolean;
@@ -115,7 +115,11 @@ interface ReviewDialogProps {
   onClose: () => void;
   review: Review | null;
   onUpdate: (id: number, data: Partial<Review>) => Promise<void>;
-  onModerate: (id: number, status: Review['status'], notes?: string) => Promise<void>;
+  onModerate: (
+    id: number,
+    status: Review["status"],
+    notes?: string
+  ) => Promise<void>;
   onDelete: (id: number) => Promise<void>;
   loading?: boolean;
 }
@@ -126,14 +130,16 @@ const ReviewDialog: React.FC<ReviewDialogProps> = ({
   review,
   onModerate,
   onDelete,
-  loading = false
+  loading = false,
 }) => {
-  const [moderationNotes, setModerationNotes] = useState('');
-  const [selectedStatus, setSelectedStatus] = useState<Review['status']>('approved');
+  const [moderationNotes, setModerationNotes] = useState("");
+  const [selectedStatus, setSelectedStatus] =
+    useState<Review["status"]>("approved");
 
   useEffect(() => {
     if (review) {
-      setModerationNotes(review.moderationNotes || '');
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setModerationNotes(review.moderationNotes || "");
       setSelectedStatus(review.status);
     }
   }, [review]);
@@ -144,14 +150,20 @@ const ReviewDialog: React.FC<ReviewDialogProps> = ({
     onModerate(review.id, selectedStatus, moderationNotes);
   };
 
-  const getStatusColor = (status: Review['status']) => {
+  const getStatusColor = (status: Review["status"]) => {
     switch (status) {
-      case 'approved': return 'success';
-      case 'pending': return 'warning';
-      case 'flagged': return 'error';
-      case 'rejected': return 'error';
-      case 'spam': return 'error';
-      default: return 'default';
+      case "approved":
+        return "success";
+      case "pending":
+        return "warning";
+      case "flagged":
+        return "error";
+      case "rejected":
+        return "error";
+      case "spam":
+        return "error";
+      default:
+        return "default";
     }
   };
 
@@ -169,11 +181,13 @@ const ReviewDialog: React.FC<ReviewDialogProps> = ({
       <DialogContent dividers>
         <Grid container spacing={3}>
           {/* User Info */}
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12, sm: 6, md: 2 }}>
             <Card variant="outlined">
               <CardContent>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Box
+                  sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}
+                >
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                     <PersonIcon />
                     <Typography variant="subtitle1" fontWeight={600}>
                       {review.userName}
@@ -181,9 +195,13 @@ const ReviewDialog: React.FC<ReviewDialogProps> = ({
                   </Box>
                 </Box>
                 <Divider sx={{ my: 1 }} />
-                <Box sx={{ display: 'flex', gap: 2, mt: 1 }}>
+                <Box sx={{ display: "flex", gap: 2, mt: 1 }}>
                   <Tooltip title="User ID">
-                    <Chip size="small" label={`ID: ${review.userId}`} variant="outlined" />
+                    <Chip
+                      size="small"
+                      label={`ID: ${review.userId}`}
+                      variant="outlined"
+                    />
                   </Tooltip>
                   <Tooltip title="Reports">
                     <Badge badgeContent={review.reports} color="error">
@@ -196,11 +214,11 @@ const ReviewDialog: React.FC<ReviewDialogProps> = ({
           </Grid>
 
           {/* Book Info */}
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12, sm: 6, md: 2 }}>
             <Card variant="outlined">
               <CardContent>
-                <Box sx={{ display: 'flex', gap: 2 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Box sx={{ display: "flex", gap: 2 }}>
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                     <BookIcon />
                     <Box>
                       <Typography variant="subtitle1" fontWeight={600}>
@@ -217,11 +235,16 @@ const ReviewDialog: React.FC<ReviewDialogProps> = ({
           </Grid>
 
           {/* Review Content */}
-          <Grid item xs={12}>
+          <Grid size={{ xs: 12, sm: 6, md: 2 }}>
             <Typography variant="subtitle2" gutterBottom>
               Rating
             </Typography>
-            <Rating value={review.rating} readOnly size="large" sx={{ mb: 2 }} />
+            <Rating
+              value={review.rating}
+              readOnly
+              size="large"
+              sx={{ mb: 2 }}
+            />
 
             {review.title && (
               <>
@@ -237,35 +260,58 @@ const ReviewDialog: React.FC<ReviewDialogProps> = ({
             <Typography variant="subtitle2" gutterBottom>
               Review
             </Typography>
-            <Paper variant="outlined" sx={{ p: 2, bgcolor: 'grey.50', mb: 2 }}>
-              <Typography variant="body1">
-                {review.content}
-              </Typography>
+            <Paper variant="outlined" sx={{ p: 2, bgcolor: "grey.50", mb: 2 }}>
+              <Typography variant="body1">{review.content}</Typography>
             </Paper>
 
             {/* Pros/Cons */}
-            {(review.pros && review.pros.length > 0) || (review.cons && review.cons.length > 0) ? (
+            {(review.pros && review.pros.length > 0) ||
+            (review.cons && review.cons.length > 0) ? (
               <Grid container spacing={2} sx={{ mb: 2 }}>
                 {review.pros && review.pros.length > 0 && (
-                  <Grid item xs={12} sm={6}>
-                    <Typography variant="subtitle2" color="success.main" gutterBottom>
+                  <Grid size={{ xs: 12, sm: 6, md: 2 }}>
+                    <Typography
+                      variant="subtitle2"
+                      color="success.main"
+                      gutterBottom
+                    >
                       Pros
                     </Typography>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 0.5,
+                      }}
+                    >
                       {review.pros.map((pro, index) => (
-                        <Typography key={index} variant="body2">• {pro}</Typography>
+                        <Typography key={index} variant="body2">
+                          • {pro}
+                        </Typography>
                       ))}
                     </Box>
                   </Grid>
                 )}
                 {review.cons && review.cons.length > 0 && (
-                  <Grid item xs={12} sm={6}>
-                    <Typography variant="subtitle2" color="error.main" gutterBottom>
+                  <Grid size={{ xs: 12, sm: 6, md: 2 }}>
+                    <Typography
+                      variant="subtitle2"
+                      color="error.main"
+                      gutterBottom
+                    >
                       Cons
                     </Typography>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 0.5,
+                      }}
+                    >
                       {review.cons.map((con, index) => (
-                        <Typography key={index} variant="body2">• {con}</Typography>
+                        <Typography key={index} variant="body2">
+                          • {con}
+                        </Typography>
                       ))}
                     </Box>
                   </Grid>
@@ -274,15 +320,15 @@ const ReviewDialog: React.FC<ReviewDialogProps> = ({
             ) : null}
 
             {/* Stats */}
-            <Box sx={{ display: 'flex', gap: 3, mb: 2 }}>
+            <Box sx={{ display: "flex", gap: 3, mb: 2 }}>
               <Tooltip title="Helpful votes">
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                   <ThumbUpIcon fontSize="small" color="success" />
                   <Typography variant="body2">{review.helpful}</Typography>
                 </Box>
               </Tooltip>
               <Tooltip title="Reports">
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                   <FlagIcon fontSize="small" color="error" />
                   <Typography variant="body2">{review.reports}</Typography>
                 </Box>
@@ -290,31 +336,35 @@ const ReviewDialog: React.FC<ReviewDialogProps> = ({
             </Box>
 
             {/* Timestamps */}
-            <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+            <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
               <Typography variant="caption" color="text.secondary">
-                Created: {format(new Date(review.createdAt), 'MMM dd, yyyy HH:mm')}
+                Created:{" "}
+                {format(new Date(review.createdAt), "MMM dd, yyyy HH:mm")}
               </Typography>
               <Typography variant="caption" color="text.secondary">
-                Updated: {format(new Date(review.updatedAt), 'MMM dd, yyyy HH:mm')}
+                Updated:{" "}
+                {format(new Date(review.updatedAt), "MMM dd, yyyy HH:mm")}
               </Typography>
             </Box>
           </Grid>
 
           {/* Moderation Section */}
-          <Grid item xs={12}>
+          <Grid size={{ xs: 12, sm: 6, md: 2 }}>
             <Divider sx={{ my: 2 }} />
             <Typography variant="h6" gutterBottom>
               Moderation
             </Typography>
-            
+
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
+              <Grid size={{ xs: 12, sm: 6, md: 2 }}>
                 <FormControl fullWidth size="small">
                   <InputLabel>Status</InputLabel>
                   <Select
                     value={selectedStatus}
                     label="Status"
-                    onChange={(e: SelectChangeEvent) => setSelectedStatus(e.target.value as Review['status'])}
+                    onChange={(e: SelectChangeEvent) =>
+                      setSelectedStatus(e.target.value as Review["status"])
+                    }
                   >
                     <MenuItem value="approved">Approved</MenuItem>
                     <MenuItem value="pending">Pending</MenuItem>
@@ -324,7 +374,7 @@ const ReviewDialog: React.FC<ReviewDialogProps> = ({
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={{ xs: 12, sm: 6, md: 2 }}>
                 <TextField
                   fullWidth
                   multiline
@@ -379,7 +429,7 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({
   onClose,
   onConfirm,
   reviewTitle,
-  loading = false
+  loading = false,
 }) => {
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
@@ -413,7 +463,7 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({
 
 const AllReviewsPage: React.FC = () => {
   const theme = useTheme();
-  
+
   // State
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -422,29 +472,31 @@ const AllReviewsPage: React.FC = () => {
   const [selectedReviews] = useState<number[]>([]);
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(10);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState<ReviewFilters>({
-    status: 'all',
-    sortBy: 'createdAt',
-    sortOrder: 'desc',
+    status: "all",
+    sortBy: "createdAt",
+    sortOrder: "desc",
     page: 1,
-    limit: 10
+    limit: 10,
   });
-  
+
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [filterAnchorEl, setFilterAnchorEl] = useState<null | HTMLElement>(null);
+  const [filterAnchorEl, setFilterAnchorEl] = useState<null | HTMLElement>(
+    null
+  );
   const [selectedReview, setSelectedReview] = useState<Review | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [bulkDialogOpen, setBulkDialogOpen] = useState(false);
+  const [, setBulkDialogOpen] = useState(false);
   const [notification, setNotification] = useState<{
     open: boolean;
     message: string;
-    severity: 'success' | 'error' | 'info' | 'warning';
+    severity: "success" | "error" | "info" | "warning";
   }>({
     open: false,
-    message: '',
-    severity: 'info'
+    message: "",
+    severity: "info",
   });
 
   // Stats
@@ -457,7 +509,7 @@ const AllReviewsPage: React.FC = () => {
     spam: 0,
     avgRating: 0,
     totalHelpful: 0,
-    totalReports: 0
+    totalReports: 0,
   });
 
   // Fetch data
@@ -465,7 +517,7 @@ const AllReviewsPage: React.FC = () => {
     setLoading(true);
     try {
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      await new Promise((resolve) => setTimeout(resolve, 1500));
 
       // Mock data
       const mockReviews: Review[] = Array.from({ length: 50 }).map((_, i) => ({
@@ -478,13 +530,19 @@ const AllReviewsPage: React.FC = () => {
         bookAuthor: `Author ${Math.floor(Math.random() * 30) + 1}`,
         rating: Math.floor(Math.random() * 5) + 1,
         title: i % 3 === 0 ? `Review Title ${i + 1}` : undefined,
-        content: `This is a sample review content for review ${i + 1}. It contains some text about the book.`,
+        content: `This is a sample review content for review ${
+          i + 1
+        }. It contains some text about the book.`,
         helpful: Math.floor(Math.random() * 50),
         notHelpful: Math.floor(Math.random() * 10),
         reports: Math.floor(Math.random() * 5),
-        status: ['approved', 'pending', 'flagged', 'rejected', 'spam'][Math.floor(Math.random() * 5)] as Review['status'],
-        createdAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
-        updatedAt: new Date().toISOString()
+        status: ["approved", "pending", "flagged", "rejected", "spam"][
+          Math.floor(Math.random() * 5)
+        ] as Review["status"],
+        createdAt: new Date(
+          Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000
+        ).toISOString(),
+        updatedAt: new Date().toISOString(),
       }));
 
       setReviews(mockReviews);
@@ -493,19 +551,20 @@ const AllReviewsPage: React.FC = () => {
       // Calculate stats
       const stats = {
         total: mockReviews.length,
-        approved: mockReviews.filter(r => r.status === 'approved').length,
-        pending: mockReviews.filter(r => r.status === 'pending').length,
-        flagged: mockReviews.filter(r => r.status === 'flagged').length,
-        rejected: mockReviews.filter(r => r.status === 'rejected').length,
-        spam: mockReviews.filter(r => r.status === 'spam').length,
-        avgRating: mockReviews.reduce((acc, r) => acc + r.rating, 0) / mockReviews.length,
+        approved: mockReviews.filter((r) => r.status === "approved").length,
+        pending: mockReviews.filter((r) => r.status === "pending").length,
+        flagged: mockReviews.filter((r) => r.status === "flagged").length,
+        rejected: mockReviews.filter((r) => r.status === "rejected").length,
+        spam: mockReviews.filter((r) => r.status === "spam").length,
+        avgRating:
+          mockReviews.reduce((acc, r) => acc + r.rating, 0) /
+          mockReviews.length,
         totalHelpful: mockReviews.reduce((acc, r) => acc + r.helpful, 0),
-        totalReports: mockReviews.reduce((acc, r) => acc + r.reports, 0)
+        totalReports: mockReviews.reduce((acc, r) => acc + r.reports, 0),
       };
       setStats(stats);
-
     } catch {
-      setError('Failed to load reviews');
+      setError("Failed to load reviews");
     } finally {
       setLoading(false);
     }
@@ -522,48 +581,49 @@ const AllReviewsPage: React.FC = () => {
     // Apply search filter
     if (searchTerm) {
       const searchLower = searchTerm.toLowerCase();
-      filtered = filtered.filter(r =>
-        r.content.toLowerCase().includes(searchLower) ||
-        r.userName.toLowerCase().includes(searchLower) ||
-        r.bookTitle.toLowerCase().includes(searchLower) ||
-        r.title?.toLowerCase().includes(searchLower)
+      filtered = filtered.filter(
+        (r) =>
+          r.content.toLowerCase().includes(searchLower) ||
+          r.userName.toLowerCase().includes(searchLower) ||
+          r.bookTitle.toLowerCase().includes(searchLower) ||
+          r.title?.toLowerCase().includes(searchLower)
       );
     }
 
     // Apply status filter
-    if (filters.status && filters.status !== 'all') {
-      filtered = filtered.filter(r => r.status === filters.status);
+    if (filters.status && filters.status !== "all") {
+      filtered = filtered.filter((r) => r.status === filters.status);
     }
 
     // Apply rating filter
     if (filters.minRating) {
-      filtered = filtered.filter(r => r.rating >= (filters.minRating || 0));
+      filtered = filtered.filter((r) => r.rating >= (filters.minRating || 0));
     }
 
     // Apply reports filter
     if (filters.hasReports) {
-      filtered = filtered.filter(r => r.reports > 0);
+      filtered = filtered.filter((r) => r.reports > 0);
     }
 
     // Apply sorting
     if (filters.sortBy) {
       filtered.sort((a, b) => {
         let aValue, bValue;
-        
+
         switch (filters.sortBy) {
-          case 'createdAt':
+          case "createdAt":
             aValue = new Date(a.createdAt).getTime();
             bValue = new Date(b.createdAt).getTime();
             break;
-          case 'rating':
+          case "rating":
             aValue = a.rating;
             bValue = b.rating;
             break;
-          case 'helpful':
+          case "helpful":
             aValue = a.helpful;
             bValue = b.helpful;
             break;
-          case 'reports':
+          case "reports":
             aValue = a.reports;
             bValue = b.reports;
             break;
@@ -571,7 +631,7 @@ const AllReviewsPage: React.FC = () => {
             return 0;
         }
 
-        return filters.sortOrder === 'asc' ? aValue - bValue : bValue - aValue;
+        return filters.sortOrder === "asc" ? aValue - bValue : bValue - aValue;
       });
     }
 
@@ -587,7 +647,7 @@ const AllReviewsPage: React.FC = () => {
   };
 
   const handleClearSearch = () => {
-    setSearchTerm('');
+    setSearchTerm("");
   };
 
   const handleFilterOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -599,23 +659,26 @@ const AllReviewsPage: React.FC = () => {
   };
 
   const handleFilterApply = (newFilters: Partial<ReviewFilters>) => {
-    setFilters(prev => ({ ...prev, ...newFilters, page: 1 }));
+    setFilters((prev) => ({ ...prev, ...newFilters, page: 1 }));
     handleFilterClose();
   };
 
   const handleFilterClear = () => {
     setFilters({
-      status: 'all',
-      sortBy: 'createdAt',
-      sortOrder: 'desc',
+      status: "all",
+      sortBy: "createdAt",
+      sortOrder: "desc",
       page: 1,
-      limit: 10
+      limit: 10,
     });
-    setSearchTerm('');
+    setSearchTerm("");
     handleFilterClose();
   };
 
-  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, review: Review) => {
+  const handleMenuOpen = (
+    event: React.MouseEvent<HTMLElement>,
+    review: Review
+  ) => {
     setAnchorEl(event.currentTarget);
     setSelectedReview(review);
   };
@@ -629,48 +692,66 @@ const AllReviewsPage: React.FC = () => {
     handleMenuClose();
   };
 
-  const handleModerateReview = async (id: number, status: Review['status'], notes?: string) => {
+  const handleModerateReview = async (
+    id: number,
+    status: Review["status"],
+    notes?: string
+  ) => {
     try {
-      setReviews(prev =>
-        prev.map(r => r.id === id ? { ...r, status, moderationNotes: notes } : r)
+      setReviews((prev) =>
+        prev.map((r) =>
+          r.id === id ? { ...r, status, moderationNotes: notes } : r
+        )
       );
-      showNotification(`Review marked as ${status}`, 'success');
+      showNotification(`Review marked as ${status}`, "success");
       setDialogOpen(false);
     } catch {
-      showNotification('Failed to moderate review', 'error');
+      showNotification("Failed to moderate review", "error");
     }
   };
 
   const handleDeleteReview = async (id: number) => {
     try {
-      setReviews(prev => prev.filter(r => r.id !== id));
-      showNotification('Review deleted successfully', 'success');
+      setReviews((prev) => prev.filter((r) => r.id !== id));
+      showNotification("Review deleted successfully", "success");
       setDeleteDialogOpen(false);
       setDialogOpen(false);
     } catch {
-      showNotification('Failed to delete review', 'error');
+      showNotification("Failed to delete review", "error");
     }
   };
 
-  const showNotification = (message: string, severity: 'success' | 'error' | 'info' | 'warning') => {
+  const showNotification = (
+    message: string,
+    severity: "success" | "error" | "info" | "warning"
+  ) => {
     setNotification({
       open: true,
       message,
-      severity
+      severity,
     });
   };
 
   // Pagination
-  const paginatedReviews = filteredReviews.slice(page * limit, page * limit + limit);
+  const paginatedReviews = filteredReviews.slice(
+    page * limit,
+    page * limit + limit
+  );
 
-  const getStatusColor = (status: Review['status']) => {
+  const getStatusColor = (status: Review["status"]) => {
     switch (status) {
-      case 'approved': return 'success';
-      case 'pending': return 'warning';
-      case 'flagged': return 'error';
-      case 'rejected': return 'error';
-      case 'spam': return 'error';
-      default: return 'default';
+      case "approved":
+        return "success";
+      case "pending":
+        return "warning";
+      case "flagged":
+        return "error";
+      case "rejected":
+        return "error";
+      case "spam":
+        return "error";
+      default:
+        return "default";
     }
   };
 
@@ -688,7 +769,7 @@ const AllReviewsPage: React.FC = () => {
 
       {/* Stats Cards */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid item xs={12} sm={6} md={2}>
+        <Grid size={{ xs: 12, sm: 6, md: 2 }}>
           <Card>
             <CardContent>
               <Typography variant="h6" fontWeight={600}>
@@ -700,7 +781,7 @@ const AllReviewsPage: React.FC = () => {
             </CardContent>
           </Card>
         </Grid>
-        <Grid item xs={12} sm={6} md={2}>
+        <Grid size={{ xs: 12, sm: 6, md: 2 }}>
           <Card sx={{ bgcolor: alpha(theme.palette.success.main, 0.1) }}>
             <CardContent>
               <Typography variant="h6" fontWeight={600} color="success.main">
@@ -712,7 +793,7 @@ const AllReviewsPage: React.FC = () => {
             </CardContent>
           </Card>
         </Grid>
-        <Grid item xs={12} sm={6} md={2}>
+        <Grid size={{ xs: 12, sm: 6, md: 2 }}>
           <Card sx={{ bgcolor: alpha(theme.palette.warning.main, 0.1) }}>
             <CardContent>
               <Typography variant="h6" fontWeight={600} color="warning.main">
@@ -724,7 +805,7 @@ const AllReviewsPage: React.FC = () => {
             </CardContent>
           </Card>
         </Grid>
-        <Grid item xs={12} sm={6} md={2}>
+        <Grid size={{ xs: 12, sm: 6, md: 2 }}>
           <Card sx={{ bgcolor: alpha(theme.palette.error.main, 0.1) }}>
             <CardContent>
               <Typography variant="h6" fontWeight={600} color="error.main">
@@ -736,7 +817,7 @@ const AllReviewsPage: React.FC = () => {
             </CardContent>
           </Card>
         </Grid>
-        <Grid item xs={12} sm={6} md={2}>
+        <Grid size={{ xs: 12, sm: 6, md: 2 }}>
           <Card>
             <CardContent>
               <Typography variant="h6" fontWeight={600}>
@@ -748,7 +829,7 @@ const AllReviewsPage: React.FC = () => {
             </CardContent>
           </Card>
         </Grid>
-        <Grid item xs={12} sm={6} md={2}>
+        <Grid size={{ xs: 12, sm: 6, md: 2 }}>
           <Card>
             <CardContent>
               <Typography variant="h6" fontWeight={600}>
@@ -765,7 +846,7 @@ const AllReviewsPage: React.FC = () => {
       {/* Filters Bar */}
       <Paper sx={{ p: 2, mb: 3 }}>
         <Grid container spacing={2} alignItems="center">
-          <Grid item xs={12} md={4}>
+          <Grid size={{ xs: 12, sm: 6, md: 2 }}>
             <TextField
               fullWidth
               size="small"
@@ -784,20 +865,28 @@ const AllReviewsPage: React.FC = () => {
                       <ClearIcon />
                     </IconButton>
                   </InputAdornment>
-                )
+                ),
               }}
             />
           </Grid>
 
-          <Grid item xs={6} md={2}>
+          <Grid size={{ xs: 12, sm: 6, md: 2 }}>
             <FormControl fullWidth size="small">
               <InputLabel>Sort By</InputLabel>
               <Select
                 value={`${filters.sortBy}-${filters.sortOrder}`}
                 label="Sort By"
                 onChange={(e: SelectChangeEvent) => {
-                  const [sortBy, sortOrder] = e.target.value.split('-');
-                  setFilters({ ...filters, sortBy: sortBy as 'createdAt' | 'rating' | 'helpful' | 'reports', sortOrder: sortOrder as 'asc' | 'desc' });
+                  const [sortBy, sortOrder] = e.target.value.split("-");
+                  setFilters({
+                    ...filters,
+                    sortBy: sortBy as
+                      | "createdAt"
+                      | "rating"
+                      | "helpful"
+                      | "reports",
+                    sortOrder: sortOrder as "asc" | "desc",
+                  });
                 }}
               >
                 <MenuItem value="createdAt-desc">Newest First</MenuItem>
@@ -810,13 +899,12 @@ const AllReviewsPage: React.FC = () => {
             </FormControl>
           </Grid>
 
-          <Grid item xs={6} md={2}>
+          <Grid size={{ xs: 12, sm: 6, md: 2 }}>
             <FormControl fullWidth size="small">
               <InputLabel>Items per page</InputLabel>
               <Select
-                value={limit}
-                label="Items per page"
-                onChange={(e: SelectChangeEvent) => setLimit(Number(e.target.value))}
+                value={limit.toString()} // Convert number to string
+                onChange={(e) => setLimit(Number(e.target.value))}
               >
                 <MenuItem value={10}>10 per page</MenuItem>
                 <MenuItem value={25}>25 per page</MenuItem>
@@ -826,8 +914,8 @@ const AllReviewsPage: React.FC = () => {
             </FormControl>
           </Grid>
 
-          <Grid item xs={12} md={4}>
-            <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
+          <Grid size={{ xs: 12, sm: 6, md: 2 }}>
+            <Box sx={{ display: "flex", gap: 1, justifyContent: "flex-end" }}>
               {selectedReviews.length > 0 && (
                 <>
                   <Button
@@ -845,7 +933,10 @@ const AllReviewsPage: React.FC = () => {
               </Tooltip>
               <Tooltip title="Filters">
                 <IconButton onClick={handleFilterOpen}>
-                  <Badge badgeContent={filters.status !== 'all' ? 1 : 0} color="primary">
+                  <Badge
+                    badgeContent={filters.status !== "all" ? 1 : 0}
+                    color="primary"
+                  >
                     <FilterIcon />
                   </Badge>
                 </IconButton>
@@ -869,9 +960,13 @@ const AllReviewsPage: React.FC = () => {
           <FormControl fullWidth size="small">
             <InputLabel>Status</InputLabel>
             <Select
-              value={filters.status || 'all'}
+              value={filters.status || "all"}
               label="Status"
-              onChange={(e: SelectChangeEvent) => handleFilterApply({ status: e.target.value as Review['status'] | 'all' })}
+              onChange={(e: SelectChangeEvent) =>
+                handleFilterApply({
+                  status: e.target.value as Review["status"] | "all",
+                })
+              }
             >
               <MenuItem value="all">All Status</MenuItem>
               <MenuItem value="approved">Approved</MenuItem>
@@ -885,9 +980,13 @@ const AllReviewsPage: React.FC = () => {
           <FormControl fullWidth size="small">
             <InputLabel>Min Rating</InputLabel>
             <Select
-              value={filters.minRating || ''}
+              value={filters.minRating?.toString() || ""}
               label="Min Rating"
-              onChange={(e: SelectChangeEvent) => handleFilterApply({ minRating: e.target.value as number })}
+              onChange={(e: SelectChangeEvent) =>
+                handleFilterApply({
+                  minRating: e.target.value as unknown as number,
+                })
+              }
             >
               <MenuItem value="">Any Rating</MenuItem>
               <MenuItem value={5}>5 Stars</MenuItem>
@@ -901,13 +1000,15 @@ const AllReviewsPage: React.FC = () => {
             control={
               <Switch
                 checked={filters.hasReports || false}
-                onChange={(e) => handleFilterApply({ hasReports: e.target.checked })}
+                onChange={(e) =>
+                  handleFilterApply({ hasReports: e.target.checked })
+                }
               />
             }
             label="Has reports only"
           />
 
-          <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
+          <Box sx={{ display: "flex", gap: 1, justifyContent: "flex-end" }}>
             <Button size="small" onClick={handleFilterClear}>
               Clear
             </Button>
@@ -917,9 +1018,13 @@ const AllReviewsPage: React.FC = () => {
 
       {/* Loading State */}
       {loading && (
-        <Box sx={{ width: '100%', py: 4 }}>
+        <Box sx={{ width: "100%", py: 4 }}>
           <LinearProgress />
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 2, textAlign: 'center' }}>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ mt: 2, textAlign: "center" }}
+          >
             Loading reviews...
           </Typography>
         </Box>
@@ -956,11 +1061,16 @@ const AllReviewsPage: React.FC = () => {
                     key={review.id}
                     hover
                     sx={{
-                      bgcolor: review.status === 'flagged' ? alpha(theme.palette.error.main, 0.04) : 'inherit'
+                      bgcolor:
+                        review.status === "flagged"
+                          ? alpha(theme.palette.error.main, 0.04)
+                          : "inherit",
                     }}
                   >
                     <TableCell>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                      >
                         <Box>
                           <Typography variant="subtitle2">
                             {review.userName}
@@ -997,12 +1107,20 @@ const AllReviewsPage: React.FC = () => {
                       </Box>
                     </TableCell>
                     <TableCell align="center">
-                      <Badge badgeContent={review.helpful} color="success" max={999}>
+                      <Badge
+                        badgeContent={review.helpful}
+                        color="success"
+                        max={999}
+                      >
                         <ThumbUpIcon fontSize="small" color="action" />
                       </Badge>
                     </TableCell>
                     <TableCell align="center">
-                      <Badge badgeContent={review.reports} color="error" max={999}>
+                      <Badge
+                        badgeContent={review.reports}
+                        color="error"
+                        max={999}
+                      >
                         <FlagIcon fontSize="small" color="action" />
                       </Badge>
                     </TableCell>
@@ -1014,8 +1132,16 @@ const AllReviewsPage: React.FC = () => {
                       />
                     </TableCell>
                     <TableCell>
-                      <Tooltip title={format(new Date(review.createdAt), 'PPpp')}>
-                        <span>{formatDistance(new Date(review.createdAt), new Date(), { addSuffix: true })}</span>
+                      <Tooltip
+                        title={format(new Date(review.createdAt), "PPpp")}
+                      >
+                        <span>
+                          {formatDistance(
+                            new Date(review.createdAt),
+                            new Date(),
+                            { addSuffix: true }
+                          )}
+                        </span>
                       </Tooltip>
                     </TableCell>
                     <TableCell align="right">
@@ -1062,7 +1188,7 @@ const AllReviewsPage: React.FC = () => {
                 setDeleteDialogOpen(true);
                 handleMenuClose();
               }}
-              sx={{ color: 'error.main' }}
+              sx={{ color: "error.main" }}
             >
               <ListItemIcon>
                 <DeleteIcon fontSize="small" color="error" />
@@ -1094,8 +1220,10 @@ const AllReviewsPage: React.FC = () => {
           setDeleteDialogOpen(false);
           setSelectedReview(null);
         }}
-        onConfirm={() => selectedReview && handleDeleteReview(selectedReview.id)}
-        reviewTitle={selectedReview?.bookTitle || ''}
+        onConfirm={() =>
+          selectedReview && handleDeleteReview(selectedReview.id)
+        }
+        reviewTitle={selectedReview?.bookTitle || ""}
         loading={loading}
       />
 
@@ -1104,7 +1232,7 @@ const AllReviewsPage: React.FC = () => {
         open={notification.open}
         autoHideDuration={4000}
         onClose={() => setNotification({ ...notification, open: false })}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
       >
         <Alert
           onClose={() => setNotification({ ...notification, open: false })}

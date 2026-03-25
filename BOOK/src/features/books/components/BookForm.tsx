@@ -1,4 +1,4 @@
-// src/features/books/components/BookForm.tsx
+
 import React, { useState, useEffect } from 'react';
 import {
   Box,
@@ -20,7 +20,6 @@ import {
   Chip,
   Stack,
   SelectChangeEvent,
-  Alert,
   CircularProgress,
   Rating
 } from '@mui/material';
@@ -28,9 +27,7 @@ import {
   Save as SaveIcon,
   Cancel as CancelIcon,
   CloudUpload as CloudUploadIcon,
-  Add as AddIcon,
-  Close as CloseIcon
-} from '@mui/icons-material';
+  Add as AddIcon} from '@mui/icons-material';
 import { Book, BookLanguage, Category } from '../../../pages/admin/ManageBooksPage';
 
 interface BookFormProps {
@@ -95,6 +92,7 @@ const BookForm: React.FC<BookFormProps> = ({
 
   useEffect(() => {
     if (initialData) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setFormData({
         title: initialData.title || '',
         author: initialData.author || '',
@@ -102,19 +100,19 @@ const BookForm: React.FC<BookFormProps> = ({
         description: initialData.description || '',
         categoryId: initialData.categoryId?.toString() || '',
         publisher: initialData.publisher || '',
-        publishDate: initialData.publishDate ? initialData.publishDate.split('T')[0] : '',
+        publishDate: initialData.publish_date ? initialData.publish_date.split('T')[0] : '',
         pages: initialData.pages?.toString() || '',
         language: initialData.language || 'English',
         format: initialData.format || 'paperback',
         price: initialData.price?.toString() || '',
-        coverImage: initialData.coverImage || '',
+        coverImage: initialData.cover_image || '',
         status: initialData.status || 'draft',
-        isFeatured: initialData.isFeatured || false,
+        isFeatured: initialData.is_featured || false,
         tags: initialData.tags || [],
-        averageRating: initialData.averageRating || 0,
-        reviewsCount: initialData.reviewsCount || 0
+        averageRating: initialData.average_rating || 0,
+        reviewsCount: initialData.reviews_count || 0
       });
-      setPreviewImage(initialData.coverImage || '');
+      setPreviewImage(initialData.cover_image || '');
     }
   }, [initialData]);
 
@@ -193,9 +191,10 @@ const BookForm: React.FC<BookFormProps> = ({
         categoryId: parseInt(formData.categoryId),
         pages: formData.pages ? parseInt(formData.pages) : undefined,
         price: formData.price ? Math.round(parseFloat(formData.price) * 100) : undefined,
-        averageRating: initialData?.averageRating || 0,
-        reviewsCount: initialData?.reviewsCount || 0
+        averageRating: initialData?.average_rating || 0,
+        reviewsCount: initialData?.reviews_count || 0
       };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await onSubmit(submitData as any);
     }
   };
@@ -204,7 +203,7 @@ const BookForm: React.FC<BookFormProps> = ({
     <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
       <Grid container spacing={3}>
         {/* Left Column - Main Info */}
-        <Grid item xs={12} md={8}>
+        <Grid size={{ xs: 12, sm: 4 }}>
           <Paper sx={{ p: 3, mb: 3 }}>
             <Typography variant="h6" gutterBottom>
               Basic Information
@@ -212,7 +211,7 @@ const BookForm: React.FC<BookFormProps> = ({
             <Divider sx={{ mb: 3 }} />
 
             <Grid container spacing={2}>
-              <Grid item xs={12}>
+              <Grid size={{ xs: 12  }}>
                 <TextField
                   fullWidth
                   label="Title *"
@@ -225,7 +224,7 @@ const BookForm: React.FC<BookFormProps> = ({
                 />
               </Grid>
 
-              <Grid item xs={12} sm={6}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <TextField
                   fullWidth
                   label="Author *"
@@ -238,7 +237,7 @@ const BookForm: React.FC<BookFormProps> = ({
                 />
               </Grid>
 
-              <Grid item xs={12} sm={6}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <TextField
                   fullWidth
                   label="ISBN"
@@ -251,7 +250,7 @@ const BookForm: React.FC<BookFormProps> = ({
                 />
               </Grid>
 
-              <Grid item xs={12}>
+              <Grid size={{ xs: 12 }}>
                 <TextField
                   fullWidth
                   label="Description *"
@@ -266,7 +265,7 @@ const BookForm: React.FC<BookFormProps> = ({
                 />
               </Grid>
 
-              <Grid item xs={12} sm={6}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <FormControl fullWidth error={!!errors.categoryId} required>
                   <InputLabel>Category *</InputLabel>
                   <Select
@@ -277,7 +276,7 @@ const BookForm: React.FC<BookFormProps> = ({
                   >
                     {categories.map((cat) => (
                       <MenuItem key={cat.id} value={cat.id}>
-                        {cat.name} ({cat.booksCount} books)
+                        {cat.name} ({cat.books_count} books)
                       </MenuItem>
                     ))}
                   </Select>
@@ -287,7 +286,7 @@ const BookForm: React.FC<BookFormProps> = ({
                 </FormControl>
               </Grid>
 
-              <Grid item xs={12} sm={6}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <FormControl fullWidth>
                   <InputLabel>Format</InputLabel>
                   <Select
@@ -314,7 +313,7 @@ const BookForm: React.FC<BookFormProps> = ({
             <Divider sx={{ mb: 3 }} />
 
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   fullWidth
                   label="Publisher"
@@ -324,7 +323,7 @@ const BookForm: React.FC<BookFormProps> = ({
                 />
               </Grid>
 
-              <Grid item xs={12} sm={6}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   fullWidth
                   label="Publication Date"
@@ -336,7 +335,7 @@ const BookForm: React.FC<BookFormProps> = ({
                 />
               </Grid>
 
-              <Grid item xs={12} sm={4}>
+              <Grid size={{ xs: 12, sm: 4 }}>
                 <TextField
                   fullWidth
                   label="Pages"
@@ -350,7 +349,7 @@ const BookForm: React.FC<BookFormProps> = ({
                 />
               </Grid>
 
-              <Grid item xs={12} sm={4}>
+              <Grid size={{ xs: 12, sm: 4 }}>
                 <FormControl fullWidth>
                   <InputLabel>Language</InputLabel>
                   <Select
@@ -368,7 +367,7 @@ const BookForm: React.FC<BookFormProps> = ({
                 </FormControl>
               </Grid>
 
-              <Grid item xs={12} sm={4}>
+              <Grid size={{ xs: 12, sm: 4 }}>
                 <TextField
                   fullWidth
                   label="Price (in cents)"
@@ -466,7 +465,7 @@ const BookForm: React.FC<BookFormProps> = ({
         </Grid>
 
         {/* Right Column - Status & Settings */}
-        <Grid item xs={12} md={4}>
+        <Grid size={{ xs: 12, md: 4 }}>
           <Paper sx={{ p: 3, mb: 3 }}>
             <Typography variant="h6" gutterBottom>
               Status
@@ -487,6 +486,7 @@ const BookForm: React.FC<BookFormProps> = ({
                       <Chip
                         size="small"
                         label={status.label}
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         color={status.color as any}
                       />
                     </Box>
