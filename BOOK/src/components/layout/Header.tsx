@@ -96,10 +96,6 @@ const Header: React.FC<HeaderProps> = ({
     handleClose();
   };
 
-  const handleDashboard = () => {
-    navigate('/dashboard');
-    handleClose();
-  };
 
   const handleMyReviews = () => {
     navigate('/my-reviews');
@@ -374,12 +370,7 @@ const Header: React.FC<HeaderProps> = ({
                   ) : (
                     // Regular User Menu Items
                     <>
-                      <MenuItem onClick={handleDashboard}>
-                        <ListItemIcon>
-                          <DashboardIcon fontSize="small" />
-                        </ListItemIcon>
-                        Dashboard
-                      </MenuItem>
+                      
                       <MenuItem onClick={handleProfile}>
                         <ListItemIcon>
                           <PersonIcon fontSize="small" />

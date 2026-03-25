@@ -15,8 +15,8 @@ const LoginPage = lazy(() => import('./pages/public/LoginPage'));
 const RegisterPage = lazy(() => import('./pages/public/RegisterPage'));
 const ReviewsPage = lazy(() => import('./pages/public/ReviewsPage'));
 const ProfilePage = lazy(() => import('./pages/user/ProfilePage'));
-const DashboardPage = lazy(() => import('./pages/user/DashboardPage'));
-const MyReviewsPage = lazy(() => import('./pages/user/MyReviewsPage'));
+//const DashboardPage = lazy(() => import('./pages/user/DashboardPage'));
+//const MyReviewsPage = lazy(() => import('./pages/user/MyReviewsPage'));
 const SettingsPage = lazy(() => import('./pages/user/SettingsPage'));
 const NotificationsPage = lazy(() => import('./pages/notifications/NotificationsPage'));
 const AdminDashboardPage = lazy(() => import('./pages/admin/AdminDashboardPage'));
@@ -145,8 +145,8 @@ const AppContent: React.FC = () => {
 
           {/* Protected User Routes */}
           <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
-          <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
-          <Route path="/my-reviews" element={<ProtectedRoute><MyReviewsPage /></ProtectedRoute>} />
+          {/* <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} /> */}
+          {/* <Route path="/my-reviews" element={<ProtectedRoute><MyReviewsPage /></ProtectedRoute>} /> */}
           <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
           <Route path="/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
 
