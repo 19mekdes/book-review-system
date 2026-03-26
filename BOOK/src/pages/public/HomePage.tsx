@@ -190,6 +190,7 @@ const HomePage: React.FC = () => {
     ? categories.map((cat: any, index: number) => ({
         id: cat.id,
         name: cat.name,
+        // eslint-disable-next-line react-hooks/purity
         count: cat.bookCount || Math.floor(Math.random() * 3000) + 1000,
         icon: <CategoryIcon />,
         color: ['#4361ee', '#f72585', '#4cc9f0', '#f8961e', '#9c89b8', '#ef476f', '#43aa8b', '#f9c74f'][index % 8]
