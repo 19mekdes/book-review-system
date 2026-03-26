@@ -43,11 +43,10 @@ const LoginPage: React.FC = () => {
   const onSubmit = async (data: LoginFormData) => {
     setIsSubmitting(true);
     try {
-      // ✅ REMOVED the hardcoded navigate - AuthContext handles redirects
+      //  REMOVED the hardcoded navigate - AuthContext handles redirects
       await login(data.email, data.password);
       setNotification({ open: true, message: 'Login successful!', severity: 'success' });
-      // ❌ REMOVE THIS LINE: navigate('/dashboard');
-      // AuthContext will redirect based on user role
+     
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       setNotification({ 
