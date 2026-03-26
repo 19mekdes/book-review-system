@@ -653,7 +653,7 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
   // Render tree display
   const renderTree = () => {
     return (
-      <TreeView
+     <TreeView
         defaultCollapseIcon={<ExpandMoreIcon />}
         defaultExpandIcon={<ChevronRightIcon />}
         expanded={expanded}
