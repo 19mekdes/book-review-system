@@ -8,7 +8,6 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const path_1 = __importDefault(require("path"));
 // Load environment variables
 dotenv_1.default.config({ path: path_1.default.resolve(__dirname, '../../.env') });
-// Get credentials from env with fallbacks
 const dbConfig = {
     host: process.env.DB_HOST || 'localhost',
     port: parseInt(process.env.DB_PORT || '5432', 10),
@@ -21,7 +20,7 @@ const dbConfig = {
 };
 console.log('📊 Database Config:', {
     ...dbConfig,
-    password: '*********' // Hide password in logs
+    password: '*********'
 });
 // Create pool
 const pool = new pg_1.Pool(dbConfig);

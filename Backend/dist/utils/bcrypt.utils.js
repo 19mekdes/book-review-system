@@ -5,10 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.bcryptUtils = exports.BcryptUtils = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
-/**
- * Bcrypt Utility
- * Handles password hashing and comparison
- */
 class BcryptUtils {
     /**
      * Hash a password

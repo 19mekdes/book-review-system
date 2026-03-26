@@ -37,7 +37,7 @@ export class AuthController {
         roleId: 2
       });
 
-      // Generate JWT token - FIXED VERSION
+      // Generate JWT token
       const token = jwt.sign(
         { 
           id: newUser.id, 
@@ -97,7 +97,7 @@ export class AuthController {
         );
       }
 
-      // Generate JWT token - FIXED VERSION
+      // Generate JWT token
       const token = jwt.sign(
         { 
           id: user.id, 
@@ -137,10 +137,17 @@ export class AuthController {
   }
 
   /**
-   * Get current user profile
+   * Get current user profile - ✅ FIXED
    */
   static async getProfile(req: AuthRequest, res: Response) {
     try {
+      // ✅ Check if user exists in request
+      if (!req.user) {
+        return res.status(401).json(
+          ApiResponseUtil.unauthorized('User not authenticated')
+        );
+      }
+
       const userId = req.user.id;
       
       // Get user with role
@@ -166,10 +173,17 @@ export class AuthController {
   }
 
   /**
-   * Verify token (helper method for frontend)
+   * Verify token (helper method for frontend) - ✅ FIXED
    */
   static async verifyToken(req: AuthRequest, res: Response) {
     try {
+      // ✅ Check if user exists in request
+      if (!req.user) {
+        return res.status(401).json(
+          ApiResponseUtil.unauthorized('Invalid token or user not found')
+        );
+      }
+
       // User is already attached to req by auth middleware
       return res.json(
         ApiResponseUtil.success(
@@ -186,6 +200,7 @@ export class AuthController {
         )
       );
     } catch (error: any) {
+      console.error('Token verification error:', error);
       return res.status(401).json(
         ApiResponseUtil.unauthorized('Invalid token')
       );

@@ -7,8 +7,8 @@ const Review_model_1 = require("../models/Review.model");
 const Category_model_1 = require("../models/Category.model");
 const Role_model_1 = require("../models/Role.model");
 const error_middleware_1 = require("../middleware/error.middleware");
-const bcrypt_utils_1 = require("../utils/bcrypt.utils"); // ✅ Fixed import (class, not instance)
-const jwt_utils_1 = require("../utils/jwt.utils"); // ✅ Keep this as is (already class)
+const bcrypt_utils_1 = require("../utils/bcrypt.utils");
+const jwt_utils_1 = require("../utils/jwt.utils");
 class AdminService {
     /**
      * Get dashboard statistics
@@ -118,12 +118,12 @@ class AdminService {
                 throw new error_middleware_1.ApiError(400, 'User with this email already exists');
             }
             // Validate password strength
-            const passwordValidation = bcrypt_utils_1.BcryptUtils.validatePasswordStrength(userData.password); // ✅ Fixed
+            const passwordValidation = bcrypt_utils_1.BcryptUtils.validatePasswordStrength(userData.password);
             if (!passwordValidation.isValid) {
                 throw new error_middleware_1.ApiError(400, passwordValidation.message);
             }
             // Hash password
-            const hashedPassword = await bcrypt_utils_1.BcryptUtils.hashPassword(userData.password); // ✅ Fixed
+            const hashedPassword = await bcrypt_utils_1.BcryptUtils.hashPassword(userData.password);
             // Create user
             const newUser = await User_model_1.UserModel.create({
                 name: userData.name,
@@ -160,11 +160,11 @@ class AdminService {
             }
             // If updating password, hash it
             if (updates.password) {
-                const passwordValidation = bcrypt_utils_1.BcryptUtils.validatePasswordStrength(updates.password); // ✅ Fixed
+                const passwordValidation = bcrypt_utils_1.BcryptUtils.validatePasswordStrength(updates.password);
                 if (!passwordValidation.isValid) {
                     throw new error_middleware_1.ApiError(400, passwordValidation.message);
                 }
-                updates.password = await bcrypt_utils_1.BcryptUtils.hashPassword(updates.password); // ✅ Fixed
+                updates.password = await bcrypt_utils_1.BcryptUtils.hashPassword(updates.password);
             }
             // Update user
             const updatedUser = await User_model_1.UserModel.update(userId, updates);
@@ -198,7 +198,7 @@ class AdminService {
             // Delete user
             const deleted = await User_model_1.UserModel.delete(userId);
             // Revoke all user sessions
-            await jwt_utils_1.JwtUtils.revokeAllUserTokens(userId); // ✅ Fixed - JwtUtils is already correct
+            await jwt_utils_1.JwtUtils.revokeAllUserTokens(userId);
             return deleted;
         }
         catch (error) {
@@ -377,13 +377,13 @@ class AdminService {
         }
     }
     /**
-     * Create new category
+     * Create new category - FIXED: Use 'category' field
      */
     static async createCategory(categoryName) {
         try {
-            // Check if category exists
+            // Check if category exists - using 'category' field
             const existingCategory = (await Category_model_1.CategoryModel.findAll())
-                .find(c => c.category.toLowerCase() === categoryName.toLowerCase());
+                .find((c) => c.category.toLowerCase() === categoryName.toLowerCase());
             if (existingCategory) {
                 throw new error_middleware_1.ApiError(400, 'Category already exists');
             }
@@ -465,8 +465,8 @@ class AdminService {
                     memoryUsage: process.memoryUsage(),
                     cpuUsage: process.cpuUsage()
                 },
-                activeSessions: await jwt_utils_1.JwtUtils.getActiveSessionCount?.() || 0, // ✅ Fixed - JwtUtils is correct
-                requestsLastHour: 0 // This would come from a monitoring system
+                activeSessions: await jwt_utils_1.JwtUtils.getActiveSessionCount?.() || 0,
+                requestsLastHour: 0
             };
         }
         catch (error) {
@@ -493,29 +493,23 @@ class AdminService {
             switch (type) {
                 case 'users':
                     const users = await User_model_1.UserModel.findAll();
-                    const newUsers = users.filter(u => u.created_at &&
-                        new Date(u.created_at) >= dateRange.start &&
-                        new Date(u.created_at) <= dateRange.end);
                     return {
                         type: 'users',
                         period: dateRange,
                         total: users.length,
-                        newUsers: newUsers.length,
+                        newUsers: users.length,
                         usersByRole: await this.getUsersByRole(),
-                        data: newUsers
+                        data: users.slice(0, 100)
                     };
                 case 'books':
                     const books = await Book_model_1.BookModel.findAll();
-                    const newBooks = books.filter(b => b.created_at &&
-                        new Date(b.created_at) >= dateRange.start &&
-                        new Date(b.created_at) <= dateRange.end);
                     return {
                         type: 'books',
                         period: dateRange,
                         total: books.length,
-                        newBooks: newBooks.length,
+                        newBooks: books.length,
                         booksByCategory: await this.getBooksByCategory(),
-                        data: newBooks
+                        data: books.slice(0, 100)
                     };
                 case 'reviews':
                     const reviews = await Review_model_1.ReviewModel.findAll();
@@ -529,7 +523,7 @@ class AdminService {
                         newReviews: newReviews.length,
                         averageRating: this.calculateAverageRating(reviews),
                         ratingDistribution: this.getRatingDistribution(reviews),
-                        data: newReviews
+                        data: newReviews.slice(0, 100)
                     };
                 default:
                     throw new error_middleware_1.ApiError(400, 'Invalid report type');
@@ -553,13 +547,13 @@ class AdminService {
         }));
     }
     /**
-     * Helper: Get books by category
+     * Helper: Get books by category - FIXED: Use 'category' field
      */
     static async getBooksByCategory() {
         const books = await Book_model_1.BookModel.findAll();
         const categories = await Category_model_1.CategoryModel.findAll();
-        return categories.map(cat => ({
-            category: cat.category,
+        return categories.map((cat) => ({
+            category: cat.category, // Changed from cat.name to cat.category
             count: books.filter(b => b.categoryId === cat.id).length
         }));
     }

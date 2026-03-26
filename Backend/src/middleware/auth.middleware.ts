@@ -7,6 +7,7 @@ export interface AuthUser {
   email?: string;
   role?: string;
   roleId?: number;
+  name?: string;
   iat?: number;
   exp?: number;
 }
@@ -37,13 +38,14 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key') as any;
       
-      // Attach user to request
+      // ✅ Fix: Attach user to request with all required fields
       (req as AuthRequest).user = {
         id: decoded.userId || decoded.id,
         userId: decoded.userId || decoded.id,
         email: decoded.email,
-        role: decoded.role,
-        roleId: decoded.roleId
+        role: decoded.role || (decoded.roleId === 1 ? 'admin' : 'user'),
+        roleId: decoded.roleId || 2,
+        name: decoded.name || 'User'
       };
       
       next();

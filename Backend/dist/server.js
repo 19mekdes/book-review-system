@@ -7,8 +7,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const app_1 = __importDefault(require("./app"));
 const database_1 = __importDefault(require("./config/database"));
-const PORT = process.env.PORT || 5000;
-// Test database connection
+const PORT = process.env.PORT || 3000;
 async function startServer() {
     try {
         // Test database connection
@@ -32,7 +31,6 @@ async function startServer() {
         process.exit(1);
     }
 }
-// Handle unhandled promise rejections
 process.on('unhandledRejection', (err) => {
     console.error('❌ Unhandled Rejection:', err);
     process.exit(1);

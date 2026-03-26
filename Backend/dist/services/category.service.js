@@ -3,47 +3,61 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CategoryService = void 0;
 const Category_model_1 = require("../models/Category.model");
 const Book_model_1 = require("../models/Book.model");
-const Review_model_1 = require("../models/Review.model");
 const error_middleware_1 = require("../middleware/error.middleware");
 class CategoryService {
     /**
-     * Get all categories
+     * Get all categories with statistics
      */
     static async getAllCategories() {
         try {
-            return await Category_model_1.CategoryModel.findAll();
+            console.log('📚 CategoryService.getAllCategories() called');
+            const categories = await Category_model_1.CategoryModel.findAll();
+            const stats = await Category_model_1.CategoryModel.getCategoriesWithStats();
+            const result = categories.map(category => {
+                const stat = stats.find(s => s.category === category.category);
+                return {
+                    id: category.id,
+                    name: category.category, // ← FIXED: Changed 'category' to 'name' to match CategoryWithStats
+                    category: category.category, // Keep both if needed
+                    created_at: category.created_at,
+                    updated_at: category.updated_at,
+                    bookCount: stat?.bookCount || 0,
+                    reviewCount: stat?.reviewCount || 0,
+                    avgRating: stat?.avgRating || 0
+                };
+            });
+            console.log(`✅ Returning ${result.length} categories`);
+            return result;
         }
         catch (error) {
+            console.error('❌ Error in getAllCategories:', error);
             throw new error_middleware_1.ApiError(500, `Failed to get categories: ${error.message}`);
         }
     }
     /**
-     * Get categories with statistics
-     */
-    static async getCategoriesWithStats() {
-        try {
-            return await Category_model_1.CategoryModel.getCategoriesWithStats();
-        }
-        catch (error) {
-            throw new error_middleware_1.ApiError(500, `Failed to get categories with stats: ${error.message}`);
-        }
-    }
-    /**
-     * Get category by ID
+     * Get category by ID with statistics
      */
     static async getCategoryById(categoryId) {
         try {
             const category = await Category_model_1.CategoryModel.findById(categoryId);
             if (!category) {
-                throw new error_middleware_1.ApiError(404, 'Category not found');
+                return null;
             }
             const stats = await Category_model_1.CategoryModel.getCategoriesWithStats();
-            const categoryWithStats = stats.find(c => c.id === categoryId);
-            return categoryWithStats || { ...category, bookCount: 0, reviewCount: 0, avgRating: 0 };
+            const stat = stats.find(s => s.category === category.category);
+            return {
+                id: category.id,
+                name: category.category, // ← FIXED: Added name property
+                category: category.category, // Keep both if needed
+                created_at: category.created_at,
+                updated_at: category.updated_at,
+                bookCount: stat?.bookCount || 0,
+                reviewCount: stat?.reviewCount || 0,
+                avgRating: stat?.avgRating || 0
+            };
         }
         catch (error) {
-            if (error instanceof error_middleware_1.ApiError)
-                throw error;
+            console.error('Error in getCategoryById:', error);
             throw new error_middleware_1.ApiError(500, `Failed to get category: ${error.message}`);
         }
     }
@@ -52,32 +66,27 @@ class CategoryService {
      */
     static async getCategoryByName(name) {
         try {
-            const categories = await Category_model_1.CategoryModel.findAll();
-            const category = categories.find(c => c.category.toLowerCase() === name.toLowerCase());
-            if (!category) {
-                throw new error_middleware_1.ApiError(404, 'Category not found');
-            }
-            return this.getCategoryById(category.id);
+            const allCategories = await this.getAllCategories();
+            const category = allCategories.find(c => c.name?.toLowerCase() === name.toLowerCase() || c.category?.toLowerCase() === name.toLowerCase());
+            return category || null;
         }
         catch (error) {
-            if (error instanceof error_middleware_1.ApiError)
-                throw error;
-            throw new error_middleware_1.ApiError(500, `Failed to get category: ${error.message}`);
+            throw new error_middleware_1.ApiError(500, `Failed to get category by name: ${error.message}`);
         }
     }
     /**
-     * Create new category
+     * Create a new category
      */
-    static async createCategory(name) {
+    static async createCategory(categoryName) {
         try {
-            // Check if category exists
-            const categories = await Category_model_1.CategoryModel.findAll();
-            const existing = categories.find(c => c.category.toLowerCase() === name.toLowerCase());
-            if (existing) {
+            // Check if category already exists
+            const existingCategories = await Category_model_1.CategoryModel.findAll();
+            const exists = existingCategories.some(c => c.category.toLowerCase() === categoryName.toLowerCase());
+            if (exists) {
                 throw new error_middleware_1.ApiError(400, 'Category already exists');
             }
-            // Create category
-            const newCategory = await Category_model_1.CategoryModel.create(name);
+            const newCategory = await Category_model_1.CategoryModel.create(categoryName);
+            console.log(`✅ Created new category: ${categoryName}`);
             return newCategory;
         }
         catch (error) {
@@ -87,26 +96,46 @@ class CategoryService {
         }
     }
     /**
-     * Update category
+     * Bulk create categories
      */
-    static async updateCategory(categoryId, name) {
+    static async bulkCreateCategories(categories) {
         try {
-            // Check if category exists
+            const created = [];
+            for (const name of categories) {
+                try {
+                    const category = await this.createCategory(name);
+                    created.push(category);
+                }
+                catch (error) {
+                    console.error(`Failed to create category ${name}:`, error);
+                }
+            }
+            return created;
+        }
+        catch (error) {
+            throw new error_middleware_1.ApiError(500, `Failed to bulk create categories: ${error.message}`);
+        }
+    }
+    /**
+     * Update a category
+     */
+    static async updateCategory(categoryId, categoryName) {
+        try {
             const category = await Category_model_1.CategoryModel.findById(categoryId);
             if (!category) {
                 throw new error_middleware_1.ApiError(404, 'Category not found');
             }
             // Check if new name already exists
-            const categories = await Category_model_1.CategoryModel.findAll();
-            const existing = categories.find(c => c.id !== categoryId && c.category.toLowerCase() === name.toLowerCase());
-            if (existing) {
+            const allCategories = await Category_model_1.CategoryModel.findAll();
+            const nameExists = allCategories.some(c => c.category.toLowerCase() === categoryName.toLowerCase() && c.id !== categoryId);
+            if (nameExists) {
                 throw new error_middleware_1.ApiError(400, 'Category name already exists');
             }
-            // Update category
-            const updatedCategory = await Category_model_1.CategoryModel.update(categoryId, name);
+            const updatedCategory = await Category_model_1.CategoryModel.update(categoryId, categoryName);
             if (!updatedCategory) {
                 throw new error_middleware_1.ApiError(500, 'Failed to update category');
             }
+            console.log(`✅ Updated category ${categoryId} to ${categoryName}`);
             return updatedCategory;
         }
         catch (error) {
@@ -116,11 +145,10 @@ class CategoryService {
         }
     }
     /**
-     * Delete category
+     * Delete a category
      */
     static async deleteCategory(categoryId) {
         try {
-            // Check if category exists
             const category = await Category_model_1.CategoryModel.findById(categoryId);
             if (!category) {
                 throw new error_middleware_1.ApiError(404, 'Category not found');
@@ -129,10 +157,10 @@ class CategoryService {
             const books = await Book_model_1.BookModel.findAll();
             const booksInCategory = books.filter(b => b.categoryId === categoryId);
             if (booksInCategory.length > 0) {
-                throw new error_middleware_1.ApiError(400, 'Cannot delete category with books');
+                throw new error_middleware_1.ApiError(400, `Cannot delete category "${category.category}" because it has ${booksInCategory.length} books`);
             }
-            // Delete category
             const deleted = await Category_model_1.CategoryModel.delete(categoryId);
+            console.log(`✅ Deleted category: ${category.category}`);
             return deleted;
         }
         catch (error) {
@@ -142,101 +170,26 @@ class CategoryService {
         }
     }
     /**
-     * Get category statistics for a specific category
-     */
-    static async getCategoryStats(categoryId) {
-        try {
-            const category = await this.getCategoryById(categoryId);
-            const books = await Book_model_1.BookModel.findAll();
-            const categoryBooks = books.filter(b => b.categoryId === categoryId);
-            const reviews = await Review_model_1.ReviewModel.findAll();
-            const categoryReviews = reviews.filter(r => categoryBooks.some(b => b.id === r.book_id));
-            // Rating distribution
-            const ratingDistribution = [5, 4, 3, 2, 1].map(rating => ({
-                rating,
-                count: categoryReviews.filter(r => r.rating === rating).length
-            }));
-            // Top books in category
-            const topBooks = categoryBooks
-                .sort((a, b) => b.avg_rating - a.avg_rating)
-                .slice(0, 5)
-                .map(b => ({
-                id: b.id,
-                title: b.title,
-                author: b.author,
-                avgRating: b.avg_rating,
-                reviewCount: b.review_count
-            }));
-            return {
-                ...category,
-                bookCount: categoryBooks.length,
-                reviewCount: categoryReviews.length,
-                avgRating: category.avgRating,
-                ratingDistribution,
-                topBooks
-            };
-        }
-        catch (error) {
-            if (error instanceof error_middleware_1.ApiError)
-                throw error;
-            throw new error_middleware_1.ApiError(500, `Failed to get category stats: ${error.message}`);
-        }
-    }
-    /**
-     * Get all categories statistics
-     */
-    static async getAllCategoriesStats() {
-        try {
-            const categories = await Category_model_1.CategoryModel.getCategoriesWithStats();
-            const totalBooks = categories.reduce((sum, c) => sum + c.bookCount, 0);
-            const totalReviews = categories.reduce((sum, c) => sum + c.reviewCount, 0);
-            const avgRating = categories.length > 0
-                ? Number((categories.reduce((sum, c) => sum + c.avgRating, 0) / categories.length).toFixed(1))
-                : 0;
-            return {
-                categories,
-                summary: {
-                    totalCategories: categories.length,
-                    totalBooks,
-                    totalReviews,
-                    avgRating
-                }
-            };
-        }
-        catch (error) {
-            throw new error_middleware_1.ApiError(500, `Failed to get categories stats: ${error.message}`);
-        }
-    }
-    /**
      * Get books by category with pagination
      */
-    static async getBooksByCategory(categoryId, options = {}) {
+    static async getBooksByCategory(categoryId, page = 1, limit = 10) {
         try {
-            const { page = 1, limit = 10, sortBy = 'rating', sortOrder = 'desc' } = options;
-            // Check if category exists
             const category = await Category_model_1.CategoryModel.findById(categoryId);
             if (!category) {
                 throw new error_middleware_1.ApiError(404, 'Category not found');
             }
-            // Get all books in category
             const allBooks = await Book_model_1.BookModel.findAll();
-            let books = allBooks.filter(b => b.categoryId === categoryId);
-            // Sort books
-            books = this.sortBooks(books, sortBy, sortOrder);
-            // Paginate
-            const total = books.length;
+            const categoryBooks = allBooks.filter(book => book.categoryId === categoryId);
+            const total = categoryBooks.length;
             const totalPages = Math.ceil(total / limit);
             const start = (page - 1) * limit;
-            const paginatedBooks = books.slice(start, start + limit);
+            const paginatedBooks = categoryBooks.slice(start, start + limit);
             return {
-                category: category.category,
                 books: paginatedBooks,
-                pagination: {
-                    page,
-                    limit,
-                    total,
-                    totalPages
-                }
+                total,
+                page,
+                limit,
+                totalPages
             };
         }
         catch (error) {
@@ -246,11 +199,11 @@ class CategoryService {
         }
     }
     /**
-     * Get popular categories
+     * Get popular categories (categories with most books)
      */
     static async getPopularCategories(limit = 5) {
         try {
-            const categories = await Category_model_1.CategoryModel.getCategoriesWithStats();
+            const categories = await this.getAllCategories();
             return categories
                 .sort((a, b) => b.bookCount - a.bookCount)
                 .slice(0, limit);
@@ -260,76 +213,99 @@ class CategoryService {
         }
     }
     /**
+     * Get category tree
+     */
+    static async getCategoryTree() {
+        try {
+            return await this.getAllCategories();
+        }
+        catch (error) {
+            throw new error_middleware_1.ApiError(500, `Failed to get category tree: ${error.message}`);
+        }
+    }
+    /**
+     * Get category statistics
+     */
+    static async getCategoryStats(categoryId) {
+        try {
+            const category = await Category_model_1.CategoryModel.findById(categoryId);
+            if (!category) {
+                throw new error_middleware_1.ApiError(404, 'Category not found');
+            }
+            const stats = await Category_model_1.CategoryModel.getCategoriesWithStats();
+            const stat = stats.find(s => s.category === category.category);
+            return {
+                category: category.category,
+                bookCount: stat?.bookCount || 0,
+                reviewCount: stat?.reviewCount || 0,
+                avgRating: stat?.avgRating || 0
+            };
+        }
+        catch (error) {
+            if (error instanceof error_middleware_1.ApiError)
+                throw error;
+            throw new error_middleware_1.ApiError(500, `Failed to get category stats: ${error.message}`);
+        }
+    }
+    /**
+     * Get category usage (how many books and reviews)
+     */
+    static async getCategoryUsage(categoryId) {
+        try {
+            const stats = await this.getCategoryStats(categoryId);
+            return {
+                bookCount: stats.bookCount,
+                reviewCount: stats.reviewCount
+            };
+        }
+        catch (error) {
+            throw new error_middleware_1.ApiError(500, `Failed to get category usage: ${error.message}`);
+        }
+    }
+    /**
      * Search categories
      */
-    static async searchCategories(query) {
+    static async searchCategories(searchTerm) {
         try {
-            const categories = await Category_model_1.CategoryModel.findAll();
-            const queryLower = query.toLowerCase();
-            return categories.filter(c => c.category.toLowerCase().includes(queryLower));
+            const allCategories = await this.getAllCategories();
+            const lowerSearch = searchTerm.toLowerCase();
+            return allCategories.filter(c => c.name?.toLowerCase().includes(lowerSearch) || c.category?.toLowerCase().includes(lowerSearch));
         }
         catch (error) {
             throw new error_middleware_1.ApiError(500, `Failed to search categories: ${error.message}`);
         }
     }
     /**
-     * Bulk create categories
+     * Get category suggestions (for autocomplete)
      */
-    static async bulkCreateCategories(names) {
+    static async getCategorySuggestions(searchTerm, limit = 10) {
         try {
-            const created = [];
-            const skipped = [];
-            for (const name of names) {
-                try {
-                    // Check if exists
-                    const categories = await Category_model_1.CategoryModel.findAll();
-                    const existing = categories.find(c => c.category.toLowerCase() === name.toLowerCase());
-                    if (existing) {
-                        skipped.push(name);
-                        continue;
-                    }
-                    const newCategory = await Category_model_1.CategoryModel.create(name);
-                    created.push(newCategory);
-                }
-                catch (error) {
-                    skipped.push(name);
-                }
-            }
-            return { created, skipped };
+            const categories = await this.searchCategories(searchTerm);
+            return categories.slice(0, limit);
         }
         catch (error) {
-            throw new error_middleware_1.ApiError(500, `Failed to bulk create categories: ${error.message}`);
+            throw new error_middleware_1.ApiError(500, `Failed to get category suggestions: ${error.message}`);
         }
     }
     /**
-     * Merge categories
+     * Merge two categories (move all books from source to target)
      */
     static async mergeCategories(sourceId, targetId) {
         try {
-            // Check if both categories exist
             const source = await Category_model_1.CategoryModel.findById(sourceId);
             const target = await Category_model_1.CategoryModel.findById(targetId);
             if (!source || !target) {
-                throw new error_middleware_1.ApiError(404, 'One or both categories not found');
+                throw new error_middleware_1.ApiError(404, 'Category not found');
             }
-            if (sourceId === targetId) {
-                throw new error_middleware_1.ApiError(400, 'Cannot merge category with itself');
-            }
-            // Update all books from source category to target category
-            const books = await Book_model_1.BookModel.findAll();
-            const booksToUpdate = books.filter(b => b.categoryId === sourceId);
+            // Update all books from source to target
+            const allBooks = await Book_model_1.BookModel.findAll();
+            const booksToUpdate = allBooks.filter(book => book.categoryId === sourceId);
             for (const book of booksToUpdate) {
                 await Book_model_1.BookModel.update(book.id, { categoryId: targetId });
             }
-            // Delete source category
+            // Delete the source category
             await Category_model_1.CategoryModel.delete(sourceId);
-            // Get updated target stats
-            const updatedTarget = await this.getCategoryById(targetId);
-            return {
-                message: `Category "${source.category}" merged into "${target.category}"`,
-                booksUpdated: booksToUpdate.length,
-                targetCategory: updatedTarget
-            };
+            return { merged: true };
         }
         catch (error) {
             if (error instanceof error_middleware_1.ApiError)
@@ -338,82 +314,29 @@ class CategoryService {
         }
     }
     /**
-     * Validate category name
+     * Validate category name (check if it's valid and available)
      */
     static async validateCategoryName(name) {
         try {
             if (!name || name.trim().length === 0) {
-                return false;
+                return { valid: false, message: 'Category name is required' };
             }
-            const categories = await Category_model_1.CategoryModel.findAll();
-            const exists = categories.some(c => c.category.toLowerCase() === name.toLowerCase());
-            return !exists;
+            if (name.length < 2) {
+                return { valid: false, message: 'Category name must be at least 2 characters' };
+            }
+            if (name.length > 50) {
+                return { valid: false, message: 'Category name must be less than 50 characters' };
+            }
+            const existingCategories = await Category_model_1.CategoryModel.findAll();
+            const exists = existingCategories.some(c => c.category.toLowerCase() === name.toLowerCase());
+            if (exists) {
+                return { valid: false, message: 'Category name already exists' };
+            }
+            return { valid: true };
         }
         catch (error) {
-            return false;
+            throw new error_middleware_1.ApiError(500, `Failed to validate category name: ${error.message}`);
         }
-    }
-    /**
-     * Get category usage
-     */
-    static async getCategoryUsage(categoryId) {
-        try {
-            const books = await Book_model_1.BookModel.findAll();
-            if (categoryId) {
-                const category = await Category_model_1.CategoryModel.findById(categoryId);
-                if (!category) {
-                    throw new error_middleware_1.ApiError(404, 'Category not found');
-                }
-                const categoryBooks = books.filter(b => b.categoryId === categoryId);
-                return {
-                    categoryId,
-                    categoryName: category.category,
-                    booksCount: categoryBooks.length,
-                    books: categoryBooks.map(b => ({
-                        id: b.id,
-                        title: b.title,
-                        author: b.author
-                    }))
-                };
-            }
-            // Get usage for all categories
-            const categories = await Category_model_1.CategoryModel.findAll();
-            const usage = [];
-            for (const category of categories) {
-                const categoryBooks = books.filter(b => b.categoryId === category.id);
-                usage.push({
-                    categoryId: category.id,
-                    categoryName: category.category,
-                    booksCount: categoryBooks.length
-                });
-            }
-            return usage;
-        }
-        catch (error) {
-            if (error instanceof error_middleware_1.ApiError)
-                throw error;
-            throw new error_middleware_1.ApiError(500, `Failed to get category usage: ${error.message}`);
-        }
-    }
-    /**
-     * Sort books helper
-     */
-    static sortBooks(books, sortBy, sortOrder) {
-        const sorted = [...books];
-        switch (sortBy) {
-            case 'title':
-                sorted.sort((a, b) => a.title.localeCompare(b.title));
-                break;
-            case 'rating':
-                sorted.sort((a, b) => a.avg_rating - b.avg_rating);
-                break;
-            case 'reviews':
-                sorted.sort((a, b) => a.review_count - b.review_count);
-                break;
-            default:
-                sorted.sort((a, b) => a.avg_rating - b.avg_rating);
-        }
-        return sortOrder === 'desc' ? sorted.reverse() : sorted;
     }
 }
 exports.CategoryService = CategoryService;

@@ -14,7 +14,6 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-// Re-export all types from a single file
 __exportStar(require("./user.types"), exports);
 __exportStar(require("./book.types"), exports);
 __exportStar(require("./review.types"), exports);

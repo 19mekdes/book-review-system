@@ -1,102 +1,342 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BookModel = void 0;
-const index_1 = require("./index");
+const database_1 = __importDefault(require("../config/database"));
 class BookModel {
     static async findAll() {
-        const result = await (0, index_1.query)(`
-      SELECT b.*, bc.category,
-             COALESCE(ROUND(AVG(r.rating), 1), 0) as avg_rating,
-             COUNT(r.id) as review_count
-      FROM books b
-      LEFT JOIN book_categories bc ON b.categoryId = bc.id
-      LEFT JOIN reviews r ON b.id = r.book_id
-      GROUP BY b.id, bc.category
-      ORDER BY avg_rating DESC
-    `);
-        return result.rows;
+        try {
+            const query = `
+        SELECT 
+          b.id,
+          b.title,
+          b.author,
+          b.description,
+          b."categoryId",
+          b.cover_image,  -- ADD THIS LINE
+          c.category,
+          COALESCE(AVG(r.rating), 0) as avg_rating,
+          COUNT(DISTINCT r.id) as review_count
+        FROM books b
+        LEFT JOIN book_categories c ON b."categoryId" = c.id
+        LEFT JOIN reviews r ON b.id = r.book_id
+        GROUP BY b.id, c.category, b.cover_image  -- ADD b.cover_image here
+        ORDER BY b.title
+      `;
+            const result = await database_1.default.query(query);
+            return result.rows.map(row => ({
+                ...row,
+                avg_rating: parseFloat(row.avg_rating) || 0,
+                review_count: parseInt(row.review_count) || 0
+            }));
+        }
+        catch (error) {
+            console.error('Error in BookModel.findAll:', error);
+            throw error;
+        }
     }
     static async findById(id) {
-        const result = await (0, index_1.query)(`
-      SELECT b.*, bc.category,
-             COALESCE(ROUND(AVG(r.rating), 1), 0) as avg_rating,
-             COUNT(r.id) as review_count
-      FROM books b
-      LEFT JOIN book_categories bc ON b.categoryId = bc.id
-      LEFT JOIN reviews r ON b.id = r.book_id
-      WHERE b.id = $1
-      GROUP BY b.id, bc.category
-    `, [id]);
-        return result.rows[0] || null;
+        try {
+            console.log(`🔍 BookModel.findById called with ID: ${id}`);
+            // Get book with basic info
+            const bookQuery = `
+        SELECT 
+          b.id,
+          b.title,
+          b.author,
+          b.description,
+          b."categoryId",
+          b.cover_image,  -- ADD THIS LINE
+          c.category,
+          COALESCE(AVG(r.rating), 0) as avg_rating,
+          COUNT(DISTINCT r.id) as review_count
+        FROM books b
+        LEFT JOIN book_categories c ON b."categoryId" = c.id
+        LEFT JOIN reviews r ON b.id = r.book_id
+        WHERE b.id = $1
+        GROUP BY b.id, c.category, b.cover_image  -- ADD b.cover_image here
+      `;
+            const bookResult = await database_1.default.query(bookQuery, [id]);
+            if (bookResult.rows.length === 0) {
+                return null;
+            }
+            const book = bookResult.rows[0];
+            // Get all reviews for this book - WITHOUT avatar
+            const reviewsQuery = `
+        SELECT 
+          r.id,
+          r.user_id as "userId",
+          r.book_id as "bookId",
+          r.rating,
+          r.comment,
+          r.created_at as "createdAt",
+          u.name as "userName"
+        FROM reviews r
+        LEFT JOIN users u ON r.user_id = u.id
+        WHERE r.book_id = $1
+        ORDER BY r.created_at DESC
+      `;
+            const reviewsResult = await database_1.default.query(reviewsQuery, [id]);
+            console.log(`📚 Found ${reviewsResult.rows.length} reviews for book ID: ${id}`);
+            // Format the book object for frontend
+            const formattedBook = {
+                id: book.id,
+                title: book.title,
+                author: book.author,
+                description: book.description,
+                categoryId: book.categoryId,
+                category: book.category || 'Uncategorized',
+                cover_image: book.cover_image, // ADD THIS LINE
+                averageRating: parseFloat(book.avg_rating) || 0,
+                reviewCount: parseInt(book.review_count) || 0,
+                reviews: reviewsResult.rows.map(r => ({
+                    id: r.id,
+                    userId: r.userId,
+                    userName: r.userName || 'Anonymous',
+                    userAvatar: null,
+                    rating: r.rating,
+                    comment: r.comment,
+                    createdAt: r.createdAt,
+                    likes: 0,
+                    isLiked: false
+                }))
+            };
+            return formattedBook;
+        }
+        catch (error) {
+            console.error('❌ Error in BookModel.findById:', error);
+            throw error;
+        }
     }
-    static async create(book) {
-        const result = await (0, index_1.query)(`INSERT INTO books (title, author, description, categoryId) 
-       VALUES ($1, $2, $3, $4) RETURNING *`, [book.title, book.author, book.description, book.categoryId]);
-        return result.rows[0];
+    /**
+     * Create a new book
+     */
+    static async create(bookData) {
+        try {
+            const { title, author, description, categoryId, cover_image } = bookData;
+            const query = `
+        INSERT INTO books (title, author, description, "categoryId", cover_image)  -- ADD cover_image
+        VALUES ($1, $2, $3, $4, $5)
+        RETURNING id, title, author, description, "categoryId" as "categoryId", cover_image  -- ADD cover_image
+      `;
+            const values = [title, author, description || '', categoryId, cover_image || null];
+            const result = await database_1.default.query(query, values);
+            return result.rows[0];
+        }
+        catch (error) {
+            console.error('Error in BookModel.create:', error);
+            throw error;
+        }
     }
-    static async update(id, book) {
-        const fields = [];
-        const values = [];
-        let paramCount = 1;
-        if (book.title) {
-            fields.push(`title = $${paramCount++}`);
-            values.push(book.title);
+    /**
+     * Update a book
+     */
+    static async update(id, updates) {
+        try {
+            const setClauses = [];
+            const values = [];
+            let paramIndex = 1;
+            if (updates.title !== undefined) {
+                setClauses.push(`title = $${paramIndex}`);
+                values.push(updates.title);
+                paramIndex++;
+            }
+            if (updates.author !== undefined) {
+                setClauses.push(`author = $${paramIndex}`);
+                values.push(updates.author);
+                paramIndex++;
+            }
+            if (updates.description !== undefined) {
+                setClauses.push(`description = $${paramIndex}`);
+                values.push(updates.description);
+                paramIndex++;
+            }
+            if (updates.categoryId !== undefined) {
+                setClauses.push(`"categoryId" = $${paramIndex}`);
+                values.push(updates.categoryId);
+                paramIndex++;
+            }
+            if (updates.cover_image !== undefined) { // ADD THIS BLOCK
+                setClauses.push(`cover_image = $${paramIndex}`);
+                values.push(updates.cover_image);
+                paramIndex++;
+            }
+            if (setClauses.length === 0) {
+                return this.findById(id);
+            }
+            const query = `
+        UPDATE books
+        SET ${setClauses.join(', ')}
+        WHERE id = $${paramIndex}
+        RETURNING id, title, author, description, "categoryId" as "categoryId", cover_image  -- ADD cover_image
+      `;
+            values.push(id);
+            const result = await database_1.default.query(query, values);
+            return result.rows[0] || null;
         }
-        if (book.author) {
-            fields.push(`author = $${paramCount++}`);
-            values.push(book.author);
+        catch (error) {
+            console.error('Error in BookModel.update:', error);
+            throw error;
         }
-        if (book.description) {
-            fields.push(`description = $${paramCount++}`);
-            values.push(book.description);
-        }
-        if (book.categoryId) {
-            fields.push(`categoryId = $${paramCount++}`);
-            values.push(book.categoryId);
-        }
-        if (fields.length === 0)
-            return null;
-        values.push(id);
-        const result = await (0, index_1.query)(`UPDATE books SET ${fields.join(', ')} WHERE id = $${paramCount} RETURNING *`, values);
-        return result.rows[0] || null;
     }
+    /**
+     * Delete a book
+     */
     static async delete(id) {
-        const result = await (0, index_1.query)('DELETE FROM books WHERE id = $1', [id]);
-        return result.rowCount !== null && result.rowCount > 0;
-    }
-    static async getPopularBooks(limit = 5) {
-        const result = await (0, index_1.query)(`
-      SELECT b.*, bc.category,
-             COALESCE(ROUND(AVG(r.rating), 1), 0) as avg_rating,
-             COUNT(r.id) as review_count
-      FROM books b
-      LEFT JOIN book_categories bc ON b.categoryId = bc.id
-      LEFT JOIN reviews r ON b.id = r.book_id
-      GROUP BY b.id, bc.category
-      HAVING COUNT(r.id) > 0
-      ORDER BY avg_rating DESC, review_count DESC
-      LIMIT $1
-    `, [limit]);
-        return result.rows;
-    }
-    static async search(searchTerm, categoryId) {
-        let queryText = `
-      SELECT b.*, bc.category,
-             COALESCE(ROUND(AVG(r.rating), 1), 0) as avg_rating,
-             COUNT(r.id) as review_count
-      FROM books b
-      LEFT JOIN book_categories bc ON b.categoryId = bc.id
-      LEFT JOIN reviews r ON b.id = r.book_id
-      WHERE b.title ILIKE $1 OR b.author ILIKE $1
-    `;
-        const params = [`%${searchTerm}%`];
-        if (categoryId) {
-            queryText += ` AND b.categoryId = $2`;
-            params.push(categoryId.toString());
+        try {
+            const query = 'DELETE FROM books WHERE id = $1 RETURNING id';
+            const result = await database_1.default.query(query, [id]);
+            return result.rowCount ? result.rowCount > 0 : false;
         }
-        queryText += ` GROUP BY b.id, bc.category ORDER BY avg_rating DESC`;
-        const result = await (0, index_1.query)(queryText, params);
-        return result.rows;
+        catch (error) {
+            console.error('Error in BookModel.delete:', error);
+            throw error;
+        }
+    }
+    /**
+     * Get popular books
+     */
+    static async getPopularBooks(limit = 10) {
+        try {
+            const query = `
+        SELECT 
+          b.id,
+          b.title,
+          b.author,
+          b.description,
+          b."categoryId",
+          b.cover_image,  -- ADD THIS LINE
+          c.category,
+          COALESCE(AVG(r.rating), 0) as avg_rating,
+          COUNT(DISTINCT r.id) as review_count
+        FROM books b
+        LEFT JOIN book_categories c ON b."categoryId" = c.id
+        LEFT JOIN reviews r ON b.id = r.book_id
+        GROUP BY b.id, c.category, b.cover_image  -- ADD b.cover_image here
+        ORDER BY review_count DESC, avg_rating DESC
+        LIMIT $1
+      `;
+            const result = await database_1.default.query(query, [limit]);
+            return result.rows.map(row => ({
+                ...row,
+                avg_rating: parseFloat(row.avg_rating) || 0,
+                review_count: parseInt(row.review_count) || 0
+            }));
+        }
+        catch (error) {
+            console.error('Error in BookModel.getPopularBooks:', error);
+            throw error;
+        }
+    }
+    /**
+     * Get books by category
+     */
+    static async findByCategory(categoryId, limit, offset) {
+        try {
+            let query = `
+        SELECT 
+          b.id,
+          b.title,
+          b.author,
+          b.description,
+          b."categoryId",
+          b.cover_image,  -- ADD THIS LINE
+          c.category,
+          COALESCE(AVG(r.rating), 0) as avg_rating,
+          COUNT(DISTINCT r.id) as review_count
+        FROM books b
+        LEFT JOIN book_categories c ON b."categoryId" = c.id
+        LEFT JOIN reviews r ON b.id = r.book_id
+        WHERE b."categoryId" = $1
+        GROUP BY b.id, c.category, b.cover_image  -- ADD b.cover_image here
+        ORDER BY b.title
+      `;
+            const params = [categoryId];
+            if (limit !== undefined) {
+                query += ` LIMIT $2`;
+                params.push(limit);
+                if (offset !== undefined) {
+                    query += ` OFFSET $3`;
+                    params.push(offset);
+                }
+            }
+            const result = await database_1.default.query(query, params);
+            return result.rows.map(row => ({
+                ...row,
+                avg_rating: parseFloat(row.avg_rating) || 0,
+                review_count: parseInt(row.review_count) || 0
+            }));
+        }
+        catch (error) {
+            console.error('Error in BookModel.findByCategory:', error);
+            throw error;
+        }
+    }
+    /**
+     * Search books
+     */
+    static async search(searchTerm, limit, offset) {
+        try {
+            let query = `
+        SELECT 
+          b.id,
+          b.title,
+          b.author,
+          b.description,
+          b."categoryId",
+          b.cover_image,  -- ADD THIS LINE
+          c.category,
+          COALESCE(AVG(r.rating), 0) as avg_rating,
+          COUNT(DISTINCT r.id) as review_count
+        FROM books b
+        LEFT JOIN book_categories c ON b."categoryId" = c.id
+        LEFT JOIN reviews r ON b.id = r.book_id
+        WHERE b.title ILIKE $1 OR b.author ILIKE $1 OR b.description ILIKE $1
+        GROUP BY b.id, c.category, b.cover_image  -- ADD b.cover_image here
+        ORDER BY 
+          CASE 
+            WHEN b.title ILIKE $1 THEN 1
+            WHEN b.author ILIKE $1 THEN 2
+            ELSE 3
+          END,
+          b.title
+      `;
+            const params = [`%${searchTerm}%`];
+            if (limit !== undefined) {
+                query += ` LIMIT $2`;
+                params.push(limit);
+                if (offset !== undefined) {
+                    query += ` OFFSET $3`;
+                    params.push(offset);
+                }
+            }
+            const result = await database_1.default.query(query, params);
+            return result.rows.map(row => ({
+                ...row,
+                avg_rating: parseFloat(row.avg_rating) || 0,
+                review_count: parseInt(row.review_count) || 0
+            }));
+        }
+        catch (error) {
+            console.error('Error in BookModel.search:', error);
+            throw error;
+        }
+    }
+    /**
+     * Count total books
+     */
+    static async count() {
+        try {
+            const query = 'SELECT COUNT(*) as count FROM books';
+            const result = await database_1.default.query(query);
+            return parseInt(result.rows[0].count);
+        }
+        catch (error) {
+            console.error('Error in BookModel.count:', error);
+            throw error;
+        }
     }
 }
 exports.BookModel = BookModel;

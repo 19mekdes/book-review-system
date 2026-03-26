@@ -3,33 +3,28 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CategoryController = void 0;
 const category_service_1 = require("../services/category.service");
 const apiResponse_utils_1 = require("../utils/apiResponse.utils");
-// Helper functions for query parameters
-const getQueryString = (param) => {
-    if (Array.isArray(param)) {
-        return param[0]; // Take first value if array
-    }
-    return typeof param === 'string' ? param : undefined;
-};
+// Helper functions
 const getQueryNumber = (param) => {
-    const str = getQueryString(param);
-    if (str) {
-        const num = parseInt(str, 10);
+    if (typeof param === 'string') {
+        const num = parseInt(param, 10);
+        return isNaN(num) ? undefined : num;
+    }
+    if (Array.isArray(param) && param.length > 0) {
+        const num = parseInt(param[0], 10);
         return isNaN(num) ? undefined : num;
     }
     return undefined;
 };
-const getQueryBoolean = (param) => {
-    const str = getQueryString(param);
-    if (str) {
-        return str.toLowerCase() === 'true';
-    }
+const getQueryString = (param) => {
+    if (typeof param === 'string')
+        return param;
+    if (Array.isArray(param) && param.length > 0)
+        return param[0];
     return undefined;
 };
-// Helper function for route parameters (req.params)
 const getRouteParam = (param) => {
-    if (Array.isArray(param)) {
-        return param[0]; // Take first value if array
-    }
+    if (Array.isArray(param))
+        return param[0];
     return param;
 };
 class CategoryController {
@@ -38,17 +33,11 @@ class CategoryController {
      */
     static async getAllCategories(req, res) {
         try {
-            const includeStats = getQueryBoolean(req.query.stats) || false;
-            let categories;
-            if (includeStats) {
-                categories = await category_service_1.CategoryService.getCategoriesWithStats();
-            }
-            else {
-                categories = await category_service_1.CategoryService.getAllCategories();
-            }
+            const categories = await category_service_1.CategoryService.getAllCategories();
             return res.json(apiResponse_utils_1.ApiResponseUtil.success(categories, 'Categories retrieved successfully'));
         }
         catch (error) {
+            console.error('Error in getAllCategories:', error);
             return res.status(error.statusCode || 500).json(apiResponse_utils_1.ApiResponseUtil.error(error.message || 'Failed to get categories'));
         }
     }
@@ -63,9 +52,13 @@ class CategoryController {
                 return res.status(400).json(apiResponse_utils_1.ApiResponseUtil.badRequest('Invalid category ID'));
             }
             const category = await category_service_1.CategoryService.getCategoryById(categoryId);
+            if (!category) {
+                return res.status(404).json(apiResponse_utils_1.ApiResponseUtil.notFound('Category not found'));
+            }
             return res.json(apiResponse_utils_1.ApiResponseUtil.success(category, 'Category retrieved successfully'));
         }
         catch (error) {
+            console.error('Error in getCategoryById:', error);
             return res.status(error.statusCode || 500).json(apiResponse_utils_1.ApiResponseUtil.error(error.message || 'Failed to get category'));
         }
     }
@@ -74,20 +67,171 @@ class CategoryController {
      */
     static async getCategoryByName(req, res) {
         try {
-            const nameParam = getRouteParam(req.params.name);
-            const name = nameParam || '';
+            const name = getRouteParam(req.params.name);
             if (!name) {
                 return res.status(400).json(apiResponse_utils_1.ApiResponseUtil.badRequest('Category name is required'));
             }
             const category = await category_service_1.CategoryService.getCategoryByName(name);
+            if (!category) {
+                return res.status(404).json(apiResponse_utils_1.ApiResponseUtil.notFound('Category not found'));
+            }
             return res.json(apiResponse_utils_1.ApiResponseUtil.success(category, 'Category retrieved successfully'));
         }
         catch (error) {
+            console.error('Error in getCategoryByName:', error);
             return res.status(error.statusCode || 500).json(apiResponse_utils_1.ApiResponseUtil.error(error.message || 'Failed to get category'));
         }
     }
     /**
-     * Create new category (admin only)
+     * Get categories with statistics
+     */
+    static async getCategoriesWithStats(req, res) {
+        try {
+            const categories = await category_service_1.CategoryService.getAllCategories();
+            return res.json(apiResponse_utils_1.ApiResponseUtil.success(categories, 'Category statistics retrieved successfully'));
+        }
+        catch (error) {
+            console.error('Error in getCategoriesWithStats:', error);
+            return res.status(error.statusCode || 500).json(apiResponse_utils_1.ApiResponseUtil.error(error.message || 'Failed to get category statistics'));
+        }
+    }
+    /**
+     * Get popular categories
+     */
+    static async getPopularCategories(req, res) {
+        try {
+            const limit = getQueryNumber(req.query.limit) || 5;
+            const categories = await category_service_1.CategoryService.getPopularCategories(limit);
+            return res.json(apiResponse_utils_1.ApiResponseUtil.success(categories, 'Popular categories retrieved successfully'));
+        }
+        catch (error) {
+            console.error('Error in getPopularCategories:', error);
+            return res.status(error.statusCode || 500).json(apiResponse_utils_1.ApiResponseUtil.error(error.message || 'Failed to get popular categories'));
+        }
+    }
+    /**
+     * Get category tree
+     */
+    static async getCategoryTree(req, res) {
+        try {
+            const tree = await category_service_1.CategoryService.getCategoryTree();
+            return res.json(apiResponse_utils_1.ApiResponseUtil.success(tree, 'Category tree retrieved successfully'));
+        }
+        catch (error) {
+            console.error('Error in getCategoryTree:', error);
+            return res.status(error.statusCode || 500).json(apiResponse_utils_1.ApiResponseUtil.error(error.message || 'Failed to get category tree'));
+        }
+    }
+    /**
+     * Search categories
+     */
+    static async searchCategories(req, res) {
+        try {
+            const query = getQueryString(req.query.q);
+            if (!query) {
+                return res.status(400).json(apiResponse_utils_1.ApiResponseUtil.badRequest('Search query is required'));
+            }
+            const categories = await category_service_1.CategoryService.searchCategories(query);
+            return res.json(apiResponse_utils_1.ApiResponseUtil.success(categories, 'Categories retrieved successfully'));
+        }
+        catch (error) {
+            console.error('Error in searchCategories:', error);
+            return res.status(error.statusCode || 500).json(apiResponse_utils_1.ApiResponseUtil.error(error.message || 'Failed to search categories'));
+        }
+    }
+    /**
+     * Get category suggestions (autocomplete)
+     */
+    static async getCategorySuggestions(req, res) {
+        try {
+            const query = getQueryString(req.query.q);
+            const limit = getQueryNumber(req.query.limit) || 10;
+            if (!query) {
+                return res.status(400).json(apiResponse_utils_1.ApiResponseUtil.badRequest('Search query is required'));
+            }
+            const suggestions = await category_service_1.CategoryService.getCategorySuggestions(query, limit);
+            return res.json(apiResponse_utils_1.ApiResponseUtil.success(suggestions, 'Category suggestions retrieved successfully'));
+        }
+        catch (error) {
+            console.error('Error in getCategorySuggestions:', error);
+            return res.status(error.statusCode || 500).json(apiResponse_utils_1.ApiResponseUtil.error(error.message || 'Failed to get category suggestions'));
+        }
+    }
+    /**
+     * Get category stats
+     */
+    static async getCategoryStats(req, res) {
+        try {
+            const idParam = getRouteParam(req.params.id);
+            const categoryId = parseInt(idParam || '', 10);
+            if (isNaN(categoryId)) {
+                return res.status(400).json(apiResponse_utils_1.ApiResponseUtil.badRequest('Invalid category ID'));
+            }
+            const stats = await category_service_1.CategoryService.getCategoryStats(categoryId);
+            return res.json(apiResponse_utils_1.ApiResponseUtil.success(stats, 'Category stats retrieved successfully'));
+        }
+        catch (error) {
+            console.error('Error in getCategoryStats:', error);
+            return res.status(error.statusCode || 500).json(apiResponse_utils_1.ApiResponseUtil.error(error.message || 'Failed to get category stats'));
+        }
+    }
+    /**
+     * Get category usage
+     */
+    static async getCategoryUsage(req, res) {
+        try {
+            const idParam = getRouteParam(req.params.id);
+            const categoryId = parseInt(idParam || '', 10);
+            if (isNaN(categoryId)) {
+                return res.status(400).json(apiResponse_utils_1.ApiResponseUtil.badRequest('Invalid category ID'));
+            }
+            const usage = await category_service_1.CategoryService.getCategoryUsage(categoryId);
+            return res.json(apiResponse_utils_1.ApiResponseUtil.success(usage, 'Category usage retrieved successfully'));
+        }
+        catch (error) {
+            console.error('Error in getCategoryUsage:', error);
+            return res.status(error.statusCode || 500).json(apiResponse_utils_1.ApiResponseUtil.error(error.message || 'Failed to get category usage'));
+        }
+    }
+    /**
+     * Get books by category
+     */
+    static async getBooksByCategory(req, res) {
+        try {
+            const idParam = getRouteParam(req.params.id);
+            const categoryId = parseInt(idParam || '', 10);
+            if (isNaN(categoryId)) {
+                return res.status(400).json(apiResponse_utils_1.ApiResponseUtil.badRequest('Invalid category ID'));
+            }
+            const page = getQueryNumber(req.query.page) || 1;
+            const limit = getQueryNumber(req.query.limit) || 10;
+            const result = await category_service_1.CategoryService.getBooksByCategory(categoryId, page, limit);
+            return res.json(apiResponse_utils_1.ApiResponseUtil.success(result, 'Books retrieved successfully'));
+        }
+        catch (error) {
+            console.error('Error in getBooksByCategory:', error);
+            return res.status(error.statusCode || 500).json(apiResponse_utils_1.ApiResponseUtil.error(error.message || 'Failed to get books by category'));
+        }
+    }
+    /**
+     * Validate category name
+     */
+    static async validateCategoryName(req, res) {
+        try {
+            const name = getQueryString(req.query.name);
+            if (!name) {
+                return res.status(400).json(apiResponse_utils_1.ApiResponseUtil.badRequest('Category name is required'));
+            }
+            const validation = await category_service_1.CategoryService.validateCategoryName(name);
+            return res.json(apiResponse_utils_1.ApiResponseUtil.success(validation, 'Category name validation completed'));
+        }
+        catch (error) {
+            console.error('Error in validateCategoryName:', error);
+            return res.status(error.statusCode || 500).json(apiResponse_utils_1.ApiResponseUtil.error(error.message || 'Failed to validate category name'));
+        }
+    }
+    /**
+     * Create category (admin only)
      */
     static async createCategory(req, res) {
         try {
@@ -99,11 +243,29 @@ class CategoryController {
             return res.status(201).json(apiResponse_utils_1.ApiResponseUtil.created(category, 'Category created successfully'));
         }
         catch (error) {
+            console.error('Error in createCategory:', error);
             return res.status(error.statusCode || 500).json(apiResponse_utils_1.ApiResponseUtil.error(error.message || 'Failed to create category'));
         }
     }
     /**
-     * Update category (admin only)
+     * Bulk create categories (admin only)
+     */
+    static async bulkCreateCategories(req, res) {
+        try {
+            const { categories } = req.body;
+            if (!categories || !Array.isArray(categories) || categories.length === 0) {
+                return res.status(400).json(apiResponse_utils_1.ApiResponseUtil.badRequest('Categories array is required'));
+            }
+            const created = await category_service_1.CategoryService.bulkCreateCategories(categories);
+            return res.status(201).json(apiResponse_utils_1.ApiResponseUtil.created(created, `${created.length} categories created successfully`));
+        }
+        catch (error) {
+            console.error('Error in bulkCreateCategories:', error);
+            return res.status(error.statusCode || 500).json(apiResponse_utils_1.ApiResponseUtil.error(error.message || 'Failed to create categories'));
+        }
+    }
+    /**
+     * Update category (admin only) - FIXED
      */
     static async updateCategory(req, res) {
         try {
@@ -116,10 +278,12 @@ class CategoryController {
             if (!name) {
                 return res.status(400).json(apiResponse_utils_1.ApiResponseUtil.badRequest('Category name is required'));
             }
+            // FIXED: Pass only the name string, not an object
             const category = await category_service_1.CategoryService.updateCategory(categoryId, name);
             return res.json(apiResponse_utils_1.ApiResponseUtil.success(category, 'Category updated successfully'));
         }
         catch (error) {
+            console.error('Error in updateCategory:', error);
             return res.status(error.statusCode || 500).json(apiResponse_utils_1.ApiResponseUtil.error(error.message || 'Failed to update category'));
         }
     }
@@ -137,114 +301,8 @@ class CategoryController {
             return res.json(apiResponse_utils_1.ApiResponseUtil.success(null, 'Category deleted successfully'));
         }
         catch (error) {
+            console.error('Error in deleteCategory:', error);
             return res.status(error.statusCode || 500).json(apiResponse_utils_1.ApiResponseUtil.error(error.message || 'Failed to delete category'));
-        }
-    }
-    /**
-     * Get category statistics
-     */
-    static async getCategoryStats(req, res) {
-        try {
-            let categoryId;
-            if (req.params.id) {
-                const idParam = getRouteParam(req.params.id);
-                const parsedId = parseInt(idParam || '', 10);
-                categoryId = isNaN(parsedId) ? undefined : parsedId;
-            }
-            if (categoryId !== undefined && isNaN(categoryId)) {
-                return res.status(400).json(apiResponse_utils_1.ApiResponseUtil.badRequest('Invalid category ID'));
-            }
-            let stats;
-            if (categoryId) {
-                stats = await category_service_1.CategoryService.getCategoryStats(categoryId);
-            }
-            else {
-                stats = await category_service_1.CategoryService.getAllCategoriesStats();
-            }
-            return res.json(apiResponse_utils_1.ApiResponseUtil.success(stats, 'Category statistics retrieved successfully'));
-        }
-        catch (error) {
-            return res.status(error.statusCode || 500).json(apiResponse_utils_1.ApiResponseUtil.error(error.message || 'Failed to get category statistics'));
-        }
-    }
-    /**
-     * Get books by category
-     */
-    static async getBooksByCategory(req, res) {
-        try {
-            const idParam = getRouteParam(req.params.id);
-            const categoryId = parseInt(idParam || '', 10);
-            if (isNaN(categoryId)) {
-                return res.status(400).json(apiResponse_utils_1.ApiResponseUtil.badRequest('Invalid category ID'));
-            }
-            const page = getQueryNumber(req.query.page) || 1;
-            const limit = getQueryNumber(req.query.limit) || 10;
-            const sortBy = getQueryString(req.query.sortBy);
-            const sortOrder = getQueryString(req.query.sortOrder);
-            const result = await category_service_1.CategoryService.getBooksByCategory(categoryId, { page, limit, sortBy, sortOrder });
-            return res.json(apiResponse_utils_1.ApiResponseUtil.success(result, 'Books retrieved successfully'));
-        }
-        catch (error) {
-            return res.status(error.statusCode || 500).json(apiResponse_utils_1.ApiResponseUtil.error(error.message || 'Failed to get books by category'));
-        }
-    }
-    /**
-     * Get popular categories
-     */
-    static async getPopularCategories(req, res) {
-        try {
-            const limit = getQueryNumber(req.query.limit) || 5;
-            const categories = await category_service_1.CategoryService.getPopularCategories(limit);
-            return res.json(apiResponse_utils_1.ApiResponseUtil.success(categories, 'Popular categories retrieved successfully'));
-        }
-        catch (error) {
-            return res.status(500).json(apiResponse_utils_1.ApiResponseUtil.error(error.message || 'Failed to get popular categories'));
-        }
-    }
-    /**
-     * Search categories
-     */
-    static async searchCategories(req, res) {
-        try {
-            const query = getQueryString(req.query.q);
-            if (!query) {
-                return res.status(400).json(apiResponse_utils_1.ApiResponseUtil.badRequest('Search query is required'));
-            }
-            const categories = await category_service_1.CategoryService.searchCategories(query);
-            return res.json(apiResponse_utils_1.ApiResponseUtil.success(categories, 'Search completed successfully'));
-        }
-        catch (error) {
-            return res.status(500).json(apiResponse_utils_1.ApiResponseUtil.error(error.message || 'Search failed'));
-        }
-    }
-    /**
-     * Bulk create categories (admin only)
-     */
-    static async bulkCreateCategories(req, res) {
-        try {
-            const { categories } = req.body;
-            if (!categories || !Array.isArray(categories) || categories.length === 0) {
-                return res.status(400).json(apiResponse_utils_1.ApiResponseUtil.badRequest('Categories array is required'));
-            }
-            const result = await category_service_1.CategoryService.bulkCreateCategories(categories);
-            return res.status(201).json(apiResponse_utils_1.ApiResponseUtil.success(result, `${result.created.length} categories created successfully, ${result.skipped.length} skipped`));
-        }
-        catch (error) {
-            return res.status(error.statusCode || 500).json(apiResponse_utils_1.ApiResponseUtil.error(error.message || 'Failed to bulk create categories'));
-        }
-    }
-    /**
-     * Get category tree/hierarchy (for nested categories if implemented)
-     */
-    static async getCategoryTree(req, res) {
-        try {
-            // This would be implemented if you have parent-child category relationships
-            const categories = await category_service_1.CategoryService.getAllCategories();
-            // Simple flat list for now
-            return res.json(apiResponse_utils_1.ApiResponseUtil.success(categories, 'Category tree retrieved successfully'));
-        }
-        catch (error) {
-            return res.status(500).json(apiResponse_utils_1.ApiResponseUtil.error(error.message || 'Failed to get category tree'));
         }
     }
     /**
@@ -256,10 +314,11 @@ class CategoryController {
             if (!sourceId || !targetId) {
                 return res.status(400).json(apiResponse_utils_1.ApiResponseUtil.badRequest('Source and target category IDs are required'));
             }
-            const result = await category_service_1.CategoryService.mergeCategories(sourceId, targetId);
+            const result = await category_service_1.CategoryService.mergeCategories(parseInt(sourceId), parseInt(targetId));
             return res.json(apiResponse_utils_1.ApiResponseUtil.success(result, 'Categories merged successfully'));
         }
         catch (error) {
+            console.error('Error in mergeCategories:', error);
             return res.status(error.statusCode || 500).json(apiResponse_utils_1.ApiResponseUtil.error(error.message || 'Failed to merge categories'));
         }
     }
@@ -268,22 +327,27 @@ class CategoryController {
      */
     static async exportCategories(req, res) {
         try {
-            const format = getQueryString(req.query.format) || 'json';
             const categories = await category_service_1.CategoryService.getAllCategories();
-            if (format === 'csv') {
-                // Convert to CSV
-                const csv = this.convertToCSV(categories);
-                res.setHeader('Content-Type', 'text/csv');
-                res.setHeader('Content-Disposition', 'attachment; filename=categories.csv');
-                return res.send(csv);
-            }
-            else {
-                // Return as JSON
-                return res.json(apiResponse_utils_1.ApiResponseUtil.success(categories, 'Categories exported successfully'));
-            }
+            // Format as CSV
+            const csvHeaders = ['ID', 'Name', 'Book Count', 'Review Count', 'Avg Rating', 'Created At'];
+            const csvRows = categories.map(cat => [
+                cat.id,
+                cat.category,
+                cat.bookCount,
+                cat.reviewCount,
+                cat.avgRating.toFixed(2),
+                cat.created_at || ''
+            ]);
+            const csvContent = [csvHeaders, ...csvRows]
+                .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+                .join('\n');
+            res.setHeader('Content-Type', 'text/csv');
+            res.setHeader('Content-Disposition', `attachment; filename=categories-${new Date().toISOString().split('T')[0]}.csv`);
+            res.send(csvContent);
         }
         catch (error) {
-            return res.status(500).json(apiResponse_utils_1.ApiResponseUtil.error(error.message || 'Failed to export categories'));
+            console.error('Error in exportCategories:', error);
+            return res.status(error.statusCode || 500).json(apiResponse_utils_1.ApiResponseUtil.error(error.message || 'Failed to export categories'));
         }
     }
     /**
@@ -291,90 +355,64 @@ class CategoryController {
      */
     static async importCategories(req, res) {
         try {
-            const { categories } = req.body;
-            if (!categories || !Array.isArray(categories)) {
-                return res.status(400).json(apiResponse_utils_1.ApiResponseUtil.badRequest('Categories array is required'));
+            const file = req.file;
+            if (!file) {
+                return res.status(400).json(apiResponse_utils_1.ApiResponseUtil.badRequest('No file uploaded'));
             }
-            const result = await category_service_1.CategoryService.bulkCreateCategories(categories);
-            return res.status(201).json(apiResponse_utils_1.ApiResponseUtil.success(result, `${result.created.length} categories imported successfully`));
+            // Parse CSV content
+            const content = file.buffer.toString('utf-8');
+            const lines = content.split('\n').filter((line) => line.trim());
+            if (lines.length < 2) {
+                return res.status(400).json(apiResponse_utils_1.ApiResponseUtil.badRequest('File must contain headers and data'));
+            }
+            // Parse CSV line
+            const parseCSVLine = (line) => {
+                const result = [];
+                let current = '';
+                let inQuotes = false;
+                for (let i = 0; i < line.length; i++) {
+                    const char = line[i];
+                    if (char === '"') {
+                        inQuotes = !inQuotes;
+                    }
+                    else if (char === ',' && !inQuotes) {
+                        result.push(current);
+                        current = '';
+                    }
+                    else {
+                        current += char;
+                    }
+                }
+                result.push(current);
+                return result.map(cell => cell.replace(/^"|"$/g, '').replace(/""/g, '"'));
+            };
+            const headers = parseCSVLine(lines[0]);
+            const nameIndex = headers.findIndex(h => h.toLowerCase() === 'name');
+            if (nameIndex === -1) {
+                return res.status(400).json(apiResponse_utils_1.ApiResponseUtil.badRequest('CSV must contain a "Name" column'));
+            }
+            const categories = [];
+            const errors = [];
+            for (let i = 1; i < lines.length; i++) {
+                const values = parseCSVLine(lines[i]);
+                const name = values[nameIndex]?.trim();
+                if (name) {
+                    categories.push(name);
+                }
+                else {
+                    errors.push(`Row ${i + 1}: Missing category name`);
+                }
+            }
+            if (categories.length === 0) {
+                return res.status(400).json(apiResponse_utils_1.ApiResponseUtil.badRequest('No valid categories found in file'));
+            }
+            const created = await category_service_1.CategoryService.bulkCreateCategories(categories);
+            return res.status(201).json(apiResponse_utils_1.ApiResponseUtil.created({ created: created.length, total: categories.length, errors }, `${created.length} categories imported successfully`));
         }
         catch (error) {
+            console.error('Error in importCategories:', error);
             return res.status(error.statusCode || 500).json(apiResponse_utils_1.ApiResponseUtil.error(error.message || 'Failed to import categories'));
         }
-    }
-    /**
-     * Validate category name
-     */
-    static async validateCategoryName(req, res) {
-        try {
-            const name = getQueryString(req.query.name);
-            if (!name) {
-                return res.status(400).json(apiResponse_utils_1.ApiResponseUtil.badRequest('Category name is required'));
-            }
-            const isValid = await category_service_1.CategoryService.validateCategoryName(name);
-            return res.json(apiResponse_utils_1.ApiResponseUtil.success({ isValid, name }, 'Category name validated successfully'));
-        }
-        catch (error) {
-            return res.status(500).json(apiResponse_utils_1.ApiResponseUtil.error(error.message || 'Failed to validate category name'));
-        }
-    }
-    /**
-     * Get category suggestions based on partial input
-     */
-    static async getCategorySuggestions(req, res) {
-        try {
-            const query = getQueryString(req.query.q);
-            const limit = getQueryNumber(req.query.limit) || 5;
-            if (!query || query.length < 2) {
-                return res.json(apiResponse_utils_1.ApiResponseUtil.success([], 'No suggestions available'));
-            }
-            const categories = await category_service_1.CategoryService.searchCategories(query);
-            const suggestions = categories.slice(0, limit).map(c => c.category);
-            return res.json(apiResponse_utils_1.ApiResponseUtil.success(suggestions, 'Suggestions retrieved successfully'));
-        }
-        catch (error) {
-            return res.status(500).json(apiResponse_utils_1.ApiResponseUtil.error(error.message || 'Failed to get suggestions'));
-        }
-    }
-    /**
-     * Get category usage statistics
-     */
-    static async getCategoryUsage(req, res) {
-        try {
-            let categoryId;
-            if (req.params.id) {
-                const idParam = getRouteParam(req.params.id);
-                const parsedId = parseInt(idParam || '', 10);
-                categoryId = isNaN(parsedId) ? undefined : parsedId;
-            }
-            if (categoryId !== undefined && isNaN(categoryId)) {
-                return res.status(400).json(apiResponse_utils_1.ApiResponseUtil.badRequest('Invalid category ID'));
-            }
-            const usage = await category_service_1.CategoryService.getCategoryUsage(categoryId);
-            return res.json(apiResponse_utils_1.ApiResponseUtil.success(usage, 'Category usage statistics retrieved successfully'));
-        }
-        catch (error) {
-            return res.status(error.statusCode || 500).json(apiResponse_utils_1.ApiResponseUtil.error(error.message || 'Failed to get category usage'));
-        }
-    }
-    /**
-     * Helper: Convert categories to CSV
-     */
-    static convertToCSV(categories) {
-        const headers = ['ID', 'Name', 'Books Count', 'Reviews Count', 'Average Rating', 'Created At'];
-        const rows = categories.map(c => [
-            c.id,
-            c.category,
-            c.bookCount || 0,
-            c.reviewCount || 0,
-            c.avgRating || 0,
-            c.created_at ? new Date(c.created_at).toLocaleDateString() : ''
-        ]);
-        const csvContent = [
-            headers.join(','),
-            ...rows.map(row => row.join(','))
-        ].join('\n');
-        return csvContent;
     }
 }
 exports.CategoryController = CategoryController;

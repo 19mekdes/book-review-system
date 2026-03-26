@@ -2,8 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const User_model_1 = require("../models/User.model");
-const bcrypt_utils_1 = require("../utils/bcrypt.utils"); // ✅ Fixed import (class, not instance)
-const jwt_utils_1 = require("../utils/jwt.utils"); // ✅ Fixed import (class, not instance)
+const bcrypt_utils_1 = require("../utils/bcrypt.utils");
+const jwt_utils_1 = require("../utils/jwt.utils");
 const error_middleware_1 = require("../middleware/error.middleware");
 class AuthService {
     /**

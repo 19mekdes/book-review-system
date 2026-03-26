@@ -6,7 +6,7 @@ import { AuthRequest } from '../middleware/auth.middleware';
 // Helper functions for query parameters
 const getQueryString = (param: unknown): string | undefined => {
   if (Array.isArray(param)) {
-    return param[0]; // Take first value if array
+    return param[0];
   }
   return typeof param === 'string' ? param : undefined;
 };
@@ -28,10 +28,9 @@ const getQueryBoolean = (param: unknown): boolean | undefined => {
   return undefined;
 };
 
-// Helper function for route parameters (req.params)
 const getRouteParam = (param: string | string[] | undefined): string | undefined => {
   if (Array.isArray(param)) {
-    return param[0]; // Take first value if array
+    return param[0];
   }
   return param;
 };
@@ -58,6 +57,21 @@ export class UserController {
    */
   static async getAllUsers(req: AuthRequest, res: Response) {
     try {
+      // ✅ Check if user exists
+      if (!req.user) {
+        return res.status(401).json(
+          ApiResponseUtil.unauthorized('User not authenticated')
+        );
+      }
+
+      // Check if user is admin
+      const isAdmin = req.user.roleId === 1 || req.user.role === 'admin';
+      if (!isAdmin) {
+        return res.status(403).json(
+          ApiResponseUtil.error('Admin access required', )
+        );
+      }
+
       const filters = {
         search: getQueryString(req.query.search),
         role: getQueryString(req.query.role),
@@ -83,6 +97,7 @@ export class UserController {
         ApiResponseUtil.success(result, 'Users retrieved successfully')
       );
     } catch (error: any) {
+      console.error('Error in getAllUsers:', error);
       return res.status(error.statusCode || 500).json(
         ApiResponseUtil.error(error.message || 'Failed to get users')
       );
@@ -108,6 +123,7 @@ export class UserController {
         ApiResponseUtil.success(user, 'User retrieved successfully')
       );
     } catch (error: any) {
+      console.error('Error in getUserById:', error);
       return res.status(error.statusCode || 500).json(
         ApiResponseUtil.error(error.message || 'Failed to get user')
       );
@@ -115,16 +131,24 @@ export class UserController {
   }
 
   /**
-   * Get current user profile
+   * Get current user profile - ✅ FIXED
    */
   static async getCurrentUserProfile(req: AuthRequest, res: Response) {
     try {
+      // ✅ Check if user exists
+      if (!req.user) {
+        return res.status(401).json(
+          ApiResponseUtil.unauthorized('User not authenticated')
+        );
+      }
+
       const userId = req.user.id;
       const profile = await UserService.getUserProfile(userId);
       return res.json(
         ApiResponseUtil.success(profile, 'Profile retrieved successfully')
       );
     } catch (error: any) {
+      console.error('Error in getCurrentUserProfile:', error);
       return res.status(error.statusCode || 500).json(
         ApiResponseUtil.error(error.message || 'Failed to get profile')
       );
@@ -154,6 +178,7 @@ export class UserController {
         ApiResponseUtil.success(publicProfile, 'User profile retrieved successfully')
       );
     } catch (error: any) {
+      console.error('Error in getUserProfile:', error);
       return res.status(error.statusCode || 500).json(
         ApiResponseUtil.error(error.message || 'Failed to get user profile')
       );
@@ -165,6 +190,20 @@ export class UserController {
    */
   static async createUser(req: AuthRequest, res: Response) {
     try {
+      // ✅ Check if user exists and is admin
+      if (!req.user) {
+        return res.status(401).json(
+          ApiResponseUtil.unauthorized('User not authenticated')
+        );
+      }
+
+      const isAdmin = req.user.roleId === 1 || req.user.role === 'admin';
+      if (!isAdmin) {
+        return res.status(403).json(
+          ApiResponseUtil.error('Admin access required', )
+        );
+      }
+
       const { name, email, password, roleId } = req.body;
 
       if (!name || !email || !password) {
@@ -178,6 +217,7 @@ export class UserController {
         ApiResponseUtil.created(user, 'User created successfully')
       );
     } catch (error: any) {
+      console.error('Error in createUser:', error);
       return res.status(error.statusCode || 500).json(
         ApiResponseUtil.error(error.message || 'Failed to create user')
       );
@@ -185,10 +225,17 @@ export class UserController {
   }
 
   /**
-   * Update current user
+   * Update current user - ✅ FIXED
    */
   static async updateCurrentUser(req: AuthRequest, res: Response) {
     try {
+      // ✅ Check if user exists
+      if (!req.user) {
+        return res.status(401).json(
+          ApiResponseUtil.unauthorized('User not authenticated')
+        );
+      }
+
       const userId = req.user.id;
       const { name, email, password } = req.body;
 
@@ -202,6 +249,7 @@ export class UserController {
         ApiResponseUtil.success(user, 'Profile updated successfully')
       );
     } catch (error: any) {
+      console.error('Error in updateCurrentUser:', error);
       return res.status(error.statusCode || 500).json(
         ApiResponseUtil.error(error.message || 'Failed to update profile')
       );
@@ -213,6 +261,20 @@ export class UserController {
    */
   static async updateUser(req: AuthRequest, res: Response) {
     try {
+      // ✅ Check if user exists and is admin
+      if (!req.user) {
+        return res.status(401).json(
+          ApiResponseUtil.unauthorized('User not authenticated')
+        );
+      }
+
+      const isAdmin = req.user.roleId === 1 || req.user.role === 'admin';
+      if (!isAdmin) {
+        return res.status(403).json(
+          ApiResponseUtil.error('Admin access required', )
+        );
+      }
+
       const idParam = getRouteParam(req.params.id);
       const userId = parseInt(idParam || '', 10);
       
@@ -229,6 +291,7 @@ export class UserController {
         ApiResponseUtil.success(user, 'User updated successfully')
       );
     } catch (error: any) {
+      console.error('Error in updateUser:', error);
       return res.status(error.statusCode || 500).json(
         ApiResponseUtil.error(error.message || 'Failed to update user')
       );
@@ -236,10 +299,17 @@ export class UserController {
   }
 
   /**
-   * Delete user (admin only)
+   * Delete user (admin only) - ✅ FIXED
    */
   static async deleteUser(req: AuthRequest, res: Response) {
     try {
+      // ✅ Check if user exists
+      if (!req.user) {
+        return res.status(401).json(
+          ApiResponseUtil.unauthorized('User not authenticated')
+        );
+      }
+
       const idParam = getRouteParam(req.params.id);
       const userId = parseInt(idParam || '', 10);
       
@@ -256,6 +326,7 @@ export class UserController {
         ApiResponseUtil.success(null, 'User deleted successfully')
       );
     } catch (error: any) {
+      console.error('Error in deleteUser:', error);
       return res.status(error.statusCode || 500).json(
         ApiResponseUtil.error(error.message || 'Failed to delete user')
       );
@@ -267,11 +338,26 @@ export class UserController {
    */
   static async getUserStats(req: AuthRequest, res: Response) {
     try {
+      // ✅ Check if user exists and is admin
+      if (!req.user) {
+        return res.status(401).json(
+          ApiResponseUtil.unauthorized('User not authenticated')
+        );
+      }
+
+      const isAdmin = req.user.roleId === 1 || req.user.role === 'admin';
+      if (!isAdmin) {
+        return res.status(403).json(
+          ApiResponseUtil.error('Admin access required', )
+        );
+      }
+
       const stats = await UserService.getUserStats();
       return res.json(
         ApiResponseUtil.success(stats, 'User statistics retrieved successfully')
       );
     } catch (error: any) {
+      console.error('Error in getUserStats:', error);
       return res.status(500).json(
         ApiResponseUtil.error(error.message || 'Failed to get user statistics')
       );
@@ -283,6 +369,20 @@ export class UserController {
    */
   static async searchUsers(req: AuthRequest, res: Response) {
     try {
+      // ✅ Check if user exists and is admin
+      if (!req.user) {
+        return res.status(401).json(
+          ApiResponseUtil.unauthorized('User not authenticated')
+        );
+      }
+
+      const isAdmin = req.user.roleId === 1 || req.user.role === 'admin';
+      if (!isAdmin) {
+        return res.status(403).json(
+          ApiResponseUtil.error('Admin access required', )
+        );
+      }
+
       const query = getQueryString(req.query.q);
       if (!query) {
         return res.status(400).json(
@@ -303,6 +403,7 @@ export class UserController {
         ApiResponseUtil.success(result, 'Search completed successfully')
       );
     } catch (error: any) {
+      console.error('Error in searchUsers:', error);
       return res.status(500).json(
         ApiResponseUtil.error(error.message || 'Search failed')
       );
@@ -314,6 +415,20 @@ export class UserController {
    */
   static async getUserByEmail(req: AuthRequest, res: Response) {
     try {
+      // ✅ Check if user exists and is admin
+      if (!req.user) {
+        return res.status(401).json(
+          ApiResponseUtil.unauthorized('User not authenticated')
+        );
+      }
+
+      const isAdmin = req.user.roleId === 1 || req.user.role === 'admin';
+      if (!isAdmin) {
+        return res.status(403).json(
+          ApiResponseUtil.error('Admin access required', )
+        );
+      }
+
       const email = getQueryString(req.query.email);
       if (!email) {
         return res.status(400).json(
@@ -332,6 +447,7 @@ export class UserController {
         ApiResponseUtil.success(user, 'User retrieved successfully')
       );
     } catch (error: any) {
+      console.error('Error in getUserByEmail:', error);
       return res.status(500).json(
         ApiResponseUtil.error(error.message || 'Failed to get user')
       );
@@ -339,10 +455,17 @@ export class UserController {
   }
 
   /**
-   * Update password for current user
+   * Update password for current user - ✅ FIXED
    */
   static async updatePassword(req: AuthRequest, res: Response) {
     try {
+      // ✅ Check if user exists
+      if (!req.user) {
+        return res.status(401).json(
+          ApiResponseUtil.unauthorized('User not authenticated')
+        );
+      }
+
       const { currentPassword, newPassword } = req.body;
       const userId = req.user.id;
 
@@ -357,6 +480,7 @@ export class UserController {
         ApiResponseUtil.success(null, 'Password updated successfully')
       );
     } catch (error: any) {
+      console.error('Error in updatePassword:', error);
       return res.status(error.statusCode || 500).json(
         ApiResponseUtil.error(error.message || 'Failed to update password')
       );
@@ -364,16 +488,24 @@ export class UserController {
   }
 
   /**
-   * Get user activity summary
+   * Get user activity summary - ✅ FIXED
    */
   static async getUserActivitySummary(req: AuthRequest, res: Response) {
     try {
+      // ✅ Check if user exists
+      if (!req.user) {
+        return res.status(401).json(
+          ApiResponseUtil.unauthorized('User not authenticated')
+        );
+      }
+
       const userId = req.user.id;
       const activity = await UserService.getUserActivitySummary(userId);
       return res.json(
         ApiResponseUtil.success(activity, 'User activity retrieved successfully')
       );
     } catch (error: any) {
+      console.error('Error in getUserActivitySummary:', error);
       return res.status(500).json(
         ApiResponseUtil.error(error.message || 'Failed to get user activity')
       );
@@ -399,6 +531,7 @@ export class UserController {
         ApiResponseUtil.success(activity, 'User activity retrieved successfully')
       );
     } catch (error: any) {
+      console.error('Error in getUserActivitySummaryById:', error);
       return res.status(500).json(
         ApiResponseUtil.error(error.message || 'Failed to get user activity')
       );

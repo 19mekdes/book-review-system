@@ -1,16 +1,21 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const category_controller_1 = require("../controllers/category.controller");
 const auth_middleware_1 = require("../middleware/auth.middleware");
 const admin_middleware_1 = require("../middleware/admin.middleware");
+const multer_1 = __importDefault(require("multer"));
 const router = (0, express_1.Router)();
+const upload = (0, multer_1.default)({ storage: multer_1.default.memoryStorage() });
 // Public routes
 router.get('/', category_controller_1.CategoryController.getAllCategories);
 router.get('/popular', category_controller_1.CategoryController.getPopularCategories);
 router.get('/search', category_controller_1.CategoryController.searchCategories);
 router.get('/suggestions', category_controller_1.CategoryController.getCategorySuggestions);
-router.get('/stats', category_controller_1.CategoryController.getCategoryStats);
+router.get('/stats', category_controller_1.CategoryController.getCategoriesWithStats);
 router.get('/tree', category_controller_1.CategoryController.getCategoryTree);
 router.get('/validate', category_controller_1.CategoryController.validateCategoryName);
 router.get('/usage', category_controller_1.CategoryController.getCategoryUsage);
@@ -26,5 +31,5 @@ router.post('/merge', auth_middleware_1.authenticate, admin_middleware_1.isAdmin
 router.put('/:id', auth_middleware_1.authenticate, admin_middleware_1.isAdmin, category_controller_1.CategoryController.updateCategory);
 router.delete('/:id', auth_middleware_1.authenticate, admin_middleware_1.isAdmin, category_controller_1.CategoryController.deleteCategory);
 router.get('/export/all', auth_middleware_1.authenticate, admin_middleware_1.isAdmin, category_controller_1.CategoryController.exportCategories);
-router.post('/import/all', auth_middleware_1.authenticate, admin_middleware_1.isAdmin, category_controller_1.CategoryController.importCategories);
+router.post('/import/all', auth_middleware_1.authenticate, admin_middleware_1.isAdmin, upload.single('file'), category_controller_1.CategoryController.importCategories);
 exports.default = router;
