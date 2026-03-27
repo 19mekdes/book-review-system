@@ -245,9 +245,6 @@ const selectBooksData = createSelector([selectBooksState], (booksState) => {
   };
 });
 
-// ============================================
-// Main Component
-// ============================================
 
 const BooksPage: React.FC = () => {
   const theme = useTheme();
@@ -317,7 +314,7 @@ const BooksPage: React.FC = () => {
     }
   }, [categories.length, categoriesLoading, dispatch]);
 
-  // ✅ CRITICAL FIX: Fetch books with categoryId in params
+  
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const params: any = {
