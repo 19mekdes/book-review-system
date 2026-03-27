@@ -330,7 +330,7 @@ const BookDetailPage: React.FC = () => {
     }
   };
 
-  // ✅ FIXED: Proper image URL handling
+  
   const getImageUrl = (): string => {
     // Check both coverImage and cover_image fields
     const coverImageUrl = book?.coverImage || book?.cover_image;
