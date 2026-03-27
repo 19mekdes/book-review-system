@@ -290,7 +290,7 @@ const BookDetailPage: React.FC = () => {
       // Handle different response structures
       const bookData = response.data.data || response.data.book || response.data;
 
-      // ✅ FIXED: Normalize both cover_image and coverImage fields
+      
       const normalizedBook = {
         ...bookData,
         coverImage: bookData.cover_image || bookData.coverImage || '',
