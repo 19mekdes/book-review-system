@@ -49,10 +49,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { createSelector } from "@reduxjs/toolkit";
 import type { RootState } from "../../app/rootReducer";
-import {
-  fetchBooks,
-  fetchBooksByCategory,
-} from "../../features/books/booksSlice";
+import { fetchBooks } from "../../features/books/booksSlice";
 import {
   fetchCategories,
   selectAllCategories,
@@ -320,7 +317,7 @@ const BooksPage: React.FC = () => {
     }
   }, [categories.length, categoriesLoading, dispatch]);
 
-  // Fetch books when component mounts or filters change
+  // ✅ CRITICAL FIX: Fetch books with categoryId in params
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const params: any = {
@@ -332,18 +329,15 @@ const BooksPage: React.FC = () => {
       sortOrder: filters.sortOrder,
     };
 
+    // ✅ Add categoryId to params if not 'all'
     if (filters.category !== "all") {
-      dispatch(
-        fetchBooksByCategory({
-          categoryId: parseInt(filters.category),
-          params: params,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        }) as any
-      );
-    } else {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      dispatch(fetchBooks(params) as any);
+      params.categoryId = parseInt(filters.category);
+      console.log("📂 Filtering by category ID:", params.categoryId);
     }
+
+    console.log("📚 Fetching books with params:", params);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    dispatch(fetchBooks(params) as any);
 
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setInitialLoad(false);
@@ -372,23 +366,27 @@ const BooksPage: React.FC = () => {
     setTempFilters((prev) => ({ ...prev, search: event.target.value }));
   };
 
-  // FIXED: Search function - triggers the actual search
   const handleSearchSubmit = () => {
     setFilters((prev) => ({ ...prev, search: tempFilters.search, page: 1 }));
     if (isMobile) setMobileFilterOpen(false);
   };
 
-  // FIXED: Clear search function
   const handleClearSearch = () => {
     setTempFilters((prev) => ({ ...prev, search: "" }));
     setFilters((prev) => ({ ...prev, search: "", page: 1 }));
   };
 
+  // ✅ Category change handler
   const handleCategoryChange = (event: SelectChangeEvent) => {
     const category = event.target.value;
+    console.log("📂 Category selected:", category);
+    
+    // Update temp filters (for UI)
     setTempFilters((prev) => ({ ...prev, category }));
+    // Update main filters - this triggers the useEffect
     setFilters((prev) => ({ ...prev, category, page: 1 }));
 
+    // Update URL
     const params = new URLSearchParams(location.search);
     if (category === "all") {
       params.delete("category");
@@ -547,7 +545,7 @@ const BooksPage: React.FC = () => {
             </Button>
           </Box>
 
-          {/* Category Select */}
+          {/* ✅ Category Select */}
           <FormControl fullWidth size="small">
             <InputLabel>Category</InputLabel>
             <Select
@@ -559,7 +557,7 @@ const BooksPage: React.FC = () => {
               {Array.isArray(categories) &&
                 categories.map((category: Category) => (
                   <MenuItem key={category.id} value={category.id.toString()}>
-                    {category.name} ({category.bookCount || 0})
+                    {category.name}
                   </MenuItem>
                 ))}
             </Select>
@@ -697,6 +695,7 @@ const BooksPage: React.FC = () => {
                 </Box>
               </Grid>
 
+              {/* ✅ Category Select Desktop */}
               <Grid size={{ xs: 6, md: 3 }}>
                 <FormControl fullWidth size="small">
                   <InputLabel>Category</InputLabel>
