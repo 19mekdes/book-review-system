@@ -233,9 +233,6 @@ const CoverUpload: React.FC<CoverUploadProps> = ({ bookId, currentCover, onCover
   );
 };
 
-// ============================================
-// Helper Functions
-// ============================================
 
 const formatDate = (dateString: string | undefined, formatStr: string = 'MMM dd, yyyy'): string => {
   if (!dateString) return 'Date not available';
