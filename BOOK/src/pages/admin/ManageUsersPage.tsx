@@ -1,4 +1,3 @@
-// C:\Users\PC_1\OneDrive\Desktop\Book Review\BOOK\src\pages\admin\ManageUsersPage.tsx
 import React, { useState, useEffect } from 'react';
 import {
   Box,
@@ -77,9 +76,6 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { format, formatDistance } from 'date-fns';
 
-// ============================================
-// Types
-// ============================================
 
 export interface User {
   id: number;
