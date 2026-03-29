@@ -127,9 +127,7 @@ interface NotificationProps {
   severity: 'success' | 'error' | 'info' | 'warning';
 }
 
-// ============================================
-// User Dialog Component
-// ============================================
+
 
 interface UserDialogProps {
   open: boolean;
@@ -512,10 +510,6 @@ const UserDialog: React.FC<UserDialogProps> = ({
     </Dialog>
   );
 };
-
-// ============================================
-// Delete Confirmation Dialog
-// ============================================
 
 interface DeleteDialogProps {
   open: boolean;
