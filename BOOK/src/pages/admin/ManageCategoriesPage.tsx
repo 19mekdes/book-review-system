@@ -73,9 +73,6 @@ import {
   StarBorder as StarBorderIcon} from '@mui/icons-material';
 import { format, formatDistance } from 'date-fns';
 
-// ============================================
-// Types
-// ============================================
 
 export interface Category {
   id: number;
@@ -110,9 +107,6 @@ export interface CategoryFilters {
   limit?: number;
 }
 
-// ============================================
-// Category Image Component
-// ============================================
 
 interface CategoryImageProps {
   src?: string;
