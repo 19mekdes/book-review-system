@@ -289,7 +289,7 @@ const BookFormDialog: React.FC<BookFormProps> = ({
     setFormData(prev => ({ ...prev, is_featured: e.target.checked }));
   };
 
-  // ✅ UPDATED: Image handler with compression
+  
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
