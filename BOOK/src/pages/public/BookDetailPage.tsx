@@ -1,4 +1,3 @@
-// C:\Users\PC_1\OneDrive\Desktop\Book Review\BOOK\src\pages\public\BookDetailPage.tsx
 import React, { useState, useEffect } from 'react';
 import {
   Container,
@@ -73,7 +72,7 @@ interface Book {
   categoryId: number;
   category: string;
   coverImage?: string;
-  cover_image?: string;  // ✅ Added for consistency
+  cover_image?: string;  
   publishedDate?: string;
   publisher?: string;
   isbn?: string;
@@ -85,10 +84,6 @@ interface Book {
   isFavorite?: boolean;
   isBookmarked?: boolean;
 }
-
-// ============================================
-// Cover Image Upload Component
-// ============================================
 
 interface CoverUploadProps {
   bookId: number;

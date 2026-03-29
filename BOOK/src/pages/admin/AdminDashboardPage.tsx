@@ -97,9 +97,6 @@ interface RatingDataPoint {
   color: string;
 }
 
-// ============================================
-// Stat Card Component with Tailwind
-// ============================================
 
 interface StatCardProps {
   title: string;
