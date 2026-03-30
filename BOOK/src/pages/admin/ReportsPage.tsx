@@ -385,9 +385,7 @@ const ShareDialog: React.FC<ShareDialogProps> = ({
   );
 };
 
-// ============================================
-// Schedule Dialog Component
-// ============================================
+
 
 interface ScheduleDialogProps {
   open: boolean;
@@ -465,9 +463,7 @@ const ScheduleDialog: React.FC<ScheduleDialogProps> = ({
   );
 };
 
-// ============================================
-// Main Component
-// ============================================
+
 
 const ReportsPage: React.FC = () => {
   const theme = useTheme();
