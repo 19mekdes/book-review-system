@@ -117,7 +117,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     { id: 'contact', label: 'Contact', path: '/contact', icon: <ContactIcon /> }
   ];
 
-  // ADMIN PANEL ITEMS - Mapped to your project structure
+
   const adminItems: NavItem[] = [
     {
       id: 'admin',

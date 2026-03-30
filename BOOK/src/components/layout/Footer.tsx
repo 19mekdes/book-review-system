@@ -19,7 +19,7 @@ import {
 } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 
-// Props interface
+
 export interface FooterProps {
   companyName?: string;
   description?: string;
