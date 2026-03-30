@@ -101,7 +101,7 @@ const Footer: React.FC<FooterProps> = ({
               gutterBottom
               sx={{ letterSpacing: '0.5px' }}
             >
-              📚 {companyName}
+             {companyName}
             </Typography>
 
             <Typography variant="body2" sx={{ opacity: 0.8, maxWidth: 420, mb: 3 }}>

@@ -154,7 +154,7 @@ const Header: React.FC<HeaderProps> = ({
     { text: 'Contact', icon: <ContactIcon />, path: '/contact' },
   ];
 
-  // ✅ Regular user menu items for mobile drawer (No Dashboard, No MyReviews)
+  
   const userMenuItems: MenuItemType[] = [
     { text: 'Profile', icon: <PersonIcon />, path: '/profile' },
     { text: 'Settings', icon: <SettingsIcon />, path: '/settings' },
@@ -361,7 +361,7 @@ const Header: React.FC<HeaderProps> = ({
                     </>
                   )}
 
-                  {/* ✅ Regular User Menu Items - Only Profile and Settings */}
+                  {/*  Regular User Menu Items - Only Profile and Settings */}
                   {!isAdmin && (
                     <>
                       <MenuItem onClick={handleProfile}>
