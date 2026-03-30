@@ -2,9 +2,6 @@
 import React, { createContext, useState, useContext, useEffect, ReactNode, useCallback, useRef } from 'react';
 import { useAuth } from './AuthContext';
 
-// ============================================
-// Types
-// ============================================
 
 export interface Notification {
   id: number;
