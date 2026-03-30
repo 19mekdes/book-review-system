@@ -25,9 +25,7 @@ export interface ReviewWithDetails extends Review {
 }
 
 export class ReviewModel {
-  /**
-   * Find all reviews with user and book details
-   */
+  
   static async findAll(): Promise<ReviewWithDetails[]> {
     const result = await pool.query(`
       SELECT
@@ -48,9 +46,7 @@ export class ReviewModel {
     return result.rows;
   }
 
-  /**
-   * Find review by ID
-   */
+  
   static async findById(id: number): Promise<ReviewWithDetails | null> {
     const result = await pool.query(`
       SELECT
