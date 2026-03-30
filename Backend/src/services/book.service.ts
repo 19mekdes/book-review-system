@@ -228,9 +228,7 @@ export class BookService {
     }
   }
 
-  /**
-   * Create new book - ✅ FIXED to handle cover_image correctly
-   */
+  
   static async createBook(input: CreateBookInput): Promise<Book> {
     try {
       console.log('📝 Creating book with input:', {
@@ -259,7 +257,7 @@ export class BookService {
         throw new ApiError(400, 'Book with this title and author already exists');
       }
 
-      // ✅ FIXED: Create book with cover_image (handle undefined properly)
+    
       const bookData = {
         title: input.title,
         author: input.author,
@@ -314,7 +312,7 @@ export class BookService {
         }
       }
 
-      // ✅ FIXED: Prepare update data, handling cover_image properly
+      
       const updateData: any = {};
       if (updates.title !== undefined) updateData.title = updates.title;
       if (updates.author !== undefined) updateData.author = updates.author;
