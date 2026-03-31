@@ -51,14 +51,7 @@ const validatePassword = (password: string): { isValid: boolean; message: string
   return { isValid: true, message: 'Password is valid' };
 };
 
-// ============================================
-// PUBLIC ROUTES
-// ============================================
 
-/**
- * POST /api/auth/register
- * Register a new user
- */
 router.post('/register', async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -268,10 +261,7 @@ router.post('/login', async (req, res) => {
   }
 });
 
-/**
- * POST /api/auth/refresh-token
- * Get new access token using refresh token
- */
+
 router.post('/refresh-token', async (req, res) => {
   try {
     const { refreshToken } = req.body;
