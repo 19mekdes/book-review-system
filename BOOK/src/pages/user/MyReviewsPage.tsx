@@ -487,9 +487,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
   );
 };
 
-// ============================================
-// Main Component
-// ============================================
+
 
 const MyReviewsPage: React.FC = () => {
   const theme = useTheme();

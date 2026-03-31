@@ -301,9 +301,7 @@ const ReportCard: React.FC<ReportCardProps> = ({
   );
 };
 
-// ============================================
-// Share Dialog Component
-// ============================================
+
 
 interface ShareDialogProps {
   open: boolean;

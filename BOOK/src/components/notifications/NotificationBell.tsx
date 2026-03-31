@@ -1,293 +1,293 @@
-// src/components/notifications/NotificationBell.tsx
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   IconButton,
   Badge,
   Menu,
-  Box,
   Typography,
+  Box,
   Divider,
   Button,
   List,
-  ListItemButton,
+  ListItem,
+  ListItemAvatar,
   ListItemText,
-  ListItemIcon,
   Avatar,
   Chip,
-  CircularProgress,
-  useTheme,
-  alpha,
-  Tooltip
+  Tooltip,
+  CircularProgress
 } from '@mui/material';
 import {
   Notifications as NotificationsIcon,
-  Favorite as FavoriteIcon,
-  Comment as CommentIcon,
+  NotificationsNone as NotificationsNoneIcon,
+  RateReview as ReviewIcon,
+  ThumbUp as LikeIcon,
+  People as FollowIcon,
   EmojiEvents as AchievementIcon,
-  Info as InfoIcon,
-  DoneAll as DoneAllIcon,
-  OpenInNew as OpenInNewIcon
+  Book as BookIcon
 } from '@mui/icons-material';
-import { useNotifications } from '../../context/NotificationContext';
+import { formatDistance } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
-import { formatDistanceToNow } from 'date-fns';
+import api from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
+
+interface Notification {
+  id: number;
+  user_id: number;
+  type: 'review' | 'like' | 'follow' | 'achievement' | 'book';
+  title: string;
+  message: string;
+  link?: string;
+  read: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  metadata: any;
+  created_at: string;
+}
 
 const NotificationBell: React.FC = () => {
-  const theme = useTheme();
-  const navigate = useNavigate();
-  const {
-    notifications,
-    unreadCount,
-    loading,
-    markAsRead,
-    markAllAsRead,
-    fetchNotifications
-  } = useNotifications();
-
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const { user } = useAuth();
 
-  const handleClick = useCallback((event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-    // Use requestIdleCallback for non-critical fetch
-    if ('requestIdleCallback' in window) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (window as any).requestIdleCallback(() => fetchNotifications(), { timeout: 1000 });
-    } else {
-      fetchNotifications();
+  // Fetch notifications from API
+  const fetchNotifications = useCallback(async () => {
+    if (!user) return;
+    
+    setLoading(true);
+    try {
+      const response = await api.get('/notifications');
+      const data = response.data.data;
+      setNotifications(data.notifications || []);
+      setUnreadCount(data.unreadCount || 0);
+      console.log(`📬 Fetched ${data.notifications?.length || 0} notifications, ${data.unreadCount || 0} unread`);
+    } catch (error) {
+      console.error('Failed to fetch notifications:', error);
+    } finally {
+      setLoading(false);
     }
-  }, [fetchNotifications]);
+  }, [user]);
 
-  const handleClose = useCallback(() => {
+  // Poll for new notifications every 10 seconds
+  useEffect(() => {
+    if (user) {
+      fetchNotifications();
+      
+      const interval = setInterval(() => {
+        fetchNotifications();
+      }, 10000); // Check every 10 seconds
+      
+      return () => clearInterval(interval);
+    }
+  }, [user, fetchNotifications]);
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
     setAnchorEl(null);
-  }, []);
+  };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleNotificationClick = useCallback((notification: any) => {
+  const markAsRead = async (notificationId: number) => {
+    try {
+      const response = await api.put(`/notifications/${notificationId}/read`);
+      // Update unread count from response
+      if (response.data.data?.unreadCount !== undefined) {
+        setUnreadCount(response.data.data.unreadCount);
+      } else {
+        setUnreadCount(prev => Math.max(0, prev - 1));
+      }
+      setNotifications(prev =>
+        prev.map(n => (n.id === notificationId ? { ...n, read: true } : n))
+      );
+    } catch (error) {
+      console.error('Failed to mark as read:', error);
+    }
+  };
+
+  const markAllAsRead = async () => {
+    try {
+      await api.put('/notifications/mark-all-read');
+      setNotifications(prev =>
+        prev.map(n => ({ ...n, read: true }))
+      );
+      setUnreadCount(0);
+    } catch (error) {
+      console.error('Failed to mark all as read:', error);
+    }
+  };
+
+  const handleNotificationClick = async (notification: Notification) => {
     if (!notification.read) {
-      markAsRead(notification.id);
+      await markAsRead(notification.id);
     }
     if (notification.link) {
       navigate(notification.link);
     }
     handleClose();
-  }, [markAsRead, navigate, handleClose]);
+  };
 
-  const handleViewAll = useCallback(() => {
-    navigate('/notifications');
-    handleClose();
-  }, [navigate, handleClose]);
-
-  const getNotificationIcon = useCallback((type: string) => {
+  const getNotificationIcon = (type: string) => {
     switch (type) {
-      case 'review_like':
-        return <FavoriteIcon sx={{ color: '#f44336' }} />;
-      case 'review_comment':
-        return <CommentIcon sx={{ color: '#2196f3' }} />;
+      case 'review':
+        return <ReviewIcon sx={{ color: '#4caf50' }} />;
+      case 'like':
+        return <LikeIcon sx={{ color: '#f44336' }} />;
+      case 'follow':
+        return <FollowIcon sx={{ color: '#9c27b0' }} />;
       case 'achievement':
         return <AchievementIcon sx={{ color: '#ff9800' }} />;
+      case 'book':
+        return <BookIcon sx={{ color: '#1976d2' }} />;
       default:
-        return <InfoIcon sx={{ color: '#757575' }} />;
+        return <NotificationsIcon sx={{ color: '#757575' }} />;
     }
-  }, []);
+  };
 
-  const getTimeAgo = useCallback((date: string) => {
+  const getTimeAgo = (date: string) => {
     try {
-      return formatDistanceToNow(new Date(date), { addSuffix: true });
+      return formatDistance(new Date(date), new Date(), { addSuffix: true });
     } catch {
-      return '';
+      return 'recently';
     }
-  }, []);
-
-  // Memoize the notification list to prevent unnecessary re-renders
-  const notificationList = useMemo(() => {
-    if (loading) {
-      return (
-        <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
-          <CircularProgress size={32} />
-        </Box>
-      );
-    }
-
-    if (notifications.length === 0) {
-      return (
-        <Box sx={{ textAlign: 'center', py: 4, px: 2 }}>
-          <NotificationsIcon sx={{ fontSize: 48, color: 'text.disabled', mb: 1 }} />
-          <Typography variant="body2" color="text.secondary">
-            No notifications yet
-          </Typography>
-        </Box>
-      );
-    }
-
-    return (
-      <List disablePadding>
-        {notifications.slice(0, 5).map((notification) => (
-          <React.Fragment key={notification.id}>
-            {/* Replace ListItem with ListItemButton for clickable items */}
-            <ListItemButton
-              onClick={() => handleNotificationClick(notification)}
-              sx={{
-                bgcolor: notification.read ? 'transparent' : alpha(theme.palette.primary.main, 0.04),
-                '&:hover': {
-                  bgcolor: notification.read ? 'action.hover' : alpha(theme.palette.primary.main, 0.08),
-                },
-                py: 1.5,
-                px: 2,
-                transition: 'background-color 0.2s'
-              }}
-            >
-              <ListItemIcon sx={{ minWidth: 40 }}>
-                <Avatar
-                  sx={{
-                    width: 40,
-                    height: 40,
-                    bgcolor: alpha(theme.palette.primary.main, 0.1),
-                    color: theme.palette.primary.main,
-                    transition: 'transform 0.2s',
-                    '&:hover': {
-                      transform: 'scale(1.1)'
-                    }
-                  }}
-                >
-                  {getNotificationIcon(notification.type)}
-                </Avatar>
-              </ListItemIcon>
-              <ListItemText
-                primary={
-                  <Typography variant="body2" fontWeight={notification.read ? 400 : 600}>
-                    {notification.title}
-                  </Typography>
-                }
-                secondary={
-                  <>
-                    <Typography 
-                      variant="caption" 
-                      color="text.secondary" 
-                      sx={{
-                        display: '-webkit-box',
-                        overflow: 'hidden',
-                        WebkitBoxOrient: 'vertical',
-                        WebkitLineClamp: 1,
-                        maxWidth: '200px'
-                      }}
-                    >
-                      {notification.message}
-                    </Typography>
-                    <Typography variant="caption" color="text.disabled">
-                      {getTimeAgo(notification.createdAt)}
-                    </Typography>
-                  </>
-                }
-              />
-              {!notification.read && (
-                <Chip
-                  size="small"
-                  label="New"
-                  color="primary"
-                  sx={{ ml: 1, height: 20 }}
-                />
-              )}
-            </ListItemButton>
-            <Divider />
-          </React.Fragment>
-        ))}
-      </List>
-    );
-  }, [notifications, loading, theme, handleNotificationClick, getNotificationIcon, getTimeAgo]);
+  };
 
   return (
     <>
-      <Tooltip title="Notifications">
-        <IconButton
-          onClick={handleClick}
-          color="inherit"
-          aria-controls={open ? 'notification-menu' : undefined}
-          aria-haspopup="true"
-          aria-expanded={open ? 'true' : undefined}
-          sx={{
-            transition: 'transform 0.2s',
-            '&:hover': {
-              transform: 'scale(1.1)'
-            }
-          }}
-        >
-          <Badge badgeContent={unreadCount} color="error">
-            <NotificationsIcon />
+      <Tooltip title={unreadCount > 0 ? `${unreadCount} unread notification${unreadCount > 1 ? 's' : ''}` : 'Notifications'}>
+        <IconButton onClick={handleClick} color="inherit" size="large">
+          <Badge 
+            badgeContent={unreadCount} 
+            color="error" 
+            overlap="circular" 
+            max={99}
+            sx={{
+              '& .MuiBadge-badge': {
+                fontSize: '0.7rem',
+                height: 18,
+                minWidth: 18,
+                borderRadius: 9,
+                animation: unreadCount > 0 ? 'pulse 1s infinite' : 'none',
+              }
+            }}
+          >
+            {unreadCount > 0 ? <NotificationsIcon /> : <NotificationsNoneIcon />}
           </Badge>
         </IconButton>
       </Tooltip>
 
+      <style>
+        {`
+          @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+          }
+        `}
+      </style>
+
       <Menu
-        id="notification-menu"
         anchorEl={anchorEl}
-        open={open}
+        open={Boolean(anchorEl)}
         onClose={handleClose}
         PaperProps={{
           sx: {
-            width: 380,
+            width: 400,
             maxHeight: 500,
-            mt: 1.5,
-            overflow: 'hidden',
+            overflow: 'auto',
             borderRadius: 2,
-            boxShadow: theme.shadows[8]
+            mt: 1
           }
         }}
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        {/* Header */}
-        <Box sx={{ 
-          p: 2, 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'space-between',
-          bgcolor: alpha(theme.palette.primary.main, 0.02),
-          borderBottom: `1px solid ${theme.palette.divider}`
-        }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <NotificationsIcon sx={{ color: 'primary.main' }} />
-            <Typography variant="subtitle1" fontWeight={600}>
-              Notifications
-            </Typography>
-            {unreadCount > 0 && (
-              <Chip
-                label={unreadCount}
-                color="primary"
-                size="small"
-                sx={{ height: 20 }}
-              />
-            )}
-          </Box>
+        <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: 1, borderColor: 'divider' }}>
+          <Typography variant="h6" fontWeight={600}>
+            Notifications
+          </Typography>
           {unreadCount > 0 && (
-            <Button
-              size="small"
-              startIcon={<DoneAllIcon />}
-              onClick={markAllAsRead}
-              sx={{ textTransform: 'none' }}
-            >
-              Mark all read
+            <Button size="small" onClick={markAllAsRead}>
+              Mark all as read
             </Button>
           )}
         </Box>
 
-        {/* Notifications List */}
-        <Box sx={{ overflowY: 'auto', maxHeight: 350 }}>
-          {notificationList}
-        </Box>
+        {loading ? (
+          <Box sx={{ p: 3, textAlign: 'center' }}>
+            <CircularProgress size={30} />
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+              Loading...
+            </Typography>
+          </Box>
+        ) : notifications.length === 0 ? (
+          <Box sx={{ p: 3, textAlign: 'center' }}>
+            <NotificationsNoneIcon sx={{ fontSize: 48, color: 'text.secondary', mb: 1 }} />
+            <Typography variant="body2" color="text.secondary">
+              No notifications yet
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              When someone reviews a book you follow, you'll see it here
+            </Typography>
+          </Box>
+        ) : (
+          <List sx={{ p: 0 }}>
+            {notifications.map((notification) => (
+              <ListItem
+                key={notification.id}
+                onClick={() => handleNotificationClick(notification)}
+                sx={{
+                  cursor: 'pointer',
+                  bgcolor: notification.read ? 'transparent' : 'action.hover',
+                  '&:hover': { bgcolor: 'action.hover' },
+                  borderBottom: 1,
+                  borderColor: 'divider',
+                  py: 1.5,
+                  transition: 'all 0.2s'
+                }}
+              >
+                <ListItemAvatar>
+                  <Avatar sx={{ bgcolor: 'transparent' }}>
+                    {getNotificationIcon(notification.type)}
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText
+                  primary={
+                    <Typography variant="body2" fontWeight={notification.read ? 400 : 600}>
+                      {notification.title}
+                    </Typography>
+                  }
+                  secondary={
+                    <>
+                      <Typography variant="caption" color="text.secondary" display="block">
+                        {notification.message}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        {getTimeAgo(notification.created_at)}
+                      </Typography>
+                    </>
+                  }
+                />
+                {!notification.read && (
+                  <Chip
+                    size="small"
+                    label="New"
+                    color="primary"
+                    sx={{ ml: 1, height: 20, fontSize: '0.7rem' }}
+                  />
+                )}
+              </ListItem>
+            ))}
+          </List>
+        )}
 
-        {/* Footer */}
         {notifications.length > 0 && (
           <>
             <Divider />
-            <Box sx={{ p: 1, display: 'flex', justifyContent: 'center' }}>
-              <Button
-                fullWidth
-                size="small"
-                endIcon={<OpenInNewIcon />}
-                onClick={handleViewAll}
-                sx={{ textTransform: 'none' }}
-              >
+            <Box sx={{ p: 1, textAlign: 'center' }}>
+              <Button size="small" onClick={() => navigate('/notifications')}>
                 View All Notifications
               </Button>
             </Box>
@@ -298,4 +298,4 @@ const NotificationBell: React.FC = () => {
   );
 };
 
-export default React.memo(NotificationBell);
+export default NotificationBell;

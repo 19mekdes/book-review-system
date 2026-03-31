@@ -7,14 +7,13 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        // Ignore these action types
         ignoredActions: ['auth/login/fulfilled', 'auth/register/fulfilled'],
-        // Ignore these field paths in the state
         ignoredPaths: ['auth.user', 'books.currentBook'],
       },
     }),
-    devTools: import.meta.env.MODE !== 'production',
+  devTools: import.meta.env.MODE !== 'production',
 });
 
-export type AppDispatch = typeof store.dispatch;
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch; // Make sure this is exported
 export type AppStore = typeof store;
