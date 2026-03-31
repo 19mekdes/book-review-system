@@ -10,6 +10,7 @@ import adminRoutes from './routes/admin.routes';
 import categoryRoutes from './routes/category.routes';
 import uploadRoutes from './routes/upload.routes'; 
 import contactRoutes from './routes/contact.routes';
+import notificationRoutes from './routes/notification.routes';
 
 dotenv.config();
 
@@ -49,7 +50,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
-
+app.use('/api/notifications', notificationRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/books', bookRoutes);
 app.use('/api/categories', categoryRoutes);

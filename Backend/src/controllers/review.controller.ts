@@ -2,6 +2,8 @@ import { NextFunction, Request, Response } from 'express';
 import { ReviewService } from '../services/review.service';
 import { ApiResponseUtil } from '../utils/apiResponse.utils';
 import { AuthRequest } from '../middleware/auth.middleware';
+import { NotificationService } from '../services/notification.service';
+import { BookModel } from '../models/Book.model';
 
 // Helper functions
 const getQueryNumber = (param: unknown): number | undefined => {
@@ -109,6 +111,7 @@ export class ReviewController {
 
   /**
    * Create a review for a book (authenticated users only)
+   * ✅ UPDATED: Added notification trigger
    */
   static async createReview(req: AuthRequest, res: Response) {
     try {
@@ -121,6 +124,7 @@ export class ReviewController {
 
       const { bookId, rating, title, comment } = req.body;
       const userId = req.user.id;
+      const userName = req.user.name || 'A user';
 
       if (!bookId || !rating || !comment) {
         return res.status(400).json(
@@ -134,6 +138,7 @@ export class ReviewController {
         );
       }
 
+      // Create the review
       const review = await ReviewService.createReview({
         userId,
         bookId,
@@ -141,6 +146,20 @@ export class ReviewController {
         title,
         comment
       });
+
+      // ✅ Get book details for notification
+      const book = await BookModel.findById(parseInt(bookId));
+      if (book) {
+        // ✅ Trigger notification for users who follow this book
+        const notifiedCount = await NotificationService.notifyOnNewReview(
+          parseInt(bookId),
+          review.id,
+          userName,
+          book.title,
+          userId
+        );
+        console.log(`📢 Created ${notifiedCount} notifications for new review`);
+      }
 
       return res.status(201).json(
         ApiResponseUtil.created(review, 'Review created successfully')
