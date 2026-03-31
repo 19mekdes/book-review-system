@@ -1,5 +1,4 @@
 import pool from '../config/database';
-
 export interface Notification {
   id: number;
   user_id: number;

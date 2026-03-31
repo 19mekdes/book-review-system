@@ -1,4 +1,3 @@
-
 import { Router } from 'express';
 import { AdminController } from '../controllers/admin.controller';
 import { authenticate } from '../middleware/auth.middleware';
