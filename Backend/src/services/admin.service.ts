@@ -307,9 +307,7 @@ export class AdminService {
     }
   }
 
-  /**
-   * Get all books with pagination
-   */
+  
   static async getAllBooks(
     page: number = 1,
     limit: number = 10,
@@ -510,9 +508,7 @@ export class AdminService {
     }
   }
 
-  /**
-   * Create new category - FIXED: Use 'category' field
-   */
+  
   static async createCategory(categoryName: string): Promise<Category> {
     try {
       // Check if category exists - using 'category' field
