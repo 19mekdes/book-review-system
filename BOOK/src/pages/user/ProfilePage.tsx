@@ -138,9 +138,6 @@ export interface Activity {
   link?: string;
 }
 
-// ============================================
-// Profile Header Component
-// ============================================
 
 interface ProfileHeaderProps {
   profile: UserProfile;
