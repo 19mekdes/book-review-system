@@ -53,10 +53,6 @@ export interface User {
   isOnline?: boolean;
 }
 
-// ============================================
-// User Preferences
-// ============================================
-
 export interface UserPreferences {
   // Notifications
   emailNotifications: boolean;
@@ -97,9 +93,6 @@ export interface UserPreferences {
   screenReader: boolean;
 }
 
-// ============================================
-// User Statistics
-// ============================================
 
 export interface UserStats {
   // Reviews
