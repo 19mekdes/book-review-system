@@ -1,4 +1,3 @@
-// src/types/notification.types.ts
 export interface Notification {
   id: number;
   userId: number;

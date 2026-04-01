@@ -1,4 +1,3 @@
-// client/src/types/review.types.ts
 export interface Review {
   id: number;
   user_id: number;
