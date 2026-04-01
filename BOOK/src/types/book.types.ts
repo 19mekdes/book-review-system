@@ -1,4 +1,5 @@
 export interface Book {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   coverImage: any;
   id: number;
   title: string;
