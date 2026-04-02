@@ -92,8 +92,6 @@ export interface UserPreferences {
   largeText: boolean;
   screenReader: boolean;
 }
-
-
 export interface UserStats {
   // Reviews
   reviewsCount: number;
@@ -128,10 +126,7 @@ export interface UserStats {
   lastReviewAt?: string;
   lastCommentAt?: string;
   lastBookmarkAt?: string;
-}
-
-
-export interface Badge {
+}export interface Badge {
   id: string;
   name: string;
   description: string;
@@ -143,9 +138,6 @@ export interface Badge {
   totalRequired?: number;
   criteria?: string;
 }
-
-
-
 export interface SocialLinks {
   website?: string;
   github?: string;
@@ -158,9 +150,6 @@ export interface SocialLinks {
   discord?: string;
   twitch?: string;
 }
-
-
-
 export type ActivityType = 
   | 'review' 
   | 'comment' 
@@ -182,9 +171,6 @@ export interface UserActivity {
   link?: string;
   visibility: 'public' | 'followers' | 'private';
 }
-
-
-
 export interface UserSession {
   id: string;
   userId: number;
@@ -204,9 +190,6 @@ export interface UserSession {
   isCurrent: boolean;
   isTrusted: boolean;
 }
-
-
-
 export interface LoginHistory {
   id: number;
   userId: number;
@@ -222,9 +205,6 @@ export interface LoginHistory {
   failureReason?: string;
   twoFactorUsed?: boolean;
 }
-
-
-
 export interface Follow {
   id: number;
   followerId: number;
@@ -237,10 +217,7 @@ export interface Follower extends User {
   followedAt: string;
   isFollowing: boolean;
 }
-
-
 export type ReadingStatus = 'to-read' | 'reading' | 'paused' | 'completed' | 'dnf';
-
 export interface ReadingListItem {
   id: number;
   userId: number;
@@ -260,8 +237,6 @@ export interface ReadingListItem {
   createdAt: string;
   updatedAt: string;
 }
-
-
 export type NotificationType = 
   | 'review_reply' 
   | 'comment_reply' 
@@ -291,8 +266,6 @@ export interface UserNotification {
   createdAt: string;
   expiresAt?: string;
 }
-
-
 export interface UserReport {
   id: number;
   reporterId: number;
@@ -305,9 +278,6 @@ export interface UserReport {
   resolvedBy?: number;
   notes?: string;
 }
-
-
-
 export interface UserBlock {
   id: number;
   blockerId: number;
@@ -316,9 +286,6 @@ export interface UserBlock {
   createdAt: string;
   expiresAt?: string;
 }
-
-
-
 export interface UserSettings {
   // Profile
   profile: UserProfileSettings;
@@ -516,9 +483,7 @@ export interface UserActivityHeatmap {
   intensity: number;
 }
 
-// ============================================
-// User Constants
-// ============================================
+
 
 export const USER_ROLES: UserRole[] = ['Admin', 'Moderator', 'User'];
 export const USER_STATUSES: UserStatus[] = ['active', 'inactive', 'suspended', 'banned', 'pending'];
@@ -545,10 +510,6 @@ export const DEFAULT_USER_PREFERENCES: Partial<UserPreferences> = {
   timeFormat: '12h'
 };
 
-// ============================================
-// User Validation Types
-// ============================================
-
 export interface UserValidationResult {
   isValid: boolean;
   errors: Array<{
@@ -568,10 +529,6 @@ export interface EmailAvailability {
   available: boolean;
   message?: string;
 }
-
-// ============================================
-// User Permissions
-// ============================================
 
 export interface UserPermissions {
   canReview: boolean;
