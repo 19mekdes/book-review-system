@@ -205,9 +205,7 @@ export interface UserSession {
   isTrusted: boolean;
 }
 
-// ============================================
-// Login History
-// ============================================
+
 
 export interface LoginHistory {
   id: number;
@@ -225,9 +223,7 @@ export interface LoginHistory {
   twoFactorUsed?: boolean;
 }
 
-// ============================================
-// Following/Followers
-// ============================================
+
 
 export interface Follow {
   id: number;
