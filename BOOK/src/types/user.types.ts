@@ -238,9 +238,6 @@ export interface Follower extends User {
   isFollowing: boolean;
 }
 
-// ============================================
-// Reading List
-// ============================================
 
 export type ReadingStatus = 'to-read' | 'reading' | 'paused' | 'completed' | 'dnf';
 
@@ -264,9 +261,6 @@ export interface ReadingListItem {
   updatedAt: string;
 }
 
-// ============================================
-// User Notifications
-// ============================================
 
 export type NotificationType = 
   | 'review_reply' 
@@ -298,9 +292,6 @@ export interface UserNotification {
   expiresAt?: string;
 }
 
-// ============================================
-// User Reports
-// ============================================
 
 export interface UserReport {
   id: number;
