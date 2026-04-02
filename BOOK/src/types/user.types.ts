@@ -130,9 +130,6 @@ export interface UserStats {
   lastBookmarkAt?: string;
 }
 
-// ============================================
-// Badges
-// ============================================
 
 export interface Badge {
   id: string;
@@ -147,9 +144,7 @@ export interface Badge {
   criteria?: string;
 }
 
-// ============================================
-// Social Links
-// ============================================
+
 
 export interface SocialLinks {
   website?: string;
@@ -164,9 +159,7 @@ export interface SocialLinks {
   twitch?: string;
 }
 
-// ============================================
-// User Activity
-// ============================================
+
 
 export type ActivityType = 
   | 'review' 
@@ -190,9 +183,7 @@ export interface UserActivity {
   visibility: 'public' | 'followers' | 'private';
 }
 
-// ============================================
-// User Sessions
-// ============================================
+
 
 export interface UserSession {
   id: string;
