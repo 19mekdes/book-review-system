@@ -306,9 +306,7 @@ export interface UserReport {
   notes?: string;
 }
 
-// ============================================
-// User Blocks
-// ============================================
+
 
 export interface UserBlock {
   id: number;
@@ -319,9 +317,7 @@ export interface UserBlock {
   expiresAt?: string;
 }
 
-// ============================================
-// User Settings
-// ============================================
+
 
 export interface UserSettings {
   // Profile
@@ -419,9 +415,7 @@ export interface LocalizationSettings {
   firstDayOfWeek: 'monday' | 'sunday';
 }
 
-// ============================================
-// API Request/Response Types
-// ============================================
+
 
 export interface UserApiResponse {
   success: boolean;
@@ -473,9 +467,7 @@ export interface FollowResponse {
   };
 }
 
-// ============================================
-// User Search/Filter Types
-// ============================================
+
 
 export interface UserFilters {
   search?: string;
@@ -503,9 +495,7 @@ export interface UserSortOption {
   direction: 'asc' | 'desc';
 }
 
-// ============================================
-// User Statistics for Charts
-// ============================================
+
 
 export interface UserGrowthData {
   date: string;
