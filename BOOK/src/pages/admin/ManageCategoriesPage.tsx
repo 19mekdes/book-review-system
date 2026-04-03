@@ -157,9 +157,6 @@ const CategoryImage: React.FC<CategoryImageProps> = ({ src, name, color, size = 
   );
 };
 
-// ============================================
-// Category Dialog Component
-// ============================================
 
 interface CategoryDialogProps {
   open: boolean;

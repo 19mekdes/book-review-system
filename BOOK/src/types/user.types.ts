@@ -120,7 +120,7 @@ export interface UserStats {
   contributionRank?: number;
   badgesCount: number;
   commentsCount: number;
-  totalReadingTime?: number; // In minutes
+  totalReadingTime?: number; 
   
   // Activity
   lastReviewAt?: string;
