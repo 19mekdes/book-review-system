@@ -1092,9 +1092,6 @@ const CategoryTreeItem: React.FC<CategoryTreeItemProps> = ({
   );
 };
 
-// ============================================
-// Stats Card Component
-// ============================================
 
 interface StatsCardProps {
   title: string;
@@ -1154,9 +1151,7 @@ const StatsCard: React.FC<StatsCardProps> = ({
   );
 };
 
-// ============================================
-// Main Component
-// ============================================
+
 
 const ManageCategoriesPage: React.FC = () => {
   const theme = useTheme();
