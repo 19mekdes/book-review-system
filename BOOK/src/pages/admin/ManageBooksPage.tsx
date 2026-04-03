@@ -300,7 +300,7 @@ const BookFormDialog: React.FC<BookFormProps> = ({
       const compressedImage = await compressAndResizeImage(file);
       setPreviewImage(compressedImage);
       setFormData(prev => ({ ...prev, cover_image: compressedImage }));
-      console.log('✅ Image processed successfully');
+      console.log(' Image processed successfully');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error('Image processing error:', error);
@@ -706,7 +706,7 @@ const BookFormDialog: React.FC<BookFormProps> = ({
                   />
                   {!previewImage.startsWith('http') && (
                     <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
-                      ✅ Image compressed for optimal performance
+                       Image compressed for optimal performance
                     </Typography>
                   )}
                 </Box>
