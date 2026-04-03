@@ -189,9 +189,6 @@ const compressAndResizeImage = (file: File): Promise<string> => {
   });
 };
 
-// ============================================
-// Add/Edit Book Form Component
-// ============================================
 
 interface BookFormProps {
   open: boolean;
@@ -768,11 +765,6 @@ const BookFormDialog: React.FC<BookFormProps> = ({
     </Dialog>
   );
 };
-
-// ============================================
-// Main Component (Keep the rest as is)
-// ============================================
-
 const ManageBooksPage: React.FC = () => {
   // ... (keep all existing code from here down, it's unchanged)
   const theme = useTheme();
