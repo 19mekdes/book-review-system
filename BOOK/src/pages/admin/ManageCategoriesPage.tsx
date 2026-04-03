@@ -761,9 +761,6 @@ const ImportDialog: React.FC<ImportDialogProps> = ({
   );
 };
 
-// ============================================
-// Bulk Actions Dialog
-// ============================================
 
 interface BulkActionsDialogProps {
   open: boolean;
@@ -846,9 +843,6 @@ const BulkActionsDialog: React.FC<BulkActionsDialogProps> = ({
   );
 };
 
-// ============================================
-// Category Tree Component
-// ============================================
 
 interface CategoryTreeItemProps {
   category: Category;
