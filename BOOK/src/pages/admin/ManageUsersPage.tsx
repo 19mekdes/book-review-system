@@ -560,9 +560,6 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({
   );
 };
 
-// ============================================
-// Bulk Actions Dialog
-// ============================================
 
 interface BulkActionsDialogProps {
   open: boolean;
@@ -680,9 +677,7 @@ const BulkActionsDialog: React.FC<BulkActionsDialogProps> = ({
   );
 };
 
-// ============================================
-// Import Dialog Component
-// ============================================
+
 
 interface ImportDialogProps {
   open: boolean;
