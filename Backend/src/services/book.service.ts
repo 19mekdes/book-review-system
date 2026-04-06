@@ -3,22 +3,22 @@ import { ReviewModel, ReviewWithDetails } from '../models/Review.model';
 import { CategoryModel } from '../models/Category.model';
 import { ApiError } from '../middleware/error.middleware';
 
-// ✅ FIXED: Make cover_image optional (string | undefined)
+
 export interface CreateBookInput {
   title: string;
   author: string;
   description?: string;
   categoryId: number;
-  cover_image?: string;  // ✅ Changed from string | null to optional string
+  cover_image?: string;  
 }
 
-// ✅ FIXED: Make cover_image optional
+
 export interface UpdateBookInput {
   title?: string;
   author?: string;
   description?: string;
   categoryId?: number;
-  cover_image?: string;  // ✅ Changed from string | null to optional string
+  cover_image?: string;  
   isbn?: string;
   publisher?: string;
   publish_date?: string;
