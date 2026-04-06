@@ -1,4 +1,3 @@
-// src/context/NotificationContext.tsx
 import React, { createContext, useState, useContext, useEffect, ReactNode, useCallback, useRef } from 'react';
 import { useAuth } from './AuthContext';
 
@@ -35,15 +34,11 @@ interface NotificationContextType {
   clearNotifications: () => void;
 }
 
-// ============================================
-// Create Context
-// ============================================
+
 
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
 
-// ============================================
-// Custom Hook
-// ============================================
+
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const useNotifications = () => {
