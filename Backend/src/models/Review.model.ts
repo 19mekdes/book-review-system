@@ -45,8 +45,6 @@ export class ReviewModel {
     `);
     return result.rows;
   }
-
-  
   static async findById(id: number): Promise<ReviewWithDetails | null> {
     const result = await pool.query(`
       SELECT

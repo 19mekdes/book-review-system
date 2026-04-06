@@ -1,11 +1,9 @@
 import db from '../config/database';
-
 export interface Category {
   id: number;
   category: string;  
   created_at?: string;
   updated_at?: string;
-  // Add these if they exist in your table
   slug?: string;
   description?: string;
   image?: string;

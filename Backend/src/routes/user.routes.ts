@@ -7,9 +7,6 @@ import { AuthRequest } from '../middleware/auth.middleware';
 
 const router = Router();
 
-// ============================================
-// PUBLIC ROUTES
-// ============================================
 
 router.get('/stats', async (req, res) => {
   try {

@@ -1,5 +1,4 @@
 import pool from '../config/database';
-
 export interface ContactMessage {
   id: number;
   name: string;

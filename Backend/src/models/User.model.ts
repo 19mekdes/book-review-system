@@ -1,4 +1,3 @@
-
 import { query } from './index';
 import bcrypt from 'bcrypt';
 
@@ -11,7 +10,6 @@ export interface User {
   created_at?: Date;
   updated_at?: Date;
 }
-
 export interface UserWithRole extends User {
   review_count?: number;
   role_name?: string;

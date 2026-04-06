@@ -1,5 +1,4 @@
 import { query } from './index';
-
 export interface Role {
   id: number;
   name: string;
