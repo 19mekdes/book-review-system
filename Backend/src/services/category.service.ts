@@ -23,8 +23,8 @@ export class CategoryService {
         const stat = stats.find(s => s.category === category.category);
         return {
           id: category.id,
-          name: category.category,  // ← FIXED: Changed 'category' to 'name' to match CategoryWithStats
-          category: category.category,  // Keep both if needed
+          name: category.category,  
+          category: category.category,  
           created_at: category.created_at,
           updated_at: category.updated_at,
           bookCount: stat?.bookCount || 0,
@@ -56,8 +56,8 @@ export class CategoryService {
       
       return {
         id: category.id,
-        name: category.category,  // ← FIXED: Added name property
-        category: category.category,  // Keep both if needed
+        name: category.category,  
+        category: category.category,  
         created_at: category.created_at,
         updated_at: category.updated_at,
         bookCount: stat?.bookCount || 0,

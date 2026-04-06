@@ -79,7 +79,7 @@ export class ContactService {
     }
   }
   
-  // ✅ FIXED: Accept number parameter
+  
   static async deleteMessage(messageId: number): Promise<boolean> {
     try {
       const deleted = await ContactModel.delete(messageId);

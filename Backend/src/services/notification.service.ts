@@ -224,7 +224,7 @@ export class NotificationService {
     originalAuthorId: number,
     bookId: number,
     bookTitle: string,
-    replierId: number // Added replierId parameter
+    replierId: number 
   ): Promise<boolean> {
     try {
       // Don't notify if user replies to their own review
