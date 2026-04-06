@@ -263,7 +263,7 @@ export class BookService {
         author: input.author,
         description: input.description || '',
         categoryId: input.categoryId,
-        cover_image: input.cover_image || undefined  // ✅ Convert null/undefined to undefined
+        cover_image: input.cover_image || undefined  
       };
 
       const newBook = await BookModel.create(bookData);
@@ -277,7 +277,7 @@ export class BookService {
   }
 
   /**
-   * Update book - ✅ FIXED to handle cover_image correctly
+   * Update book - FIXED to handle cover_image correctly
    */
   static async updateBook(bookId: number, updates: UpdateBookInput): Promise<Book> {
     try {
@@ -638,7 +638,7 @@ export class BookService {
   }
 
   /**
-   * Bulk create books (admin only) - ✅ FIXED to handle cover_image
+   * Bulk create books (admin only) 
    */
   static async bulkCreateBooks(books: CreateBookInput[]): Promise<Book[]> {
     try {
