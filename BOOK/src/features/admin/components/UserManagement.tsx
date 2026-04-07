@@ -62,7 +62,7 @@ import {
 } from '@mui/icons-material';
 import { format } from 'date-fns';
 
-// Types
+
 export interface User {
   id: number;
   name: string;
