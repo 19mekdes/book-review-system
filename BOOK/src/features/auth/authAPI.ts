@@ -1,10 +1,5 @@
 import api from '../../services/api';
 import { AxiosResponse, AxiosError } from 'axios';
-
-// ============================================
-// Types
-// ============================================
-
 export interface LoginCredentials {
   email: string;
   password: string;
@@ -187,11 +182,6 @@ interface ErrorResponse {
   }>;
   statusCode?: number;
 }
-
-// ============================================
-// Auth API Class
-// ============================================
-
 class AuthAPI {
   private readonly baseUrl = '/auth';
 

@@ -12,9 +12,6 @@ import authAPI, {
   UpdateProfileData
 } from './authAPI';
 
-// ============================================
-// Types
-// ============================================
 
 export interface AuthState {
   // User data
