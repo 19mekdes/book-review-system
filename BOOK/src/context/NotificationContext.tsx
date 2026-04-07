@@ -49,17 +49,11 @@ export const useNotifications = () => {
   return context;
 };
 
-// ============================================
-// Provider Props
-// ============================================
-
 interface NotificationProviderProps {
   children: ReactNode;
 }
 
-// ============================================
-// Notification Provider Component
-// ============================================
+
 
 export const NotificationProvider: React.FC<NotificationProviderProps> = ({ children }) => {
   const { isAuthenticated } = useAuth();
