@@ -1,10 +1,7 @@
-// src/features/admin/adminSlice.ts
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../../services/api';  // Fixed import
 
-// ============================================
-// Types
-// ============================================
+
 
 export interface DashboardStats {
   totalUsers: number;
@@ -31,9 +28,7 @@ export interface AdminState {
   error: string | null;
 }
 
-// ============================================
-// Initial State
-// ============================================
+
 
 const initialState: AdminState = {
   stats: null,
