@@ -28,8 +28,6 @@ export interface AdminState {
   error: string | null;
 }
 
-
-
 const initialState: AdminState = {
   stats: null,
   users: [],
@@ -39,9 +37,6 @@ const initialState: AdminState = {
   error: null
 };
 
-// ============================================
-// Async Thunks
-// ============================================
 
 export const fetchDashboardStats = createAsyncThunk(
   'admin/fetchStats',
@@ -137,9 +132,7 @@ export const deleteReview = createAsyncThunk(
   }
 );
 
-// ============================================
-// Slice
-// ============================================
+
 
 const adminSlice = createSlice({
   name: 'admin',
@@ -227,9 +220,6 @@ const adminSlice = createSlice({
   }
 });
 
-// ============================================
-// Exports
-// ============================================
 
 export const { clearError } = adminSlice.actions;
 export default adminSlice.reducer;
