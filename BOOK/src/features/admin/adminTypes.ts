@@ -1,7 +1,3 @@
-// ============================================
-// User Types
-// ============================================
-
 export type UserRole = 'Admin' | 'Moderator' | 'User';
 export type UserStatus = 'active' | 'suspended' | 'pending' | 'banned';
 export type UserVerificationStatus = 'verified' | 'unverified' | 'pending';
@@ -56,9 +52,6 @@ export interface UserSession {
   expiresAt: string;
 }
 
-// ============================================
-// Book Types
-// ============================================
 
 export type BookStatus = 'published' | 'draft' | 'archived' | 'pending';
 export type BookFormat = 'paperback' | 'hardcover' | 'ebook' | 'audiobook';
@@ -120,9 +113,7 @@ export interface BookReview {
   updatedAt: string;
 }
 
-// ============================================
-// Review Types
-// ============================================
+
 
 export type ReviewStatus = 'approved' | 'pending' | 'flagged' | 'rejected' | 'spam';
 export type ReviewFlagReason = 'inappropriate' | 'spam' | 'offensive' | 'copyright' | 'other';
@@ -184,10 +175,6 @@ export interface ReviewStats {
   }>;
 }
 
-// ============================================
-// Category Types
-// ============================================
-
 export interface Category {
   id: number;
   name: string;
@@ -216,9 +203,7 @@ export interface CategoryStats {
   popularBooks: Book[];
 }
 
-// ============================================
-// Dashboard Types
-// ============================================
+
 
 export interface DashboardStats {
   // Overview
@@ -294,9 +279,7 @@ export interface DashboardStats {
   }>;
 }
 
-// ============================================
-// Report Types
-// ============================================
+
 
 export type ReportType = 'users' | 'books' | 'reviews' | 'categories' | 'activity' | 'revenue';
 export type ReportFormat = 'pdf' | 'csv' | 'excel' | 'json';
@@ -344,9 +327,6 @@ export interface ReportTemplate {
   updatedAt: string;
 }
 
-// ============================================
-// Analytics Types
-// ============================================
 
 export interface AnalyticsData {
   overview: {
@@ -413,9 +393,7 @@ export interface AnalyticsData {
   }>;
 }
 
-// ============================================
-// Filter Types
-// ============================================
+
 
 export interface FilterOption {
   label: string;
@@ -457,9 +435,6 @@ export interface AdminFilters {
   active?: boolean;
 }
 
-// ============================================
-// API Response Types
-// ============================================
 
 export interface ApiResponse<T> {
   success: boolean;
@@ -495,9 +470,6 @@ export interface ErrorResponse {
   timestamp: string;
 }
 
-// ============================================
-// Notification Types
-// ============================================
 
 export type NotificationType = 'info' | 'success' | 'warning' | 'error';
 export type NotificationPriority = 'low' | 'medium' | 'high' | 'urgent';
@@ -531,9 +503,7 @@ export interface NotificationPreferences {
   };
 }
 
-// ============================================
-// Settings Types
-// ============================================
+
 
 export interface SystemSettings {
   siteName: string;
@@ -604,9 +574,7 @@ export interface SystemSettings {
   };
 }
 
-// ============================================
-// Activity Log Types
-// ============================================
+
 
 export type ActivityAction = 
   | 'user.created'
@@ -643,9 +611,7 @@ export interface ActivityLog {
   timestamp: string;
 }
 
-// ============================================
-// Export Types
-// ============================================
+
 
 export interface ExportConfig {
   format: ReportFormat;
@@ -668,9 +634,7 @@ export interface ExportJob {
   completedAt?: string;
 }
 
-// ============================================
-// Chart/Visualization Types
-// ============================================
+
 
 export interface ChartDataPoint {
   label: string;
