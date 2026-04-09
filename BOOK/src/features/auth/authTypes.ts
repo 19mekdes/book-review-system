@@ -354,10 +354,6 @@ export interface EmailValidation {
   errors?: string[];
 }
 
-// ============================================
-// Security Types
-// ============================================
-
 export interface SecuritySettings {
   twoFactorEnabled: boolean;
   trustedDevices: TrustedDevice[];
@@ -381,9 +377,7 @@ export interface SecurityAlert {
   device?: string;
 }
 
-// ============================================
-// API Response Types
-// ============================================
+
 
 export interface AuthApiResponse<T = unknown> {
   success: boolean;
@@ -404,9 +398,6 @@ export interface AuthApiError {
   path?: string;
 }
 
-// ============================================
-// JWT Token Types
-// ============================================
 
 export interface JwtPayload {
   sub: number; // user id
@@ -422,9 +413,6 @@ export interface JwtPayload {
 
 export type JwtDecoded = JwtPayload
 
-// ============================================
-// OAuth Types
-// ============================================
 
 export interface OAuthProvider {
   id: 'google' | 'facebook' | 'github' | 'twitter';
@@ -444,9 +432,7 @@ export interface OAuthProfile {
   lastName?: string;
 }
 
-// ============================================
-// Permission Types
-// ============================================
+
 
 export interface Permission {
   id: string;
@@ -461,9 +447,7 @@ export interface RolePermissions {
   permissions: Permission[];
 }
 
-// ============================================
-// Notification Types
-// ============================================
+
 
 export interface AuthNotification {
   id: string;
@@ -478,9 +462,6 @@ export interface AuthNotification {
   actionText?: string;
 }
 
-// ============================================
-// Constants
-// ============================================
 
 export const USER_ROLES: UserRole[] = ['Admin', 'Moderator', 'User'];
 export const USER_STATUSES: UserStatus[] = ['active', 'suspended', 'pending', 'banned'];
