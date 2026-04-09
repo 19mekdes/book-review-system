@@ -160,11 +160,6 @@ export interface RefreshTokenResponse {
   expiresIn: number;
   tokenType: 'Bearer';
 }
-
-// ============================================
-// Password Management Types
-// ============================================
-
 export interface ChangePasswordData {
   currentPassword: string;
   newPassword: string;
@@ -193,11 +188,6 @@ export interface PasswordStrength {
     special: boolean;
   };
 }
-
-// ============================================
-// Two-Factor Authentication Types
-// ============================================
-
 export interface TwoFactorSetupResponse {
   qrCode: string; // Base64 or data URL
   secret: string;
@@ -234,11 +224,6 @@ export interface TrustedDevice {
   createdAt: string;
   expiresAt: string;
 }
-
-// ============================================
-// Session Management Types
-// ============================================
-
 export interface Session {
   id: string;
   userId: number;
