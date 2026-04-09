@@ -70,9 +70,7 @@ export interface AuthState {
   initialLoading: boolean;
 }
 
-// ============================================
-// Initial State
-// ============================================
+
 
 const initialState: AuthState = {
   user: null,
@@ -121,9 +119,6 @@ const initialState: AuthState = {
   initialLoading: true
 };
 
-// ============================================
-// Async Thunks
-// ============================================
 
 /**
  * Register a new user
