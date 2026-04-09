@@ -1,6 +1,4 @@
-// ============================================
-// User Types
-// ============================================
+
 
 export type UserRole = 'Admin' | 'Moderator' | 'User';
 export type UserStatus = 'active' | 'suspended' | 'pending' | 'banned';
@@ -106,9 +104,7 @@ export interface SocialLinks {
   tiktok?: string;
 }
 
-// ============================================
-// Authentication Types
-// ============================================
+
 
 export interface LoginCredentials {
   email: string;
