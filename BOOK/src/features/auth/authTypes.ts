@@ -260,9 +260,6 @@ export interface LoginHistory {
   twoFactorUsed?: boolean;
 }
 
-// ============================================
-// Profile Management Types
-// ============================================
 
 export interface UpdateProfileData {
   name?: string;
@@ -296,10 +293,6 @@ export interface AvatarUploadResponse {
   thumbnailUrl?: string;
 }
 
-// ============================================
-// Email Verification Types
-// ============================================
-
 export interface VerifyEmailData {
   token: string;
 }
@@ -309,9 +302,6 @@ export interface VerifyEmailResponse {
   message: string;
 }
 
-// ============================================
-// Account Types
-// ============================================
 
 export interface DeleteAccountData {
   password: string;
@@ -337,9 +327,7 @@ export interface AccountActivity {
   status: 'success' | 'failure' | 'pending';
 }
 
-// ============================================
-// Validation Types
-// ============================================
+
 
 export interface ValidationError {
   field: string;
