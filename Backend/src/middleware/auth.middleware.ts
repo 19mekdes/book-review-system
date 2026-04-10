@@ -38,7 +38,7 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key') as any;
       
-      // ✅ Fix: Attach user to request with all required fields
+      //  Fix: Attach user to request with all required fields
       (req as AuthRequest).user = {
         id: decoded.userId || decoded.id,
         userId: decoded.userId || decoded.id,

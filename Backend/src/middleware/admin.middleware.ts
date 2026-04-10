@@ -1,6 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-
-
 interface AdminRequest extends Request {
   user?: {
     id: number;
