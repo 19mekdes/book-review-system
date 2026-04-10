@@ -57,7 +57,7 @@ export class UserController {
    */
   static async getAllUsers(req: AuthRequest, res: Response) {
     try {
-      // ✅ Check if user exists
+      //  Check if user exists
       if (!req.user) {
         return res.status(401).json(
           ApiResponseUtil.unauthorized('User not authenticated')
@@ -131,11 +131,11 @@ export class UserController {
   }
 
   /**
-   * Get current user profile - ✅ FIXED
+   * Get current user profile 
    */
   static async getCurrentUserProfile(req: AuthRequest, res: Response) {
     try {
-      // ✅ Check if user exists
+      //  Check if user exists
       if (!req.user) {
         return res.status(401).json(
           ApiResponseUtil.unauthorized('User not authenticated')
