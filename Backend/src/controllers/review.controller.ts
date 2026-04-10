@@ -111,7 +111,7 @@ export class ReviewController {
 
   /**
    * Create a review for a book (authenticated users only)
-   * ✅ UPDATED: Added notification trigger
+   
    */
   static async createReview(req: AuthRequest, res: Response) {
     try {
