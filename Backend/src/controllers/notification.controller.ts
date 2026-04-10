@@ -6,14 +6,14 @@ import { AuthRequest } from '../middleware/auth.middleware';
 export class NotificationController {
   static async getUserNotifications(req: AuthRequest, res: Response) {
     try {
-      // ✅ Check if user exists (using authenticate sets req.user)
+      //  Check if user exists (using authenticate sets req.user)
       if (!req.user) {
         return res.status(401).json(
           ApiResponseUtil.unauthorized('User not authenticated')
         );
       }
 
-      // ✅ Use userId from the user object
+      //  Use userId from the user object
       const userId = req.user.id;
       const limit = parseInt(req.query.limit as string) || 50;
       

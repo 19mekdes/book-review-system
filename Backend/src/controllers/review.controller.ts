@@ -147,10 +147,10 @@ export class ReviewController {
         comment
       });
 
-      // ✅ Get book details for notification
+      //  Get book details for notification
       const book = await BookModel.findById(parseInt(bookId));
       if (book) {
-        // ✅ Trigger notification for users who follow this book
+        //  Trigger notification for users who follow this book
         const notifiedCount = await NotificationService.notifyOnNewReview(
           parseInt(bookId),
           review.id,
