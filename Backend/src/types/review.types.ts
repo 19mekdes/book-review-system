@@ -7,7 +7,6 @@ export interface Review {
   created_at?: Date;
   updated_at?: Date;
 }
-
 export interface ReviewWithDetails extends Review {
   user_name: string;
   book_title: string;
