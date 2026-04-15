@@ -141,7 +141,7 @@ export class AuthController {
    */
   static async getProfile(req: AuthRequest, res: Response) {
     try {
-      // ✅ Check if user exists in request
+      //  Check if user exists in request
       if (!req.user) {
         return res.status(401).json(
           ApiResponseUtil.unauthorized('User not authenticated')
@@ -177,7 +177,7 @@ export class AuthController {
    */
   static async verifyToken(req: AuthRequest, res: Response) {
     try {
-      // ✅ Check if user exists in request
+      //  Check if user exists in request
       if (!req.user) {
         return res.status(401).json(
           ApiResponseUtil.unauthorized('Invalid token or user not found')
