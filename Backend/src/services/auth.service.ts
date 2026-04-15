@@ -298,7 +298,7 @@ export class AuthService {
    */
   static async getUserSessions(userId: number): Promise<any[]> {
     try {
-      const sessions = JwtUtils.getUserSessions(userId); // ✅ Fixed - static method, no await
+      const sessions = JwtUtils.getUserSessions(userId); //  Fixed - static method, no await
       return sessions;
     } catch (error) {
       throw new ApiError(500, `Failed to get sessions: ${(error as Error).message}`);
@@ -312,7 +312,7 @@ export class AuthService {
     try {
       // In a real implementation, you'd have a method to revoke specific token
       // For now, we'll revoke all
-      await JwtUtils.revokeAllUserTokens(userId); // ✅ Fixed - static method
+      await JwtUtils.revokeAllUserTokens(userId); //  Fixed - static method
       return true;
     } catch (error) {
       throw new ApiError(500, `Failed to revoke session: ${(error as Error).message}`);
