@@ -51,8 +51,6 @@ interface NotificationProviderProps {
   children: ReactNode;
 }
 
-
-
 export const NotificationProvider: React.FC<NotificationProviderProps> = ({ children }) => {
   const { isAuthenticated } = useAuth();
   const [notifications, setNotifications] = useState<Notification[]>([]);
