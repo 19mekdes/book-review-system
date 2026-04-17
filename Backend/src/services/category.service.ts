@@ -1,7 +1,6 @@
 import { CategoryModel, Category, CategoryWithStats } from '../models/Category.model';
 import { BookModel } from '../models/Book.model';
 import { ApiError } from '../middleware/error.middleware';
-
 export interface CategoryStats {
   category: string;
   bookCount: number;

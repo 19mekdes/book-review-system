@@ -668,7 +668,7 @@ export class BookService {
             continue;
           }
 
-          // ✅ FIXED: Create book with cover_image (handle undefined properly)
+          //  FIXED: Create book with cover_image (handle undefined properly)
           const bookToCreate = {
             title: bookData.title,
             author: bookData.author,
