@@ -404,9 +404,6 @@ const ReviewDialog: React.FC<ReviewDialogProps> = ({
   );
 };
 
-// ============================================
-// Delete Confirmation Dialog
-// ============================================
 
 interface DeleteDialogProps {
   open: boolean;
@@ -448,10 +445,6 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({
     </Dialog>
   );
 };
-
-// ============================================
-// Main Component
-// ============================================
 
 const AllReviewsPage: React.FC = () => {
   const theme = useTheme();
