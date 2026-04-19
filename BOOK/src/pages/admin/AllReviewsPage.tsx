@@ -1,4 +1,3 @@
-// C:\Users\PC_1\OneDrive\Desktop\Book Review\BOOK\src\pages\admin\AllReviewsPage.tsx
 import React, { useState, useEffect, useCallback } from "react";
 import {
   Box,
@@ -60,10 +59,6 @@ import {
 } from "@mui/icons-material";
 import { format, formatDistance } from "date-fns";
 
-// ============================================
-// Types
-// ============================================
-
 export interface Review {
   id: number;
   userId: number;
@@ -106,9 +101,6 @@ export interface ReviewFilters {
   hasReports?: boolean;
 }
 
-// ============================================
-// Review Dialog Component
-// ============================================
 
 interface ReviewDialogProps {
   open: boolean;
