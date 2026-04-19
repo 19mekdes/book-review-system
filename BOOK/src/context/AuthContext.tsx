@@ -12,7 +12,6 @@ interface User {
   location?: string;
   created_at?: string;
 }
-
 interface AuthContextType {
   user: User | null;
   token: string | null;
