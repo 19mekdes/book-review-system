@@ -1,4 +1,3 @@
-// C:\Users\PC_1\OneDrive\Desktop\Book Review\BOOK\src\pages\admin\ReportsPage.tsx
 import React, { useState, useEffect } from 'react';
 import {
   Box,
