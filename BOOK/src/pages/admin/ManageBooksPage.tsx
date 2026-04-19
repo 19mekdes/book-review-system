@@ -1,4 +1,3 @@
-// pages/admin/ManageBooksPage.tsx
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   Box,
