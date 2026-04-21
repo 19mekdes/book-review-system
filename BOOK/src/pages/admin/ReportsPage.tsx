@@ -84,9 +84,7 @@ import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import CopyToClipboard from 'react-copy-to-clipboard';
 
-// ============================================
-// Types
-// ============================================
+
 
 export type ReportType = 'users' | 'books' | 'reviews' | 'categories' | 'engagement' | 'revenue';
 export type ReportPeriod = 'daily' | 'weekly' | 'monthly' | 'quarterly' | 'yearly' | 'custom';
@@ -132,9 +130,6 @@ export interface SavedReport {
   };
 }
 
-// ============================================
-// Report Card Component
-// ============================================
 
 interface ReportCardProps {
   report: SavedReport;
@@ -381,8 +376,6 @@ const ShareDialog: React.FC<ShareDialogProps> = ({
     </Dialog>
   );
 };
-
-
 
 interface ScheduleDialogProps {
   open: boolean;
