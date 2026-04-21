@@ -42,9 +42,6 @@ import { format, subDays } from 'date-fns';
 import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 
-// ============================================
-// Types
-// ============================================
 
 interface DashboardStats {
   totalUsers: number;
@@ -153,9 +150,7 @@ const StatCard: React.FC<StatCardProps> = ({
   );
 };
 
-// ============================================
-// Review List Component
-// ============================================
+
 
 interface ReviewListProps {
   reviews: Review[];
@@ -269,9 +264,7 @@ const ReviewList: React.FC<ReviewListProps> = ({ reviews, onDeleteReview, onView
   );
 };
 
-// ============================================
-// Main Component
-// ============================================
+
 
 const AdminDashboardPage: React.FC = () => {
   const theme = useTheme();
