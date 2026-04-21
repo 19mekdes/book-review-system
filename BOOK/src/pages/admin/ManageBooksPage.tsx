@@ -68,9 +68,6 @@ import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 
-// ============================================
-// Types
-// ============================================
 
 export type BookLanguage = 'English' | 'Spanish' | 'French' | 'German' | 'Italian' | 'Portuguese' | 'Russian' | 'Chinese' | 'Japanese' | 'Korean';
 
@@ -113,9 +110,7 @@ export interface Category {
   updated_at?: string;
 }
 
-// ============================================
-// Image Compression Helper Function
-// ============================================
+
 
 const compressAndResizeImage = (file: File): Promise<string> => {
   return new Promise((resolve, reject) => {
