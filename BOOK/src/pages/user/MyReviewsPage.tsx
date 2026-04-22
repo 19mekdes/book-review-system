@@ -112,9 +112,7 @@ export interface ReviewStats {
   }>;
 }
 
-// ============================================
-// Edit Review Dialog
-// ============================================
+
 
 interface EditReviewDialogProps {
   open: boolean;
@@ -250,10 +248,6 @@ const EditReviewDialog: React.FC<EditReviewDialogProps> = ({
     </Dialog>
   );
 };
-
-// ============================================
-// Delete Confirmation Dialog
-// ============================================
 
 interface DeleteDialogProps {
   open: boolean;
