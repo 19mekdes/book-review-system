@@ -434,8 +434,6 @@ export interface FollowResponse {
   };
 }
 
-
-
 export interface UserFilters {
   search?: string;
   role?: UserRole | 'all';

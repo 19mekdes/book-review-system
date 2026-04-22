@@ -18,7 +18,7 @@ const ProfilePage = lazy(() => import('./pages/user/ProfilePage'));
 const SettingsPage = lazy(() => import('./pages/user/SettingsPage'));
 const NotificationsPage = lazy(() => import('./pages/notifications/NotificationsPage'));
 
-// ✅ Admin Pages - Direct import to avoid loading delay
+//  Admin Pages - Direct import to avoid loading delay
 import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 import ManageUsersPage from './pages/admin/ManageUsersPage';
 import ManageBooksPage from './pages/admin/ManageBooksPage';
@@ -197,7 +197,7 @@ const AppContent: React.FC = () => {
           </ProtectedRoute>
         } />
 
-        {/* ✅ Admin Routes - Direct import (no lazy loading, faster) */}
+        {/*  Admin Routes - Direct import (no lazy loading, faster) */}
         <Route path="/admin" element={
           <AdminRoute>
             <AdminDashboardPage />
