@@ -72,7 +72,6 @@ import { useAuth } from '../../context/AuthContext';
 import api from '../../services/api';
 
 
-
 export interface UserProfile {
   id: number;
   name: string;
@@ -487,7 +486,6 @@ const ActivityItem: React.FC<ActivityItemProps> = ({ activity }) => {
     </ListItem>
   );
 };
-
 
 interface EditProfileDialogProps {
   open: boolean;

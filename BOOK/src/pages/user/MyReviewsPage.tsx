@@ -287,9 +287,7 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({
   );
 };
 
-// ============================================
-// Review Card Component
-// ============================================
+
 
 interface ReviewCardProps {
   review: Review;
