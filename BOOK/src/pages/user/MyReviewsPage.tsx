@@ -58,9 +58,7 @@ import { useNavigate } from 'react-router-dom';
 import { format, formatDistance, subDays } from 'date-fns';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
 
-// ============================================
-// Types
-// ============================================
+
 
 export interface Review {
   id: number;

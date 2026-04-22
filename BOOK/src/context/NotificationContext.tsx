@@ -32,11 +32,7 @@ interface NotificationContextType {
   clearNotifications: () => void;
 }
 
-
-
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
-
-
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const useNotifications = () => {
