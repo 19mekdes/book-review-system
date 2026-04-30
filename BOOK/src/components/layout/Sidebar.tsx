@@ -91,7 +91,6 @@ const Sidebar: React.FC<SidebarProps> = ({
     return roles.includes(user.role || 'User');
   };
 
-  // Public navigation items
   const navItems: NavItem[] = [
     { id: 'home', label: 'Home', path: '/', icon: <HomeIcon /> },
     { 
@@ -130,7 +129,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           label: 'Dashboard', 
           path: '/admin', 
           icon: <DashboardIcon />,
-          // Maps to: AdminDashboardPage.tsx
+        
         },
         { 
           id: 'manage-users', 
@@ -138,7 +137,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           path: '/admin/users', 
           icon: <PeopleIcon />, 
           badge: 12,
-          // Maps to: ManageUsersPage.tsx
+          
         },
         { 
           id: 'manage-books', 

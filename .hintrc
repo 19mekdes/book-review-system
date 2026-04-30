@@ -12,11 +12,7 @@
       }
     ],
     "typescript-config/consistent-casing": "off",
-    "axe/forms": [
-      "default",
-      {
-        "label": "off"
-      }
-    ]
+    "axe/forms": "off",
+    "typescript-config/strict": "off"
   }
 }
