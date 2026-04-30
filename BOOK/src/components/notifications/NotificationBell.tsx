@@ -93,7 +93,7 @@ const NotificationBell: React.FC = () => {
   const markAsRead = async (notificationId: number) => {
     try {
       const response = await api.put(`/notifications/${notificationId}/read`);
-      // Update unread count from response
+      
       if (response.data.data?.unreadCount !== undefined) {
         setUnreadCount(response.data.data.unreadCount);
       } else {
