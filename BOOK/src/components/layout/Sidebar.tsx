@@ -144,35 +144,34 @@ const Sidebar: React.FC<SidebarProps> = ({
           label: 'Manage Books', 
           path: '/admin/books', 
           icon: <BookIcon />,
-          // Maps to: ManageBooksPage.tsx
+        
         },
         { 
           id: 'manage-categories', 
           label: 'Manage Categories', 
           path: '/admin/categories', 
           icon: <CategoryIcon />,
-          // Maps to: ManageCategoriesPage.tsx
         },
         { 
           id: 'manage-reviews', 
           label: 'All Reviews', 
           path: '/admin/reviews', 
           icon: <ReviewIcon />,
-          // Maps to: AllReviewsPage.tsx
+          
         },
         { 
           id: 'reports', 
           label: 'Reports', 
           path: '/admin/reports', 
           icon: <AssessmentIcon />,
-          // Maps to: ReportsPage.tsx
+        
         },
         { 
           id: 'admin-settings', 
           label: 'Settings', 
           path: '/admin/settings', 
           icon: <SettingsIcon />,
-          // You may need to create SettingsPage.tsx
+        
         }
       ]
     }
