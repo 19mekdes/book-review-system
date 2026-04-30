@@ -62,7 +62,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setLoading(false);
   }, []);
 
-  // LOGIN - Redirects admin to admin dashboard, regular users to home
+
   const login = async (email: string, password: string) => {
     try {
       const res = await api.post('/auth/login', { email, password });
@@ -71,22 +71,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setToken(accessToken);
       setUser(userData);
 
-      // Store tokens
+      
       localStorage.setItem('token', accessToken);
       if (refreshToken) {
         localStorage.setItem('refreshToken', refreshToken);
       }
       localStorage.setItem('user', JSON.stringify(userData));
 
-      // Set auth header for future requests
+      
       api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
 
-      // Redirect based on user role
+      
       if (userData.roleId === 1 || userData.role === 'admin' || userData.role === 'Admin') {
-        // Admin users go to admin dashboard
+        
         navigate('/admin');
       } else {
-        // Regular users go to home page
+        
         navigate('/');
       }
     } catch (error) {
@@ -95,7 +95,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  // LOGOUT
+
   const logout = () => {
     setUser(null);
     setToken(null);
