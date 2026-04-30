@@ -30,7 +30,7 @@ const BookCoverUpload: React.FC<BookCoverUploadProps> = ({
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Preview
+    
     const reader = new FileReader();
     reader.onloadend = () => {
       setPreview(reader.result as string);
@@ -70,7 +70,7 @@ const BookCoverUpload: React.FC<BookCoverUploadProps> = ({
 
   const handleRemove = () => {
     setPreview(null);
-    // Optionally add API call to remove image
+    
   };
 
   return (

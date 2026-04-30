@@ -68,7 +68,7 @@ const StarRating: React.FC<StarRatingProps> = ({
     }
     
     if (newValue === rating) {
-      // If clicking the same rating, open dialog to edit
+    
       if (userRating > 0) {
         setDialogOpen(true);
       }
