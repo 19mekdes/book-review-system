@@ -177,7 +177,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     }
   ];
 
-  // User profile items
+
   const userItems: NavItem[] = [
     { id: 'profile', label: 'Profile', path: '/profile', icon: <PersonIcon />, roles: ['User', 'Admin'] },
     { id: 'settings', label: 'Settings', path: '/settings', icon: <SettingsIcon />, roles: ['User', 'Admin'] }
