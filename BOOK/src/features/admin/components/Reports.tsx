@@ -238,7 +238,7 @@ const MetricCard: React.FC<{
   );
 };
 
-// Chart Type Selector
+
 const ChartTypeSelector: React.FC<{
   value: string;
   onChange: (value: string) => void;
@@ -458,7 +458,7 @@ const Reports: React.FC<ReportsProps> = ({ className }) => {
 
   const handleExport = (format: 'pdf' | 'csv' | 'excel') => {
     showNotification(`Exporting as ${format.toUpperCase()}...`, 'info');
-    // Implement actual export logic here
+  
     setTimeout(() => {
       showNotification(`Report exported as ${format.toUpperCase()} successfully`, 'success');
     }, 2000);
