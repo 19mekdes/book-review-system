@@ -1,8 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../../services/api';  // Fixed import
 
-
-
 export interface DashboardStats {
   totalUsers: number;
   totalBooks: number;
@@ -172,7 +170,7 @@ const adminSlice = createSlice({
         state.error = action.payload as string;
       })
 
-      // All Books
+  
       .addCase(fetchAllBooks.pending, (state) => {
         state.isLoading = true;
         state.error = null;
