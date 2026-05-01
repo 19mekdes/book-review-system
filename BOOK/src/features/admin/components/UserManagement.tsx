@@ -372,7 +372,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ className }) => {
       );
     }
 
-    // Apply role filter
+    
     if (roleFilter !== 'all') {
       filtered = filtered.filter(user => user.role === roleFilter);
     }
@@ -432,13 +432,13 @@ const UserManagement: React.FC<UserManagementProps> = ({ className }) => {
 
   const handleSaveUser = (userData: Partial<User>) => {
     if (selectedUser) {
-      // Update existing user - fixed duplicate id issue
+      
       setUsers(users.map(u =>
         u.id === selectedUser.id ? { ...u, ...userData, id: u.id } : u
       ));
       showNotification(`User ${userData.name} updated successfully`, 'success');
     } else {
-      // Add new user - option 1: Don't spread userData, set properties explicitly
+    
 const newUser: User = {
   id: users.length + 1,
   name: userData.name || '',
