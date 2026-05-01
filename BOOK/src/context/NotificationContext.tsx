@@ -225,7 +225,8 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
             fetchData();
             scheduleNextFetch();
           }
-        }, 60000); // 60 seconds
+          
+        }, 60000); 
       }
     };
 

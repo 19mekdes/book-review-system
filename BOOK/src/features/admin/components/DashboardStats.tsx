@@ -49,7 +49,6 @@ import {
   ResponsiveContainer} from 'recharts';
 import { format, subDays } from 'date-fns';
 
-// Types
 export interface DashboardStatsProps {
   timeframe?: 'day' | 'week' | 'month' | 'year';
   onRefresh?: () => void;
@@ -69,7 +68,7 @@ export interface StatCardData {
   progress?: number;
 }
 
-// Chart data types
+
 interface ChartDataPoint {
   date: string;
   users: number;
@@ -89,7 +88,6 @@ interface RatingDataPoint {
   color: string;
 }
 
-// Stats data type
 interface StatsData {
   stats: {
     users: {
@@ -213,7 +211,7 @@ const generateStatsData = (timeframe: string): StatsData => {
   };
 };
 
-// Stat Card Component
+
 const StatCard: React.FC<{
   data: StatCardData;
   onClick?: () => void;
@@ -352,7 +350,6 @@ const StatCard: React.FC<{
   );
 };
 
-// Active Users Chart Component
 const ActiveUsersChart: React.FC<{ data: ChartDataPoint[] }> = ({ data }) => {
   const theme = useTheme();
 
@@ -387,9 +384,7 @@ const ActiveUsersChart: React.FC<{ data: ChartDataPoint[] }> = ({ data }) => {
       </ResponsiveContainer>
     </Paper>
   );
-};
 
-// Books & Reviews Chart Component
 const BooksReviewsChart: React.FC<{ data: ChartDataPoint[] }> = ({ data }) => {
   const theme = useTheme();
 
