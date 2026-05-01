@@ -121,7 +121,7 @@ export interface ReportData {
   }>;
 }
 
-// Tab Panel Component
+
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;

@@ -469,7 +469,7 @@ const CategoryPieChart: React.FC<{ data: PieDataPoint[] }> = ({ data }) => {
 };
 
 
-// Rating Distribution Bar Chart
+
 const RatingBarChart: React.FC<{ data: RatingDataPoint[] }> = ({ data }) => {
   return (
     <Paper sx={{ p: 2, height: '100%' }}>
