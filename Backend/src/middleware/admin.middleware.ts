@@ -10,7 +10,6 @@ interface AdminRequest extends Request {
     exp?: number;
   };
 }
-
 export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
   try {
     // Cast to AdminRequest to access user property
