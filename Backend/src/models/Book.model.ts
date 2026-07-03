@@ -206,7 +206,7 @@ export class BookModel {
         paramIndex++;
       }
 
-      if (updates.cover_image !== undefined) {  // ADD THIS BLOCK
+      if (updates.cover_image !== undefined) {  
         setClauses.push(`cover_image = $${paramIndex}`);
         values.push(updates.cover_image);
         paramIndex++;

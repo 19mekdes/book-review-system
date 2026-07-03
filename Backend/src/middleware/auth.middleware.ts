@@ -94,5 +94,4 @@ export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-// Combined middleware for admin-only routes
 export const requireAdmin = [authenticate, isAdmin];
