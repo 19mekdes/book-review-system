@@ -488,11 +488,11 @@ export class UserController {
   }
 
   /**
-   * Get user activity summary - ✅ FIXED
+   * Get user activity summary 
    */
   static async getUserActivitySummary(req: AuthRequest, res: Response) {
     try {
-      // ✅ Check if user exists
+      //  Check if user exists
       if (!req.user) {
         return res.status(401).json(
           ApiResponseUtil.unauthorized('User not authenticated')
