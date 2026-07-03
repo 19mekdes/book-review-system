@@ -137,7 +137,7 @@ export class AuthController {
   }
 
   /**
-   * Get current user profile - ✅ FIXED
+   * Get current user profile 
    */
   static async getProfile(req: AuthRequest, res: Response) {
     try {

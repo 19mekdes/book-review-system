@@ -261,7 +261,7 @@ export class UserController {
    */
   static async updateUser(req: AuthRequest, res: Response) {
     try {
-      // ✅ Check if user exists and is admin
+      //  Check if user exists and is admin
       if (!req.user) {
         return res.status(401).json(
           ApiResponseUtil.unauthorized('User not authenticated')
@@ -299,11 +299,11 @@ export class UserController {
   }
 
   /**
-   * Delete user (admin only) - ✅ FIXED
+   * Delete user (admin only) 
    */
   static async deleteUser(req: AuthRequest, res: Response) {
     try {
-      // ✅ Check if user exists
+      //  Check if user exists
       if (!req.user) {
         return res.status(401).json(
           ApiResponseUtil.unauthorized('User not authenticated')
