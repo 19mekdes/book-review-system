@@ -282,13 +282,8 @@ export const canAccessModerator = (userRole: UserRole): RouteGuardResult => {
   });
 };
 
-// ============================================
 // UI Component Guards
-// ============================================
 
-/**
- * Check if a UI element should be shown based on role
- */
 export const shouldShowElement = (
   userRole: UserRole,
   requiredRole: UserRole | UserRole[]
@@ -333,13 +328,9 @@ export const getVisibleActions = (
   return actions;
 };
 
-// ============================================
-// Role-based Data Filtering
-// ============================================
 
-/**
- * Filter sensitive data based on user role
- */
+// Role-based Data Filtering
+
 export const filterSensitiveData = <T extends Record<string, unknown>>(
   data: T,
   userRole: UserRole,
