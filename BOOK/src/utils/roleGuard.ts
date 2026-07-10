@@ -362,9 +362,7 @@ export const getVisibleFields = (
   });
 };
 
-// ============================================
 // Permission List
-// ============================================
 
 export const PERMISSIONS = {
   // User permissions
@@ -412,9 +410,8 @@ export const PERMISSIONS = {
   ACCESS_ALL: "access_all",
 } as const;
 
-// ============================================
+
 // Role Labels
-// ============================================
 
 export const ROLE_LABELS: Record<UserRole, string> = {
   Admin: "Administrator",
