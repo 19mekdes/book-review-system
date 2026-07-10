@@ -519,9 +519,7 @@ export const validatePhone = (
   return { isValid: true };
 };
 
-// ============================================
 // Date Validation
-// ============================================
 
 /**
  * Validate date
@@ -587,9 +585,8 @@ export const validateBirthDate = (
   return { isValid: true };
 };
 
-// ============================================
 // File Validation
-// ============================================
+
 
 export interface FileValidationOptions {
   maxSize?: number;
@@ -674,9 +671,7 @@ export const validateFile = async (
   return { isValid: true };
 };
 
-// ============================================
 // Form Validation Helpers
-// ============================================
 
 /**
  * Validate multiple fields at once
@@ -708,9 +703,7 @@ export const hasFormErrors = <T extends Record<string, unknown>>(
   return Object.values(errors).some(error => error !== undefined);
 };
 
-// ============================================
 // Sanitization
-// ============================================
 
 /**
  * Sanitize input by trimming and removing extra spaces
@@ -733,9 +726,9 @@ export const sanitizeUsername = (username: string): string => {
   return username.trim().toLowerCase().replace(/[^a-z0-9_]/g, '');
 };
 
-// ============================================
+
 // Export all validators
-// ============================================
+
 
 export const validators = {
   // Email
