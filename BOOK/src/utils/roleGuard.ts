@@ -431,9 +431,8 @@ export const ROLE_COLORS: Record<UserRole, string> = {
   User: "#2196f3",
 };
 
-// ============================================
+
 // Default Export
-// ============================================
 
 const roleGuard = {
   // Core functions
