@@ -27,9 +27,8 @@ export const validateEmail = (email: string): { isValid: boolean; message?: stri
   return { isValid: true };
 };
 
-// ============================================
+
 // Password Validation
-// ============================================
 
 export interface PasswordStrength {
   score: number; // 0-4
@@ -160,9 +159,8 @@ export const validatePasswordConfirmation = (
   return { isValid: true };
 };
 
-// ============================================
+
 // Username Validation
-// ============================================
 
 /**
  * Validate username
@@ -198,9 +196,7 @@ export const validateUsername = (
   return { isValid: true };
 };
 
-// ============================================
 // Name Validation
-// ============================================
 
 /**
  * Validate name
@@ -239,9 +235,7 @@ export const validateName = (
   return { isValid: true };
 };
 
-// ============================================
 // Bio Validation
-// ============================================
 
 /**
  * Validate bio
