@@ -425,9 +425,8 @@ export const validateBookDescription = (
   return { isValid: true };
 };
 
-// ============================================
+
 // Comment Validation
-// ============================================
 
 /**
  * Validate comment
@@ -456,9 +455,7 @@ export const validateComment = (
   return { isValid: true };
 };
 
-// ============================================
 // URL Validation
-// ============================================
 
 /**
  * Validate URL
@@ -499,9 +496,7 @@ export const validateUrl = (
   }
 };
 
-// ============================================
 // Phone Number Validation
-// ============================================
 
 /**
  * Validate phone number
