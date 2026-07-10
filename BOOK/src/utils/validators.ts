@@ -244,7 +244,7 @@ export const validateBio = (
   bio: string
 ): { isValid: boolean; message?: string } => {
   if (!bio) {
-    return { isValid: true }; // Bio is optional
+    return { isValid: true }; 
   }
 
   if (bio.length > VALIDATION.BIO.MAX_LENGTH) {
@@ -257,9 +257,7 @@ export const validateBio = (
   return { isValid: true };
 };
 
-// ============================================
 // Review Validation
-// ============================================
 
 /**
  * Validate review title
@@ -321,9 +319,8 @@ export const validateRating = (
   return { isValid: true };
 };
 
-// ============================================
 // Book Validation
-// ============================================
+
 
 /**
  * Validate ISBN
