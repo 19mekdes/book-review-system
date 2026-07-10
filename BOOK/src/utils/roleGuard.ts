@@ -1,13 +1,5 @@
 import { UserRole } from '../types/user.types';
 
-// ============================================
-// Role Hierarchy & Permissions
-// ============================================
-
-/**
- * Role hierarchy where higher roles inherit permissions from lower roles
- * Admin > Moderator > User
- */
 export const ROLE_HIERARCHY: Record<UserRole, number> = {
   'Admin': 100,
   'Moderator': 50,
@@ -122,9 +114,7 @@ export const RESOURCE_PERMISSIONS = {
 // Core Role Guard Functions
 // ============================================
 
-/**
- * Check if a role has sufficient hierarchy level
- */
+
 export const hasRoleLevel = (userRole: UserRole, requiredRole: UserRole): boolean => {
   const userLevel = ROLE_HIERARCHY[userRole] || 0;
   const requiredLevel = ROLE_HIERARCHY[requiredRole] || 0;
