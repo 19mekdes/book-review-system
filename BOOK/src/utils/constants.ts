@@ -583,9 +583,7 @@ export const EXPORT_FORMAT_LABELS = {
   [EXPORT_FORMATS.JSON]: "JSON",
 } as const;
 
-// ============================================
 // Report Types
-// ============================================
 
 export const REPORT_TYPES = {
   USERS: "users",
@@ -623,9 +621,7 @@ export const REPORT_PERIOD_LABELS = {
   [REPORT_PERIODS.CUSTOM]: "Custom Range",
 } as const;
 
-// ============================================
 // Default Values
-// ============================================
 
 export const DEFAULT_VALUES = {
   RATING: 0,
@@ -645,9 +641,7 @@ export const DEFAULT_VALUES = {
   MODAL_TRANSITION: 225,
 } as const;
 
-// ============================================
 // Feature Flags
-// ============================================
 
 export const FEATURES = {
   SOCIAL_LOGIN: true,
