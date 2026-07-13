@@ -6,7 +6,7 @@ export const ROLE_HIERARCHY: Record<UserRole, number> = {
   User: 10,
 };
 
-/**
+/*
  * Permission definitions for each role
  */
 export const ROLE_PERMISSIONS: Record<UserRole, string[]> = {

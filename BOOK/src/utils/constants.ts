@@ -660,9 +660,7 @@ export const FEATURES = {
   NEWSLETTER: true,
 } as const;
 
-// ============================================
 // Analytics Events
-// ============================================
 
 export const ANALYTICS_EVENTS = {
   PAGE_VIEW: "page_view",
