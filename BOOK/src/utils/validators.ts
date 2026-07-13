@@ -516,7 +516,6 @@ export const validateUrl = (
   }
 };
 
-// Phone Number Validation
 
 /**
  * Validate phone number
@@ -540,7 +539,7 @@ export const validatePhone = (
   return { isValid: true };
 };
 
-// Date Validation
+
 
 /**
  * Validate date
@@ -617,7 +616,7 @@ export interface FileValidationOptions {
   maxHeight?: number;
 }
 
-/**
+/*
  * Validate file
  */
 export const validateFile = async (
