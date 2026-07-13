@@ -347,9 +347,7 @@ export const TIME_UNITS = {
   YEAR: 365 * 24 * 60 * 60 * 1000,
 } as const;
 
-// ============================================
 // Validation Constants
-// ============================================
 
 export const VALIDATION = {
   PASSWORD: {
@@ -390,9 +388,7 @@ export const VALIDATION = {
   },
 } as const;
 
-// ============================================
 // File Upload Constants
-// ============================================
 
 export const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 export const MAX_FILE_SIZE_READABLE = "5MB";
@@ -409,9 +405,7 @@ export const ALLOWED_DOCUMENT_TYPES = [
 ];
 export const ALLOWED_IMPORT_TYPES = [".csv", ".xlsx", ".xls", ".json"];
 
-// ============================================
 // Theme Constants
-// ============================================
 
 export const THEMES = {
   LIGHT: "light",
@@ -433,9 +427,7 @@ export const FONT_SIZES = {
   LARGE: "large",
 } as const;
 
-// ============================================
 // Local Storage Keys
-// ============================================
 
 export const STORAGE_KEYS = {
   THEME: "theme",
