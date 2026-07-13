@@ -263,9 +263,7 @@ export const ACCOUNT_PROVIDER_ICONS = {
   [ACCOUNT_PROVIDERS.TWITTER]: "🐦",
 } as const;
 
-// ============================================
 // Reading List Constants
-// ============================================
 
 export const READING_STATUSES = {
   TO_READ: "to-read",
@@ -291,9 +289,7 @@ export const READING_STATUS_COLORS = {
   [READING_STATUSES.DNF]: "error",
 } as const;
 
-// ============================================
 // Notification Constants
-// ============================================
 
 export const NOTIFICATION_TYPES = {
   REVIEW_REPLY: "review_reply",
@@ -321,9 +317,7 @@ export const NOTIFICATION_PRIORITY_COLORS = {
   [NOTIFICATION_PRIORITIES.URGENT]: "error",
 } as const;
 
-// ============================================
 // Date/Time Constants
-// ============================================
 
 export const DATE_FORMATS = {
   DISPLAY: "MMM dd, yyyy",
