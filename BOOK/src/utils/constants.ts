@@ -442,9 +442,7 @@ export const STORAGE_KEYS = {
   NOTIFICATIONS: "notifications",
 } as const;
 
-// ============================================
 // Route Constants
-// ============================================
 
 export const ROUTES = {
   HOME: "/",
@@ -474,9 +472,7 @@ export const ROUTES = {
   },
 } as const;
 
-// ============================================
 // Social Media Links
-// ============================================
 
 export const SOCIAL_LINKS = {
   TWITTER: "https://twitter.com/bookreview",
@@ -486,9 +482,7 @@ export const SOCIAL_LINKS = {
   LINKEDIN: "https://linkedin.com/company/bookreview",
 } as const;
 
-// ============================================
 // Error Messages
-// ============================================
 
 export const ERROR_MESSAGES = {
   GENERIC: "An unexpected error occurred. Please try again.",
@@ -516,9 +510,7 @@ export const ERROR_MESSAGES = {
   ALREADY_IN_LIST: "This book is already in your reading list.",
 } as const;
 
-// ============================================
 // Success Messages
-// ============================================
 
 export const SUCCESS_MESSAGES = {
   LOGIN: "Successfully logged in!",
@@ -545,9 +537,7 @@ export const SUCCESS_MESSAGES = {
   REPORT_SUBMITTED: "Report submitted successfully!",
 } as const;
 
-// ============================================
 // Chart Colors
-// ============================================
 
 export const CHART_COLORS = [
   "#1976d2", // primary
@@ -577,9 +567,7 @@ export const CHART_COLOR_SCHEMES = {
   ],
 } as const;
 
-// ============================================
 // Export Constants
-// ============================================
 
 export const EXPORT_FORMATS = {
   CSV: "csv",
