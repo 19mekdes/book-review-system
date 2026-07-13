@@ -1,10 +1,3 @@
-// ============================================
-// Application Constants
-// ============================================
-
-// ❌ Remove this line:
-// import process from "process";
-
 export const APP_NAME = 'Book Review System';
 export const APP_VERSION = '1.0.0';
 export const APP_DESCRIPTION = 'Discover and share reviews about your favorite books';
@@ -12,9 +5,7 @@ export const COMPANY_NAME = 'Book Review Inc.';
 export const SUPPORT_EMAIL = 'support@bookreview.com';
 export const WEBSITE_URL = 'https://bookreview.com';
 
-// ============================================
 // API Configuration
-// ============================================
 
 // ✅ Use import.meta.env instead of process.env
 export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
