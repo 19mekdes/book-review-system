@@ -49,7 +49,7 @@ import {
   FormControlLabel,
   SelectChangeEvent
 } from '@mui/material';
-import Grid from '@mui/material/Grid';  
+import Grid from '@mui/material/Grid';
 import {
   Add as AddIcon,
   Edit as EditIcon,
@@ -158,7 +158,7 @@ const UserDialog: React.FC<UserDialogProps> = ({
     twoFactorEnabled: false,
     notes: ''
   });
-  
+
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -206,7 +206,7 @@ const UserDialog: React.FC<UserDialogProps> = ({
 
   const handleChange = (field: keyof User, value: string | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-    
+
     if (errors[field]) {
       setErrors(prev => {
         const newErrors = { ...prev };
@@ -218,7 +218,7 @@ const UserDialog: React.FC<UserDialogProps> = ({
 
   const handleSubmit = async () => {
     const newErrors: Record<string, string> = {};
-    
+
     if (!formData.name?.trim()) {
       newErrors.name = 'Name is required';
     }
@@ -227,7 +227,7 @@ const UserDialog: React.FC<UserDialogProps> = ({
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = 'Invalid email format';
     }
-    
+
     if (!user && !password) {
       newErrors.password = 'Password is required for new users';
     }
@@ -237,7 +237,7 @@ const UserDialog: React.FC<UserDialogProps> = ({
     if (password !== confirmPassword) {
       newErrors.confirmPassword = 'Passwords do not match';
     }
-    
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
@@ -538,7 +538,7 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({
         <Typography variant="body1" paragraph>
           Are you sure you want to delete user "{userName}"?
         </Typography>
-        
+
         {hasActivity && (
           <Alert severity="error" sx={{ mt: 2 }}>
             This user has reviews and activity history. Deleting will remove all associated data.
@@ -798,7 +798,7 @@ const ImportDialog: React.FC<ImportDialogProps> = ({
 const ManageUsersPage: React.FC = () => {
   const theme = useTheme();
   const navigate = useNavigate();
-  
+
   // State
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -816,7 +816,7 @@ const ManageUsersPage: React.FC = () => {
     page: 1,
     limit: 10
   });
-  
+
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [filterAnchorEl, setFilterAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
@@ -848,7 +848,7 @@ const ManageUsersPage: React.FC = () => {
   // Fetch data
   useEffect(() => {
     fetchUsers();
-   
+
   }, [filters]);
 
   useEffect(() => {
@@ -1103,10 +1103,10 @@ const ManageUsersPage: React.FC = () => {
 
   const handleSortChange = (event: SelectChangeEvent) => {
     const [sortBy, sortOrder] = event.target.value.split('-') as [UserFilters['sortBy'], UserFilters['sortOrder']];
-    setFilters({ 
-      ...filters, 
-      sortBy, 
-      sortOrder 
+    setFilters({
+      ...filters,
+      sortBy,
+      sortOrder
     });
   };
 

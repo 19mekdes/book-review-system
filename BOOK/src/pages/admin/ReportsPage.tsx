@@ -457,7 +457,7 @@ const ScheduleDialog: React.FC<ScheduleDialogProps> = ({
 
 const ReportsPage: React.FC = () => {
   const theme = useTheme();
-  
+
   // State
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -471,7 +471,7 @@ const ReportsPage: React.FC = () => {
     start: subDays(new Date(), 30),
     end: new Date()
   });
-  
+
   const [currentReport, setCurrentReport] = useState<Report | null>(null);
   const [savedReports, setSavedReports] = useState<SavedReport[]>([]);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
@@ -500,7 +500,7 @@ const ReportsPage: React.FC = () => {
 
   useEffect(() => {
     generateReport();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reportType, reportPeriod, customDateRange]);
 
   useEffect(() => {
@@ -517,10 +517,10 @@ const ReportsPage: React.FC = () => {
       const days = reportPeriod === 'custom'
         ? differenceInDays(customDateRange.end || new Date(), customDateRange.start || new Date())
         : reportPeriod === 'daily' ? 1
-        : reportPeriod === 'weekly' ? 7
-        : reportPeriod === 'monthly' ? 30
-        : reportPeriod === 'quarterly' ? 90
-        : 365;
+          : reportPeriod === 'weekly' ? 7
+            : reportPeriod === 'monthly' ? 30
+              : reportPeriod === 'quarterly' ? 90
+                : 365;
 
       // Generate chart data based on report type
       const mockChartData = Array.from({ length: days > 0 ? days : 1 }).map((_, i) => ({
@@ -565,8 +565,8 @@ const ReportsPage: React.FC = () => {
       const mockTableData = Array.from({ length: 25 }).map((_, i) => ({
         id: i + 1,
         name: reportType === 'users' ? `User ${i + 1}` :
-              reportType === 'books' ? `Book ${i + 1}` :
-              reportType === 'categories' ? `Category ${i + 1}` :
+          reportType === 'books' ? `Book ${i + 1}` :
+            reportType === 'categories' ? `Category ${i + 1}` :
               `Item ${i + 1}`,
         category: ['Fiction', 'Non-Fiction', 'Sci-Fi', 'Mystery'][Math.floor(Math.random() * 4)],
         count: Math.floor(Math.random() * 1000) + 100,
