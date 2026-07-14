@@ -119,27 +119,27 @@ const compressAndResizeImage = (file: File): Promise<string> => {
       reject(new Error('Image size must be less than 5MB. Please compress your image.'));
       return;
     }
-    
+
     // Check file type
     const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
     if (!validTypes.includes(file.type)) {
       reject(new Error('Please upload JPEG, PNG, or WEBP image'));
       return;
     }
-    
+
     const reader = new FileReader();
     reader.readAsDataURL(file);
-    
+
     reader.onload = (event) => {
       const img = new Image();
       img.src = event.target?.result as string;
-      
+
       img.onload = () => {
         // Calculate new dimensions (max 400px for cover image)
         let width = img.width;
         let height = img.height;
         const maxDimension = 400;
-        
+
         if (width > maxDimension || height > maxDimension) {
           if (width > height) {
             height = (height * maxDimension) / width;
@@ -149,18 +149,18 @@ const compressAndResizeImage = (file: File): Promise<string> => {
             height = maxDimension;
           }
         }
-        
+
         // Create canvas and compress
         const canvas = document.createElement('canvas');
         canvas.width = width;
         canvas.height = height;
-        
+
         const ctx = canvas.getContext('2d');
         ctx?.drawImage(img, 0, 0, width, height);
-        
+
         // Convert to JPEG with 80% quality (good balance of quality and size)
         const compressedBase64 = canvas.toDataURL('image/jpeg', 0.8);
-        
+
         // Check compressed size (warning if > 500KB)
         const compressedSize = Math.ceil(compressedBase64.length * 0.75);
         if (compressedSize > 500 * 1024) {
@@ -168,15 +168,15 @@ const compressAndResizeImage = (file: File): Promise<string> => {
         } else {
           console.log(`✅ Image compressed: ${(compressedSize / 1024).toFixed(1)}KB`);
         }
-        
+
         resolve(compressedBase64);
       };
-      
+
       img.onerror = () => {
         reject(new Error('Failed to load image'));
       };
     };
-    
+
     reader.onerror = () => {
       reject(new Error('Failed to read file'));
     };
@@ -280,27 +280,27 @@ const BookFormDialog: React.FC<BookFormProps> = ({
     setFormData(prev => ({ ...prev, is_featured: e.target.checked }));
   };
 
-  
+
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    
+
     // Clear previous errors
     setErrors(prev => ({ ...prev, cover_image: '' }));
     setImageProcessing(true);
-    
+
     try {
       // Compress and resize image
       const compressedImage = await compressAndResizeImage(file);
       setPreviewImage(compressedImage);
       setFormData(prev => ({ ...prev, cover_image: compressedImage }));
       console.log(' Image processed successfully');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error('Image processing error:', error);
-      setErrors(prev => ({ 
-        ...prev, 
-        cover_image: error.message || 'Failed to process image' 
+      setErrors(prev => ({
+        ...prev,
+        cover_image: error.message || 'Failed to process image'
       }));
     } finally {
       setImageProcessing(false);
@@ -353,7 +353,7 @@ const BookFormDialog: React.FC<BookFormProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
 
     setLoading(true);
@@ -386,7 +386,7 @@ const BookFormDialog: React.FC<BookFormProps> = ({
           categoryId: parseInt(formData.category_id),
           cover_image: formData.cover_image || undefined
         };
-        
+
         console.log('📝 Creating book with data:', {
           title: createData.title,
           author: createData.author,
@@ -396,16 +396,16 @@ const BookFormDialog: React.FC<BookFormProps> = ({
         });
         await api.post('/books', createData);
       }
-      
+
       onSave();
       onClose();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error('❌ Error saving book:', error);
-      const errorMessage = error.response?.data?.message || 
-                           error.response?.data?.error || 
-                           'Failed to save book';
-      setErrors({ 
+      const errorMessage = error.response?.data?.message ||
+        error.response?.data?.error ||
+        'Failed to save book';
+      setErrors({
         submit: errorMessage
       });
     } finally {
@@ -414,10 +414,10 @@ const BookFormDialog: React.FC<BookFormProps> = ({
   };
 
   return (
-    <Dialog 
-      open={open} 
-      onClose={onClose} 
-      maxWidth="md" 
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="md"
       fullWidth
       PaperProps={{
         sx: { minHeight: '80vh', maxHeight: '90vh' }
@@ -700,7 +700,7 @@ const BookFormDialog: React.FC<BookFormProps> = ({
                   />
                   {!previewImage.startsWith('http') && (
                     <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
-                       Image compressed for optimal performance
+                      Image compressed for optimal performance
                     </Typography>
                   )}
                 </Box>
@@ -764,7 +764,7 @@ const ManageBooksPage: React.FC = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const { token } = useAuth();
-  
+
   // State
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -808,7 +808,7 @@ const ManageBooksPage: React.FC = () => {
           limit
         }
       });
-      
+
       let booksData = [];
       if (response.data?.data?.books) {
         booksData = response.data.data.books;
@@ -821,23 +821,23 @@ const ManageBooksPage: React.FC = () => {
       } else {
         booksData = [];
       }
-      
+
       const booksArray = Array.isArray(booksData) ? booksData : [];
       setBooks(booksArray);
-      
+
       setStats({
         total: booksArray.length,
         published: booksArray.filter((b: Book) => b.status === 'published').length,
         draft: booksArray.filter((b: Book) => b.status === 'draft').length,
         archived: booksArray.filter((b: Book) => b.status === 'archived').length,
         pending: booksArray.filter((b: Book) => b.status === 'pending').length,
-        avgRating: booksArray.length > 0 
-          ? booksArray.reduce((acc: number, b: Book) => acc + (b.average_rating || 0), 0) / booksArray.length 
+        avgRating: booksArray.length > 0
+          ? booksArray.reduce((acc: number, b: Book) => acc + (b.average_rating || 0), 0) / booksArray.length
           : 0
       });
-      
+
       setError(null);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error('Failed to load books:', err);
       if (err.response?.status === 401) {
@@ -855,7 +855,7 @@ const ManageBooksPage: React.FC = () => {
   const fetchCategories = useCallback(async () => {
     try {
       const response = await api.get('/categories');
-      
+
       let categoriesData = [];
       if (response.data?.data && Array.isArray(response.data.data)) {
         categoriesData = response.data.data;
@@ -866,7 +866,7 @@ const ManageBooksPage: React.FC = () => {
       } else {
         categoriesData = [];
       }
-      
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const mappedCategories = categoriesData.map((cat: any) => ({
         id: cat.id,
@@ -880,7 +880,7 @@ const ManageBooksPage: React.FC = () => {
         created_at: cat.created_at || new Date().toISOString(),
         updated_at: cat.updated_at || new Date().toISOString()
       }));
-      
+
       console.log('📚 Categories loaded:', mappedCategories);
       setCategories(mappedCategories);
     } catch (err) {
@@ -895,7 +895,7 @@ const ManageBooksPage: React.FC = () => {
       setLoading(false);
       return;
     }
-    
+
     fetchBooks();
     fetchCategories();
   }, [fetchBooks, fetchCategories, token]);
@@ -948,7 +948,7 @@ const ManageBooksPage: React.FC = () => {
 
   const handleDeleteBook = async () => {
     if (!selectedBook) return;
-    
+
     if (selectedBook.reviews_count && selectedBook.reviews_count > 0) {
       showNotification(
         `Cannot delete "${selectedBook.title}" because it has ${selectedBook.reviews_count} review(s). Please delete all reviews first.`,
@@ -957,29 +957,29 @@ const ManageBooksPage: React.FC = () => {
       setDeleteDialogOpen(false);
       return;
     }
-    
+
     try {
       await api.delete(`/books/${selectedBook.id}`);
       showNotification('Book deleted successfully', 'success');
       fetchBooks();
       setDeleteDialogOpen(false);
       setSelectedBook(null);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error('Error deleting book:', err);
-      
+
       let errorMessage = 'Failed to delete book';
       if (err.response?.data?.message) {
         errorMessage = err.response.data.message;
       } else if (err.response?.data?.error) {
         errorMessage = err.response.data.error;
       }
-      
+
       if (errorMessage.toLowerCase().includes('review')) {
         errorMessage = `Cannot delete "${selectedBook.title}" because it has reviews. Please delete all reviews for this book first.`;
         fetchBooks();
       }
-      
+
       showNotification(errorMessage, 'error');
       setDeleteDialogOpen(false);
     }
@@ -1002,8 +1002,8 @@ const ManageBooksPage: React.FC = () => {
     });
   };
 
-  const paginatedBooks = Array.isArray(books) 
-    ? books.slice(page * limit, page * limit + limit) 
+  const paginatedBooks = Array.isArray(books)
+    ? books.slice(page * limit, page * limit + limit)
     : [];
 
   const getStatusColor = (status: Book['status']) => {
@@ -1294,19 +1294,19 @@ const ManageBooksPage: React.FC = () => {
           </ListItemIcon>
           <ListItemText>Edit</ListItemText>
         </MenuItem>
-        
+
         <MenuItem onClick={handleViewReviews}>
           <ListItemIcon>
             <RateReviewIcon fontSize="small" />
           </ListItemIcon>
           <ListItemText>
-            View Reviews 
-            {selectedBook?.reviews_count && selectedBook.reviews_count > 0 && 
+            View Reviews
+            {selectedBook?.reviews_count && selectedBook.reviews_count > 0 &&
               ` (${selectedBook.reviews_count})`
             }
           </ListItemText>
         </MenuItem>
-        
+
         <Divider />
         <MenuItem
           onClick={() => {
@@ -1347,7 +1347,7 @@ const ManageBooksPage: React.FC = () => {
           <Typography gutterBottom>
             Are you sure you want to delete "{selectedBook?.title}"?
           </Typography>
-          
+
           {selectedBook && selectedBook.reviews_count && selectedBook.reviews_count > 0 && (
             <Alert severity="error" sx={{ mt: 2, p: 2 }}>
               <Typography variant="body2" fontWeight="bold" gutterBottom>
@@ -1355,7 +1355,7 @@ const ManageBooksPage: React.FC = () => {
               </Typography>
               <Typography variant="body2">
                 This book has {selectedBook.reviews_count} review
-                {selectedBook.reviews_count !== 1 ? 's' : ''}. 
+                {selectedBook.reviews_count !== 1 ? 's' : ''}.
                 Please delete all reviews for this book first before deleting the book.
               </Typography>
               <Button
@@ -1372,7 +1372,7 @@ const ManageBooksPage: React.FC = () => {
               </Button>
             </Alert>
           )}
-          
+
           {selectedBook && (!selectedBook.reviews_count || selectedBook.reviews_count === 0) && (
             <Alert severity="info" sx={{ mt: 2 }}>
               This book has no reviews and can be safely deleted.
@@ -1381,9 +1381,9 @@ const ManageBooksPage: React.FC = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
-          <Button 
-            onClick={handleDeleteBook} 
-            color="error" 
+          <Button
+            onClick={handleDeleteBook}
+            color="error"
             variant="contained"
             disabled={(selectedBook?.reviews_count ?? 0) > 0}
           >

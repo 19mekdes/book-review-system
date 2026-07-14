@@ -70,7 +70,8 @@ import {
   Visibility as VisibilityIcon,
   VisibilityOff as VisibilityOffIcon,
   Star as StarIcon,
-  StarBorder as StarBorderIcon} from '@mui/icons-material';
+  StarBorder as StarBorderIcon
+} from '@mui/icons-material';
 import { format, formatDistance } from 'date-fns';
 
 
@@ -117,7 +118,7 @@ interface CategoryImageProps {
 
 const CategoryImage: React.FC<CategoryImageProps> = ({ src, name, color, size = 40 }) => {
   const [imageError, setImageError] = useState(false);
-  
+
   const getInitials = (str?: string): string => {
     if (!str || typeof str !== 'string') return '?';
     return str
@@ -135,7 +136,7 @@ const CategoryImage: React.FC<CategoryImageProps> = ({ src, name, color, size = 
       <Avatar
         src={src}
         sx={{ width: size, height: size, bgcolor: color }}
-        imgProps={{ 
+        imgProps={{
           onError: () => setImageError(true),
           onLoad: () => setImageError(false)
         }}
@@ -190,7 +191,7 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({
     seoDescription: '',
     seoKeywords: []
   });
-  
+
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [keywordInput, setKeywordInput] = useState('');
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -238,7 +239,7 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleChange = (field: keyof Category, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-    
+
     if (field === 'name') {
       const slug = value
         .toLowerCase()
@@ -246,7 +247,7 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({
         .replace(/^-|-$/g, '');
       setFormData(prev => ({ ...prev, slug }));
     }
-    
+
     if (errors[field]) {
       setErrors(prev => {
         const newErrors = { ...prev };
@@ -291,14 +292,14 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({
 
   const handleSubmit = async () => {
     const newErrors: Record<string, string> = {};
-    
+
     if (!formData.name?.trim()) {
       newErrors.name = 'Category name is required';
     }
     if (!formData.slug?.trim()) {
       newErrors.slug = 'Slug is required';
     }
-    
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
@@ -349,7 +350,7 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({
                 </IconButton>
               </Box>
             </Box>
-            
+
             {/* Image URL Input */}
             <TextField
               fullWidth
@@ -619,7 +620,7 @@ const DeleteDialog: React.FC<DeleteDialogProps> = ({
         <Typography variant="body1" paragraph>
           Are you sure you want to delete "{categoryName}"?
         </Typography>
-        
+
         {(hasSubcategories || hasBooks) && (
           <Alert severity="error" sx={{ mt: 2 }}>
             {hasSubcategories && <div>• This category has subcategories</div>}
@@ -902,7 +903,7 @@ const CategoryTreeItem: React.FC<CategoryTreeItemProps> = ({
           onChange={() => onSelect(category.id)}
           sx={{ mr: 1 }}
         />
-        
+
         {hasChildren && (
           <IconButton
             size="small"
@@ -915,14 +916,14 @@ const CategoryTreeItem: React.FC<CategoryTreeItemProps> = ({
             {isExpanded ? <ExpandMoreIcon /> : <ChevronRightIcon />}
           </IconButton>
         )}
-        
+
         <CategoryImage
           src={category.image}
           name={category.name}
           color={category.color}
           size={32}
         />
-        
+
         <Box sx={{ flex: 1, ml: 2 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
             <Typography variant="subtitle2" fontWeight={600}>
@@ -951,14 +952,14 @@ const CategoryTreeItem: React.FC<CategoryTreeItemProps> = ({
               />
             )}
           </Box>
-          
+
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 0.5 }}>
             <Tooltip title="Books">
               <Badge badgeContent={category.booksCount} color="primary" max={999}>
                 <BookIcon fontSize="small" color="action" />
               </Badge>
             </Tooltip>
-            
+
             {category.description && (
               <Typography variant="caption" color="text.secondary" noWrap>
                 {category.description}
@@ -979,7 +980,7 @@ const CategoryTreeItem: React.FC<CategoryTreeItemProps> = ({
               {category.isActive ? <VisibilityIcon /> : <VisibilityOffIcon />}
             </IconButton>
           </Tooltip>
-          
+
           <Tooltip title={category.isFeatured ? 'Remove from featured' : 'Add to featured'}>
             <IconButton
               size="small"
@@ -992,7 +993,7 @@ const CategoryTreeItem: React.FC<CategoryTreeItemProps> = ({
               {category.isFeatured ? <StarIcon /> : <StarBorderIcon />}
             </IconButton>
           </Tooltip>
-          
+
           <Tooltip title="Edit">
             <IconButton
               size="small"
@@ -1004,7 +1005,7 @@ const CategoryTreeItem: React.FC<CategoryTreeItemProps> = ({
               <EditIcon />
             </IconButton>
           </Tooltip>
-          
+
           <Tooltip title="More actions">
             <IconButton
               size="small"
@@ -1155,7 +1156,7 @@ const StatsCard: React.FC<StatsCardProps> = ({
 
 const ManageCategoriesPage: React.FC = () => {
   const theme = useTheme();
-  
+
   // State
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -1171,7 +1172,7 @@ const ManageCategoriesPage: React.FC = () => {
     page: 1,
     limit: 20
   });
-  
+
   const [filterAnchorEl, setFilterAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -1345,7 +1346,7 @@ const ManageCategoriesPage: React.FC = () => {
 
       setCategories(mockCategories);
       setFilteredCategories(mockCategories);
-      
+
       const flatCategories = flattenCategories(mockCategories);
       setStats({
         total: flatCategories.length,
@@ -1700,7 +1701,7 @@ const ManageCategoriesPage: React.FC = () => {
                   </Button>
                 </>
               )}
-              
+
               {selectedCategories.length > 0 && (
                 <Button
                   variant="outlined"
@@ -1709,25 +1710,25 @@ const ManageCategoriesPage: React.FC = () => {
                   Bulk Actions ({selectedCategories.length})
                 </Button>
               )}
-              
+
               <Tooltip title="Import">
                 <IconButton onClick={() => setImportDialogOpen(true)}>
                   <UploadIcon />
                 </IconButton>
               </Tooltip>
-              
+
               <Tooltip title="Export">
                 <IconButton onClick={() => handleExport('csv')}>
                   <DownloadIcon />
                 </IconButton>
               </Tooltip>
-              
+
               <Tooltip title="Refresh">
                 <IconButton onClick={handleRefresh}>
                   <RefreshIcon />
                 </IconButton>
               </Tooltip>
-              
+
               <Tooltip title="Filters">
                 <IconButton onClick={handleFilterOpen}>
                   <Badge badgeContent={0} color="primary">
@@ -1735,7 +1736,7 @@ const ManageCategoriesPage: React.FC = () => {
                   </Badge>
                 </IconButton>
               </Tooltip>
-              
+
               <Button
                 variant="contained"
                 startIcon={<AddIcon />}
@@ -1807,7 +1808,7 @@ const ManageCategoriesPage: React.FC = () => {
               >
                 <Checkbox
                   indeterminate={
-                    selectedCategories.length > 0 && 
+                    selectedCategories.length > 0 &&
                     selectedCategories.length < flattenCategories(filteredCategories).length
                   }
                   checked={selectedCategories.length === flattenCategories(filteredCategories).length}
@@ -1883,7 +1884,7 @@ const ManageCategoriesPage: React.FC = () => {
                 <TableBody>
                   {paginatedCategories.map((category) => {
                     const parent = flattenCategories(categories).find(c => c.id === category.parentId);
-                    
+
                     return (
                       <TableRow key={category.id} hover>
                         <TableCell padding="checkbox">
