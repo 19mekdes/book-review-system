@@ -117,7 +117,7 @@ const StatCard: React.FC<StatCardProps> = ({
   onClick
 }) => {
   return (
-    <div 
+    <div
       className="bg-white rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer p-6 border border-gray-100"
       onClick={onClick}
     >
@@ -132,17 +132,17 @@ const StatCard: React.FC<StatCardProps> = ({
           </div>
         )}
       </div>
-      
+
       <div className="text-3xl font-bold text-gray-900 mb-1">
         {typeof value === 'number' ? value.toLocaleString() : value}
       </div>
-      
+
       <div className="text-sm text-gray-500 mb-1">{title}</div>
-      
+
       {subtitle && (
         <div className="text-xs text-gray-400">{subtitle}</div>
       )}
-      
+
       {changeLabel && (
         <div className="text-xs text-gray-400 mt-1">{changeLabel}</div>
       )}
@@ -189,7 +189,7 @@ const ReviewList: React.FC<ReviewListProps> = ({ reviews, onDeleteReview, onView
           View All
         </button>
       </div>
-      
+
       {reviews.length === 0 ? (
         <div className="text-center py-8 text-gray-500">No reviews to display</div>
       ) : (
@@ -207,29 +207,29 @@ const ReviewList: React.FC<ReviewListProps> = ({ reviews, onDeleteReview, onView
                       {review.rating} ★
                     </span>
                   </div>
-                  
+
                   <div className="text-sm text-gray-500 mb-1">
                     on "{review.bookTitle}"
                   </div>
-                  
+
                   <div className="text-gray-600 text-sm mt-2">
                     {review.comment}
                   </div>
-                  
+
                   <div className="text-xs text-gray-400 mt-2">
                     {format(new Date(review.createdAt), 'MMM dd, yyyy HH:mm')}
                   </div>
                 </div>
-                
+
                 <div className="flex gap-1">
-                  <button 
+                  <button
                     className="p-1.5 text-gray-400 hover:text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors"
                     onClick={() => onViewBook(review.bookId)}
                     title="View Book"
                   >
                     <VisibilityIcon className="w-5 h-5" />
                   </button>
-                  <button 
+                  <button
                     className="p-1.5 text-gray-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors"
                     onClick={() => handleDeleteClick(review)}
                     title="Delete Review"
@@ -242,7 +242,7 @@ const ReviewList: React.FC<ReviewListProps> = ({ reviews, onDeleteReview, onView
           ))}
         </div>
       )}
-      
+
       <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
         <DialogTitle>Delete Review</DialogTitle>
         <DialogContent>
@@ -270,7 +270,7 @@ const AdminDashboardPage: React.FC = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth();
-  
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [stats, setStats] = useState<DashboardStats | null>(null);
@@ -294,13 +294,13 @@ const AdminDashboardPage: React.FC = () => {
   const fetchDashboardData = useCallback(async () => {
     setLoading(true);
     setError(null);
-    
+
     try {
       const [booksResponse, reviewsResponse] = await Promise.all([
         api.get('/books', { params: { limit: 100 } }),
         api.get('/reviews', { params: { limit: 100 } })
       ]);
-      
+
       // Process books data
       let booksData: unknown[] = [];
       if (booksResponse.data?.data?.books) {
@@ -311,7 +311,7 @@ const AdminDashboardPage: React.FC = () => {
         booksData = booksResponse.data;
       }
       const totalBooks = booksData.length || 0;
-      
+
       // Process reviews data
       let reviewsData: unknown[] = [];
       if (reviewsResponse.data?.data?.reviews) {
@@ -322,19 +322,19 @@ const AdminDashboardPage: React.FC = () => {
         reviewsData = reviewsResponse.data;
       }
       const totalReviews = reviewsData.length || 0;
-      
+
       // Calculate average rating
-      const avgRating = totalReviews > 0 
+      const avgRating = totalReviews > 0
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        ? reviewsData.reduce((sum: number, r: any) => sum + (r.rating || 0), 0) / totalReviews 
+        ? reviewsData.reduce((sum: number, r: any) => sum + (r.rating || 0), 0) / totalReviews
         : 0;
-      
+
       // Get recent reviews
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const sortedReviews = [...reviewsData].sort((a: any, b: any) => 
+      const sortedReviews = [...reviewsData].sort((a: any, b: any) =>
         new Date(b.created_at || b.createdAt).getTime() - new Date(a.created_at || a.createdAt).getTime()
       ).slice(0, 5);
-      
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const formattedReviews: Review[] = sortedReviews.map((r: any) => ({
         id: r.id,
@@ -346,9 +346,9 @@ const AdminDashboardPage: React.FC = () => {
         comment: r.comment,
         createdAt: r.created_at || r.createdAt
       }));
-      
+
       setRecentReviews(formattedReviews);
-      
+
       // Set stats
       setStats({
         totalUsers: 0,
@@ -379,7 +379,7 @@ const AdminDashboardPage: React.FC = () => {
         }).length || 0,
         averageRating: avgRating
       });
-      
+
       // Generate chart data
       const last7Days = Array.from({ length: 7 }).map((_, i) => {
         const date = subDays(new Date(), 6 - i);
@@ -394,16 +394,16 @@ const AdminDashboardPage: React.FC = () => {
           const bookDate = new Date(b.created_at || b.createdAt);
           return bookDate.toDateString() === date.toDateString();
         });
-        
+
         return {
           name: dateStr,
           books: dayBooks.length,
           reviews: dayReviews.length
         };
       });
-      
+
       setChartData(last7Days);
-      
+
       // Generate rating distribution
       const ratingCounts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -413,7 +413,7 @@ const AdminDashboardPage: React.FC = () => {
           ratingCounts[rating as keyof typeof ratingCounts]++;
         }
       });
-      
+
       setRatingData([
         { name: '5 Stars', value: ratingCounts[5], color: '#10b981' },
         { name: '4 Stars', value: ratingCounts[4], color: '#34d399' },
@@ -421,7 +421,7 @@ const AdminDashboardPage: React.FC = () => {
         { name: '2 Stars', value: ratingCounts[2], color: '#fb923c' },
         { name: '1 Star', value: ratingCounts[1], color: '#ef4444' }
       ]);
-      
+
       // Set activities from recent reviews
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const recentActivities: ActivityItem[] = sortedReviews.slice(0, 5).map((r: any) => ({
@@ -433,10 +433,10 @@ const AdminDashboardPage: React.FC = () => {
         timestamp: r.created_at || r.createdAt,
         status: 'success'
       }));
-      
+
       setActivities(recentActivities);
-      
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error('Failed to load dashboard data:', err);
       setError(err.message || 'Failed to load data');
@@ -454,7 +454,7 @@ const AdminDashboardPage: React.FC = () => {
         severity: 'success'
       });
       fetchDashboardData();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setNotification({
         open: true,
@@ -480,7 +480,7 @@ const AdminDashboardPage: React.FC = () => {
       ['Average Rating', stats?.averageRating?.toFixed(2) || 0],
       ['Report Generated', new Date().toLocaleString()]
     ];
-    
+
     const csvContent = csvData.map(row => row.join(',')).join('\n');
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
@@ -516,7 +516,7 @@ const AdminDashboardPage: React.FC = () => {
             <h3 className="font-semibold">Error Loading Dashboard</h3>
           </div>
           <p className="text-red-600 mb-4">{error}</p>
-          <button 
+          <button
             onClick={fetchDashboardData}
             className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
           >
@@ -551,16 +551,16 @@ const AdminDashboardPage: React.FC = () => {
                 Welcome back, {user?.name || 'Admin'}! Manage and moderate the platform.
               </p>
             </div>
-            
+
             <div className="flex gap-2 mt-4 sm:mt-0">
-              <button 
+              <button
                 onClick={handleRefresh}
                 className="p-2 text-gray-500 hover:text-indigo-600 rounded-lg hover:bg-gray-100 transition-colors"
                 title="Refresh"
               >
                 <RefreshIcon />
               </button>
-              <button 
+              <button
                 onClick={handleExport}
                 className="p-2 text-gray-500 hover:text-indigo-600 rounded-lg hover:bg-gray-100 transition-colors"
                 title="Export Report"
@@ -659,8 +659,8 @@ const AdminDashboardPage: React.FC = () => {
 
         {/* Recent Reviews Section */}
         <div className="bg-white rounded-2xl shadow-sm p-6 mb-6">
-          <ReviewList 
-            reviews={recentReviews} 
+          <ReviewList
+            reviews={recentReviews}
             onDeleteReview={handleDeleteReview}
             onViewBook={handleViewBook}
           />

@@ -258,7 +258,7 @@ const ReviewDialog: React.FC<ReviewDialogProps> = ({
 
             {/* Pros/Cons */}
             {(review.pros && review.pros.length > 0) ||
-            (review.cons && review.cons.length > 0) ? (
+              (review.cons && review.cons.length > 0) ? (
               <Grid container spacing={2} sx={{ mb: 2 }}>
                 {review.pros && review.pros.length > 0 && (
                   <Grid size={{ xs: 12, sm: 6, md: 2 }}>
@@ -515,9 +515,8 @@ const AllReviewsPage: React.FC = () => {
         bookAuthor: `Author ${Math.floor(Math.random() * 30) + 1}`,
         rating: Math.floor(Math.random() * 5) + 1,
         title: i % 3 === 0 ? `Review Title ${i + 1}` : undefined,
-        content: `This is a sample review content for review ${
-          i + 1
-        }. It contains some text about the book.`,
+        content: `This is a sample review content for review ${i + 1
+          }. It contains some text about the book.`,
         helpful: Math.floor(Math.random() * 50),
         notHelpful: Math.floor(Math.random() * 10),
         reports: Math.floor(Math.random() * 5),
@@ -1192,7 +1191,7 @@ const AllReviewsPage: React.FC = () => {
           setSelectedReview(null);
         }}
         review={selectedReview}
-        onUpdate={async () => {}}
+        onUpdate={async () => { }}
         onModerate={handleModerateReview}
         onDelete={handleDeleteReview}
         loading={loading}
