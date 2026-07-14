@@ -1,9 +1,9 @@
-import api from './api';
+import api from "./api";
 
 export const bookService = {
   // Get all books
   getAllBooks: async (params?: Record<string, unknown>) => {
-    const response = await api.get('/books', { params });
+    const response = await api.get("/books", { params });
     return response.data;
   },
 
@@ -21,17 +21,21 @@ export const bookService = {
 
   // Search books
   searchBooks: async (query: string, params?: Record<string, unknown>) => {
-    const response = await api.get('/books/search', { 
-      params: { q: query, ...(params ?? {}) } // safe spread
+    const response = await api.get("/books/search", {
+      params: { q: query, ...(params ?? {}) }, // safe spread
     });
     return response.data;
   },
 
   // Get books by category
-  getBooksByCategory: async (categoryId: number, page: number = 1, limit: number = 10) => {
+  getBooksByCategory: async (
+    categoryId: number,
+    page: number = 1,
+    limit: number = 10
+  ) => {
     const response = await api.get(`/books/category/${categoryId}`, {
-      params: { page, limit }
+      params: { page, limit },
     });
     return response.data;
-  }
+  },
 };
