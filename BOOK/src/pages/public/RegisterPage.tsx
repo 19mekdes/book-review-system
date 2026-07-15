@@ -59,13 +59,13 @@ interface PasswordStrengthMeterProps {
 const PasswordStrengthMeter: React.FC<PasswordStrengthMeterProps> = ({ password }) => {
   const getStrength = (): { score: number; label: string; color: string } => {
     if (!password) return { score: 0, label: 'No password', color: '#e0e0e0' };
-    
+
     let score = 0;
     if (password.length >= 8) score++;
     if (/[A-Z]/.test(password)) score++;
     if (/[0-9]/.test(password)) score++;
     if (/[^A-Za-z0-9]/.test(password)) score++;
-    
+
     const strengths = [
       { score: 0, label: 'Very Weak', color: '#f44336' },
       { score: 1, label: 'Weak', color: '#ff9800' },
@@ -73,7 +73,7 @@ const PasswordStrengthMeter: React.FC<PasswordStrengthMeterProps> = ({ password 
       { score: 3, label: 'Good', color: '#2196f3' },
       { score: 4, label: 'Strong', color: '#4caf50' }
     ];
-    
+
     return strengths[score] || strengths[0];
   };
 
@@ -163,7 +163,7 @@ const Step1AccountInfo: React.FC<StepProps> = ({ control, errors }) => (
     <Controller
       name="email"
       control={control}
-      rules={{ 
+      rules={{
         required: 'Email is required',
         pattern: {
           value: /\S+@\S+\.\S+/,
@@ -192,14 +192,14 @@ const Step1AccountInfo: React.FC<StepProps> = ({ control, errors }) => (
   </Box>
 );
 
-const Step2Security: React.FC<StepProps> = ({ 
-  control, 
-  errors, 
-  showPassword, 
-  showConfirmPassword, 
-  setShowPassword, 
+const Step2Security: React.FC<StepProps> = ({
+  control,
+  errors,
+  showPassword,
+  showConfirmPassword,
+  setShowPassword,
   setShowConfirmPassword,
-  password 
+  password
 }) => (
   <Box>
     <Typography variant="h6" gutterBottom>
@@ -212,7 +212,7 @@ const Step2Security: React.FC<StepProps> = ({
     <Controller
       name="password"
       control={control}
-      rules={{ 
+      rules={{
         required: 'Password is required',
         minLength: {
           value: 8,
@@ -260,9 +260,9 @@ const Step2Security: React.FC<StepProps> = ({
     <Controller
       name="confirmPassword"
       control={control}
-      rules={{ 
+      rules={{
         required: 'Please confirm your password',
-        validate: (value, formValues) => 
+        validate: (value, formValues) =>
           value === formValues.password || 'Passwords do not match'
       }}
       render={({ field }) => (
@@ -300,7 +300,7 @@ const Step2Security: React.FC<StepProps> = ({
 
 const Step3Agreements: React.FC<StepProps> = ({ control, errors }) => {
   const theme = useTheme();
-  
+
   return (
     <Box>
       <Typography variant="h6" gutterBottom>
@@ -323,7 +323,7 @@ const Step3Agreements: React.FC<StepProps> = ({ control, errors }) => {
           Terms and Conditions Summary
         </Typography>
         <Typography variant="body2" color="text.secondary" paragraph>
-          By creating an account, you agree to our Terms and Conditions and Privacy Policy. 
+          By creating an account, you agree to our Terms and Conditions and Privacy Policy.
           You'll receive occasional account-related emails. You can opt out at any time.
         </Typography>
 
@@ -443,11 +443,11 @@ const RegisterPage: React.FC = () => {
   });
 
   const password = watch('password');
-   
+
 
   const validateCurrentStep = async (): Promise<boolean> => {
     let fieldsToValidate: (keyof RegisterFormData)[] = [];
-    
+
     switch (activeStep) {
       case 0:
         fieldsToValidate = ['name', 'email'];
@@ -459,13 +459,13 @@ const RegisterPage: React.FC = () => {
         fieldsToValidate = ['termsAccepted', 'privacyAccepted'];
         break;
     }
-    
+
     return await trigger(fieldsToValidate);
   };
 
   const handleNext = async () => {
     const isStepValid = await validateCurrentStep();
-    
+
     if (isStepValid) {
       if (activeStep === steps.length - 1) {
         const formData = getValues();
@@ -494,18 +494,18 @@ const RegisterPage: React.FC = () => {
         email: data.email,
         password: data.password
       });
-      
+
       console.log('Registration successful:', response.data);
-      
+
       setNotification({
         open: true,
         message: 'Registration successful! Redirecting to login...',
         severity: 'success'
       });
-      
+
       // Redirect to login after 2 seconds
       setTimeout(() => navigate('/login'), 2000);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error('Registration error details:', {
         status: error.response?.status,
@@ -513,10 +513,10 @@ const RegisterPage: React.FC = () => {
         data: error.response?.data,
         message: error.message
       });
-      
-      
+
+
       let errorMessage = 'Registration failed. Please try again.';
-      
+
       if (error.response?.data?.error) {
         errorMessage = error.response.data.error;
       } else if (error.response?.data?.message) {
@@ -524,7 +524,7 @@ const RegisterPage: React.FC = () => {
       } else if (error.response?.data) {
         errorMessage = JSON.stringify(error.response.data);
       }
-      
+
       setNotification({
         open: true,
         message: errorMessage,
@@ -535,7 +535,7 @@ const RegisterPage: React.FC = () => {
     }
   };
 
-  
+
   return (
     <Container maxWidth="md" sx={{ py: 8 }}>
       <Paper
