@@ -65,7 +65,8 @@ import {
   Lock as LockIcon,
   LinkedIn as LinkedInIcon,
   Delete as DeleteIcon,
-  Cake as CakeIcon} from '@mui/icons-material';
+  Cake as CakeIcon
+} from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { format, formatDistance } from 'date-fns';
 import { useAuth } from '../../context/AuthContext';
@@ -260,7 +261,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
               {profile.name.charAt(0)}
             </Avatar>
           </Badge>
-          
+
           {isOwnProfile && avatarHover && (
             <IconButton
               component="label"
@@ -295,7 +296,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
           <Typography variant="h4" component="h1" fontWeight={700} gutterBottom>
             {profile.name}
           </Typography>
-          
+
           <Stack
             direction={{ xs: 'column', sm: 'row' }}
             spacing={2}
@@ -528,17 +529,17 @@ const EditProfileDialog: React.FC<EditProfileDialogProps> = ({
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
-    
+
     if (!formData.name.trim()) {
       newErrors.name = 'Name is required';
     }
-    
+
     if (!formData.email.trim()) {
       newErrors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = 'Invalid email format';
     }
-    
+
     return newErrors;
   };
 
@@ -570,7 +571,7 @@ const EditProfileDialog: React.FC<EditProfileDialogProps> = ({
           linkedin: formData.linkedin || undefined
         }
       };
-      
+
       await onSave(updatedProfile);
       onClose();
     } finally {
@@ -623,7 +624,7 @@ const EditProfileDialog: React.FC<EditProfileDialogProps> = ({
           </Grid>
 
           {/* Contact Info */}
-         <Grid size={{ xs: 12 }}>
+          <Grid size={{ xs: 12 }}>
             <Typography variant="subtitle1" fontWeight={600} sx={{ mt: 2 }} gutterBottom>
               Contact Information
             </Typography>
@@ -793,14 +794,12 @@ const EditProfileDialog: React.FC<EditProfileDialogProps> = ({
   );
 };
 
-// ============================================
-// Main Component
-// ============================================
+
 
 const ProfilePage: React.FC = () => {
   const navigate = useNavigate();
   const { user, updateUser } = useAuth();
-  
+
   // State
   const [loading, setLoading] = useState(true);
   const [, setSaving] = useState(false);
@@ -831,63 +830,63 @@ const ProfilePage: React.FC = () => {
     } else {
       fetchProfile();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const loadProfileFromUser = () => {
-  try {
-    // Check if user exists
-    if (!user) {
-      console.warn('No user found, redirecting to login');
-      navigate('/login');
-      return;
-    }
-
-    // Create profile from auth user data
-    const profileData: UserProfile = {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      username: (user as any).username || user.name || '',
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      bio: (user as any).bio || 'Book enthusiast and avid reader',
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      location: (user as any).location || 'New York, NY',
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      joinDate: (user as any).created_at || new Date().toISOString(),
-      lastActive: new Date().toISOString(),
-      role: user.role || 'User',
-      emailVerified: true,
-      twoFactorEnabled: false,
-      preferences: {
-        emailNotifications: true,
-        pushNotifications: true,
-        darkMode: false,
-        language: 'English',
-        timezone: 'America/New_York',
-        newsletter: true
-      },
-      stats: {
-        reviewsCount: 0,
-        booksReviewed: 0,
-        averageRating: 0,
-        followers: 0,
-        following: 0,
-        helpfulVotes: 0,
-        streak: 0,
-        badges: []
+    try {
+      // Check if user exists
+      if (!user) {
+        console.warn('No user found, redirecting to login');
+        navigate('/login');
+        return;
       }
-    };
-    
-    setProfile(profileData);
-  } catch (err) {
-    console.error('Error loading profile:', err);
-    setError('Failed to load profile data');
-  } finally {
-    setLoading(false);
-  }
-};
+
+      // Create profile from auth user data
+      const profileData: UserProfile = {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        username: (user as any).username || user.name || '',
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        bio: (user as any).bio || 'Book enthusiast and avid reader',
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        location: (user as any).location || 'New York, NY',
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        joinDate: (user as any).created_at || new Date().toISOString(),
+        lastActive: new Date().toISOString(),
+        role: user.role || 'User',
+        emailVerified: true,
+        twoFactorEnabled: false,
+        preferences: {
+          emailNotifications: true,
+          pushNotifications: true,
+          darkMode: false,
+          language: 'English',
+          timezone: 'America/New_York',
+          newsletter: true
+        },
+        stats: {
+          reviewsCount: 0,
+          booksReviewed: 0,
+          averageRating: 0,
+          followers: 0,
+          following: 0,
+          helpfulVotes: 0,
+          streak: 0,
+          badges: []
+        }
+      };
+
+      setProfile(profileData);
+    } catch (err) {
+      console.error('Error loading profile:', err);
+      setError('Failed to load profile data');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const fetchProfile = async () => {
     setLoading(true);
@@ -895,7 +894,7 @@ const ProfilePage: React.FC = () => {
       // Try to get user profile from API
       const response = await api.get('/users/me/profile');
       const userData = response.data.user;
-      
+
       const profileData: UserProfile = {
         id: userData.id,
         name: userData.name,
@@ -930,7 +929,7 @@ const ProfilePage: React.FC = () => {
 
       setProfile(profileData);
       fetchActivities();
-      
+
     } catch (err) {
       console.error('Error fetching profile:', err);
       // Fallback to auth user data
@@ -961,12 +960,12 @@ const ProfilePage: React.FC = () => {
     setSaving(true);
     try {
       // Send updates to backend
-      
+
       // Update local profile state
       if (profile) {
         const updatedProfile = { ...profile, ...data };
         setProfile(updatedProfile);
-        
+
         // Update auth context and localStorage
         if (updateUser) {
           updateUser(updatedProfile);
@@ -976,10 +975,10 @@ const ProfilePage: React.FC = () => {
           const newUser = { ...storedUser, ...data };
           localStorage.setItem('user', JSON.stringify(newUser));
         }
-        
+
         showNotification('Profile updated successfully', 'success');
       }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error('Error saving profile:', err);
       showNotification(err.response?.data?.error || 'Failed to update profile', 'error');
@@ -991,24 +990,24 @@ const ProfilePage: React.FC = () => {
   const handleAvatarChange = async (file: File) => {
     const formData = new FormData();
     formData.append('avatar', file);
-    
+
     try {
       const response = await api.post('/users/me/avatar', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
-      
+
       if (profile) {
         const updatedProfile = { ...profile, avatar: response.data.avatarUrl };
         setProfile(updatedProfile);
-        
+
         // Update localStorage
         const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
         storedUser.avatar = response.data.avatarUrl;
         localStorage.setItem('user', JSON.stringify(storedUser));
-        
+
         showNotification('Avatar updated successfully', 'success');
       }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       showNotification('Failed to update avatar', 'error');
     }
@@ -1017,24 +1016,24 @@ const ProfilePage: React.FC = () => {
   const handleCoverChange = async (file: File) => {
     const formData = new FormData();
     formData.append('cover', file);
-    
+
     try {
       const response = await api.post('/users/me/cover', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
-      
+
       if (profile) {
         const updatedProfile = { ...profile, coverImage: response.data.coverUrl };
         setProfile(updatedProfile);
-        
+
         // Update localStorage
         const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
         storedUser.coverImage = response.data.coverUrl;
         localStorage.setItem('user', JSON.stringify(storedUser));
-        
+
         showNotification('Cover image updated successfully', 'success');
       }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       showNotification('Failed to update cover image', 'error');
     }
@@ -1042,28 +1041,28 @@ const ProfilePage: React.FC = () => {
 
   const handlePreferenceChange = async (key: keyof UserProfile['preferences'], value: unknown) => {
     if (!profile) return;
-    
+
     try {
       const updatedPreferences = {
         ...profile.preferences,
         [key]: value
       };
-      
+
       await api.put('/users/me/preferences', updatedPreferences);
-      
+
       const updatedProfile = {
         ...profile,
         preferences: updatedPreferences
       };
       setProfile(updatedProfile);
-      
+
       // Update localStorage
       const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
       storedUser.preferences = updatedPreferences;
       localStorage.setItem('user', JSON.stringify(storedUser));
-      
+
       showNotification('Preferences updated', 'success');
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       showNotification('Failed to update preferences', 'error');
     }
@@ -1089,21 +1088,21 @@ const ProfilePage: React.FC = () => {
   }
 
   if (error || !profile) {
-  return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
-      <Alert 
-        severity="error" 
-        action={
-          <Button color="inherit" size="small" onClick={fetchProfile}>
-            Retry
-          </Button>
-        }
-      >
-        {error || 'Failed to load profile'}
-      </Alert>
-    </Container>
-  );
-}
+    return (
+      <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Alert
+          severity="error"
+          action={
+            <Button color="inherit" size="small" onClick={fetchProfile}>
+              Retry
+            </Button>
+          }
+        >
+          {error || 'Failed to load profile'}
+        </Alert>
+      </Container>
+    );
+  }
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
@@ -1197,21 +1196,21 @@ const ProfilePage: React.FC = () => {
                       <CheckCircleIcon color="success" fontSize="small" />
                     )}
                   </Box>
-                  
+
                   {profile.phone && (
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                       <PhoneIcon color="action" />
                       <Typography>{profile.phone}</Typography>
                     </Box>
                   )}
-                  
+
                   {profile.location && (
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                       <LocationIcon color="action" />
                       <Typography>{profile.location}</Typography>
                     </Box>
                   )}
-                  
+
                   {profile.website && (
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                       <LinkIcon color="action" />
@@ -1220,7 +1219,7 @@ const ProfilePage: React.FC = () => {
                       </a>
                     </Box>
                   )}
-                  
+
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                     <CalendarIcon color="action" />
                     <Typography>
@@ -1243,7 +1242,7 @@ const ProfilePage: React.FC = () => {
                       </a>
                     </Box>
                   )}
-                  
+
                   {profile.socialLinks?.instagram && (
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                       <InstagramIcon color="error" />
@@ -1252,7 +1251,7 @@ const ProfilePage: React.FC = () => {
                       </a>
                     </Box>
                   )}
-                  
+
                   {profile.socialLinks?.facebook && (
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                       <FacebookIcon color="primary" />
@@ -1261,7 +1260,7 @@ const ProfilePage: React.FC = () => {
                       </a>
                     </Box>
                   )}
-                  
+
                   {profile.socialLinks?.github && (
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                       <GitHubIcon />
@@ -1270,7 +1269,7 @@ const ProfilePage: React.FC = () => {
                       </a>
                     </Box>
                   )}
-                  
+
                   {profile.socialLinks?.linkedin && (
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                       <LinkedInIcon color="primary" />
@@ -1296,7 +1295,7 @@ const ProfilePage: React.FC = () => {
                       {profile.name} {profile.username && `(@${profile.username})`}
                     </Typography>
                   </Box>
-                  
+
                   {profile.birthDate && (
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                       <CakeIcon color="action" />
@@ -1305,7 +1304,7 @@ const ProfilePage: React.FC = () => {
                       </Typography>
                     </Box>
                   )}
-                  
+
                   {profile.gender && (
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                       <PersonIcon color="action" />
@@ -1328,7 +1327,7 @@ const ProfilePage: React.FC = () => {
                       Two-Factor Authentication: {profile.twoFactorEnabled ? 'Enabled' : 'Disabled'}
                     </Typography>
                   </Box>
-                  
+
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                     <CalendarIcon color="action" />
                     <Typography>
@@ -1397,7 +1396,7 @@ const ProfilePage: React.FC = () => {
             <Typography variant="h6" fontWeight={600} gutterBottom>
               Preferences
             </Typography>
-            
+
             <Stack spacing={3}>
               {/* Notifications */}
               <Box>
