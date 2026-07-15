@@ -328,7 +328,6 @@ export const getVisibleActions = (
   return actions;
 };
 
-
 // Role-based Data Filtering
 
 export const filterSensitiveData = <T extends Record<string, unknown>>(
@@ -410,7 +409,6 @@ export const PERMISSIONS = {
   ACCESS_ALL: "access_all",
 } as const;
 
-
 // Role Labels
 
 export const ROLE_LABELS: Record<UserRole, string> = {
@@ -430,7 +428,6 @@ export const ROLE_COLORS: Record<UserRole, string> = {
   Moderator: "#ff9800",
   User: "#2196f3",
 };
-
 
 // Default Export
 

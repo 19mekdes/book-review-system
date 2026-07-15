@@ -516,7 +516,6 @@ export const validateUrl = (
   }
 };
 
-
 /**
  * Validate phone number
  */
@@ -538,8 +537,6 @@ export const validatePhone = (
 
   return { isValid: true };
 };
-
-
 
 /**
  * Validate date
