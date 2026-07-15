@@ -1,10 +1,7 @@
-﻿// src/features/reviews/reviewsSlice.ts
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import api from '../../services/api';
+﻿import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import api from "../../services/api";
 
-// ============================================
 // Types
-// ============================================
 
 export interface Review {
   id: number;
@@ -32,9 +29,7 @@ export interface ReviewState {
   currentPage: number;
 }
 
-// ============================================
 // Initial State
-// ============================================
 
 const initialState: ReviewState = {
   reviews: [],
@@ -44,128 +39,149 @@ const initialState: ReviewState = {
   isLoading: false,
   error: null,
   totalPages: 1,
-  currentPage: 1
+  currentPage: 1,
 };
 
-// ============================================
+
 // Async Thunks
-// ============================================
+
 
 export const fetchLatestReviews = createAsyncThunk(
-  'reviews/fetchLatest',
+  "reviews/fetchLatest",
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async (_limit: number = 5, { rejectWithValue }) => {
     try {
       // For development, return mock data
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 500));
       return [
         {
           id: 1,
           user_id: 101,
-          user_name: 'John Doe',
-          user_avatar: '',
+          user_name: "John Doe",
+          user_avatar: "",
           book_id: 1,
-          book_title: 'The Great Gatsby',
+          book_title: "The Great Gatsby",
           rating: 5,
-          comment: 'Amazing book! Highly recommended.',
+          comment: "Amazing book! Highly recommended.",
           created_at: new Date().toISOString(),
-          helpful_count: 12
+          helpful_count: 12,
         },
         {
           id: 2,
           user_id: 102,
-          user_name: 'Jane Smith',
-          user_avatar: '',
+          user_name: "Jane Smith",
+          user_avatar: "",
           book_id: 2,
-          book_title: '1984',
+          book_title: "1984",
           rating: 4,
-          comment: 'Thought-provoking and relevant.',
+          comment: "Thought-provoking and relevant.",
           created_at: new Date().toISOString(),
-          helpful_count: 8
-        }
+          helpful_count: 8,
+        },
       ];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to fetch latest reviews');
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch latest reviews"
+      );
     }
   }
 );
 
 export const fetchReviewsByBook = createAsyncThunk(
-  'reviews/fetchByBook',
+  "reviews/fetchByBook",
   async (bookId: number, { rejectWithValue }) => {
     try {
       const response = await api.get(`/reviews/book/${bookId}`);
       return response.data;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to fetch reviews');
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch reviews"
+      );
     }
   }
 );
 
 export const fetchReviewsByUser = createAsyncThunk(
-  'reviews/fetchByUser',
+  "reviews/fetchByUser",
   async (userId: number, { rejectWithValue }) => {
     try {
       const response = await api.get(`/reviews/user/${userId}`);
       return response.data;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to fetch user reviews');
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch user reviews"
+      );
     }
   }
 );
 
 // ADD REVIEW - Make sure this is exported
 export const addReview = createAsyncThunk(
-  'reviews/add',
-  async (reviewData: {
-    user_id: number;
-    book_id: number;
-    rating: number;
-    comment: string;
-  }, { rejectWithValue }) => {
+  "reviews/add",
+  async (
+    reviewData: {
+      user_id: number;
+      book_id: number;
+      rating: number;
+      comment: string;
+    },
+    { rejectWithValue }
+  ) => {
     try {
-      const response = await api.post('/reviews', reviewData);
+      const response = await api.post("/reviews", reviewData);
       return response.data;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to add review');
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to add review"
+      );
     }
   }
 );
 
 // UPDATE REVIEW - Make sure this is exported
 export const updateReview = createAsyncThunk(
-  'reviews/update',
-  async ({ id, ...reviewData }: {
-    id: number;
-    user_id: number;
-    book_id: number;
-    rating: number;
-    comment: string;
-  }, { rejectWithValue }) => {
+  "reviews/update",
+  async (
+    {
+      id,
+      ...reviewData
+    }: {
+      id: number;
+      user_id: number;
+      book_id: number;
+      rating: number;
+      comment: string;
+    },
+    { rejectWithValue }
+  ) => {
     try {
       const response = await api.put(`/reviews/${id}`, reviewData);
       return response.data;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to update review');
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to update review"
+      );
     }
   }
 );
 
 // DELETE REVIEW - Make sure this is exported
 export const deleteReview = createAsyncThunk(
-  'reviews/delete',
+  "reviews/delete",
   async (id: number, { rejectWithValue }) => {
     try {
       await api.delete(`/reviews/${id}`);
       return id;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to delete review');
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to delete review"
+      );
     }
   }
 );
@@ -175,7 +191,7 @@ export const deleteReview = createAsyncThunk(
 // ============================================
 
 const reviewsSlice = createSlice({
-  name: 'reviews',
+  name: "reviews",
   initialState,
   reducers: {
     clearReviews: (state) => {
@@ -189,7 +205,7 @@ const reviewsSlice = createSlice({
     },
     clearError: (state) => {
       state.error = null;
-    }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -260,15 +276,21 @@ const reviewsSlice = createSlice({
       })
       .addCase(updateReview.fulfilled, (state, action) => {
         state.isLoading = false;
-        const index = state.reviews.findIndex(r => r.id === action.payload.id);
+        const index = state.reviews.findIndex(
+          (r) => r.id === action.payload.id
+        );
         if (index !== -1) {
           state.reviews[index] = action.payload;
         }
-        const userIndex = state.userReviews.findIndex(r => r.id === action.payload.id);
+        const userIndex = state.userReviews.findIndex(
+          (r) => r.id === action.payload.id
+        );
         if (userIndex !== -1) {
           state.userReviews[userIndex] = action.payload;
         }
-        const latestIndex = state.latestReviews.findIndex(r => r.id === action.payload.id);
+        const latestIndex = state.latestReviews.findIndex(
+          (r) => r.id === action.payload.id
+        );
         if (latestIndex !== -1) {
           state.latestReviews[latestIndex] = action.payload;
         }
@@ -285,20 +307,25 @@ const reviewsSlice = createSlice({
       })
       .addCase(deleteReview.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.reviews = state.reviews.filter(r => r.id !== action.payload);
-        state.userReviews = state.userReviews.filter(r => r.id !== action.payload);
-        state.latestReviews = state.latestReviews.filter(r => r.id !== action.payload);
+        state.reviews = state.reviews.filter((r) => r.id !== action.payload);
+        state.userReviews = state.userReviews.filter(
+          (r) => r.id !== action.payload
+        );
+        state.latestReviews = state.latestReviews.filter(
+          (r) => r.id !== action.payload
+        );
       })
       .addCase(deleteReview.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
       });
-  }
+  },
 });
 
 // ============================================
 // Exports
 // ============================================
 
-export const { clearReviews, setCurrentReview, clearError } = reviewsSlice.actions;
+export const { clearReviews, setCurrentReview, clearError } =
+  reviewsSlice.actions;
 export default reviewsSlice.reducer;
