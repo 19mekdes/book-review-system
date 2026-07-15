@@ -42,9 +42,7 @@ const initialState: ReviewState = {
   currentPage: 1,
 };
 
-
 // Async Thunks
-
 
 export const fetchLatestReviews = createAsyncThunk(
   "reviews/fetchLatest",
@@ -186,9 +184,9 @@ export const deleteReview = createAsyncThunk(
   }
 );
 
-// ============================================
+
 // Slice
-// ============================================
+
 
 const reviewsSlice = createSlice({
   name: "reviews",
