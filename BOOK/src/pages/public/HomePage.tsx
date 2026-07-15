@@ -1,4 +1,3 @@
-// C:\Users\PC_1\OneDrive\Desktop\Book Review\BOOK\src\pages\public\HomePage.tsx
 import React, { useEffect, useState } from 'react';
 import {
   Container,
@@ -133,38 +132,38 @@ const HomePage: React.FC = () => {
         const booksData = results[0].status === 'fulfilled' ? results[0].value.data : { totalBooks: 12453, growth: 12 };
         const usersData = results[1].status === 'fulfilled' ? results[1].value.data : { totalUsers: 8765, growth: 8 };
         const reviewsData = results[2].status === 'fulfilled' ? results[2].value.data : { totalReviews: 32456, growth: 23 };
-        const categoriesData = results[3].status === 'fulfilled' 
-          ? { length: results[3].value.data.length } 
+        const categoriesData = results[3].status === 'fulfilled'
+          ? { length: results[3].value.data.length }
           : { length: 8 };
 
         setStats([
-          { 
-            label: 'Total Books', 
-            value: booksData.totalBooks || 12453, 
-            icon: <MenuBookIcon />, 
-            color: '#4361ee', 
-            trend: booksData.growth || 12 
+          {
+            label: 'Total Books',
+            value: booksData.totalBooks || 12453,
+            icon: <MenuBookIcon />,
+            color: '#4361ee',
+            trend: booksData.growth || 12
           },
-          { 
-            label: 'Active Users', 
-            value: usersData.totalUsers || 8765, 
-            icon: <PeopleIcon />, 
-            color: '#f72585', 
-            trend: usersData.growth || 8 
+          {
+            label: 'Active Users',
+            value: usersData.totalUsers || 8765,
+            icon: <PeopleIcon />,
+            color: '#f72585',
+            trend: usersData.growth || 8
           },
-          { 
-            label: 'Total Reviews', 
-            value: reviewsData.totalReviews || 32456, 
-            icon: <ReviewIcon />, 
-            color: '#4cc9f0', 
-            trend: reviewsData.growth || 23 
+          {
+            label: 'Total Reviews',
+            value: reviewsData.totalReviews || 32456,
+            icon: <ReviewIcon />,
+            color: '#4cc9f0',
+            trend: reviewsData.growth || 23
           },
-          { 
-            label: 'Categories', 
-            value: categoriesData.length || 8, 
-            icon: <CategoryIcon />, 
-            color: '#f8961e', 
-            trend: 5 
+          {
+            label: 'Categories',
+            value: categoriesData.length || 8,
+            icon: <CategoryIcon />,
+            color: '#f8961e',
+            trend: 5
           }
         ]);
       } catch (error) {
@@ -188,23 +187,23 @@ const HomePage: React.FC = () => {
   const categoryItems: CategoryItem[] = categories?.length > 0
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ? categories.map((cat: any, index: number) => ({
-        id: cat.id,
-        name: cat.name,
-        // eslint-disable-next-line react-hooks/purity
-        count: cat.bookCount || Math.floor(Math.random() * 3000) + 1000,
-        icon: <CategoryIcon />,
-        color: ['#4361ee', '#f72585', '#4cc9f0', '#f8961e', '#9c89b8', '#ef476f', '#43aa8b', '#f9c74f'][index % 8]
-      }))
+      id: cat.id,
+      name: cat.name,
+      // eslint-disable-next-line react-hooks/purity
+      count: cat.bookCount || Math.floor(Math.random() * 3000) + 1000,
+      icon: <CategoryIcon />,
+      color: ['#4361ee', '#f72585', '#4cc9f0', '#f8961e', '#9c89b8', '#ef476f', '#43aa8b', '#f9c74f'][index % 8]
+    }))
     : [
-        { id: 1, name: 'Fiction', count: 3456, icon: <CategoryIcon />, color: '#4361ee' },
-        { id: 2, name: 'Non-Fiction', count: 2876, icon: <CategoryIcon />, color: '#f72585' },
-        { id: 3, name: 'Science Fiction', count: 1987, icon: <CategoryIcon />, color: '#4cc9f0' },
-        { id: 4, name: 'Fantasy', count: 1765, icon: <CategoryIcon />, color: '#9c89b8' },
-        { id: 5, name: 'Mystery', count: 1654, icon: <CategoryIcon />, color: '#f8961e' },
-        { id: 6, name: 'Biography', count: 1432, icon: <CategoryIcon />, color: '#ef476f' },
-        { id: 7, name: 'History', count: 1234, icon: <CategoryIcon />, color: '#43aa8b' },
-        { id: 8, name: 'Technology', count: 987, icon: <CategoryIcon />, color: '#f9c74f' }
-      ];
+      { id: 1, name: 'Fiction', count: 3456, icon: <CategoryIcon />, color: '#4361ee' },
+      { id: 2, name: 'Non-Fiction', count: 2876, icon: <CategoryIcon />, color: '#f72585' },
+      { id: 3, name: 'Science Fiction', count: 1987, icon: <CategoryIcon />, color: '#4cc9f0' },
+      { id: 4, name: 'Fantasy', count: 1765, icon: <CategoryIcon />, color: '#9c89b8' },
+      { id: 5, name: 'Mystery', count: 1654, icon: <CategoryIcon />, color: '#f8961e' },
+      { id: 6, name: 'Biography', count: 1432, icon: <CategoryIcon />, color: '#ef476f' },
+      { id: 7, name: 'History', count: 1234, icon: <CategoryIcon />, color: '#43aa8b' },
+      { id: 8, name: 'Technology', count: 987, icon: <CategoryIcon />, color: '#f9c74f' }
+    ];
 
   const handleCategoryClick = (categoryId: number, categoryName: string) => {
     console.log('Navigating to category:', { id: categoryId, name: categoryName });
@@ -225,126 +224,126 @@ const HomePage: React.FC = () => {
   return (
     <Box sx={{ bgcolor: '#f8fafc', minHeight: '100vh' }}>
       {/* Hero Section with full background image */}
-<Paper
-  sx={{
-    position: 'relative',
-    color: 'white',
-    mb: 6,
-    borderRadius: 0,
-    py: { xs: 10, md: 14 },
-    minHeight: { xs: '70vh', md: '90vh' },
-    backgroundImage:
-      "url('https://images.pexels.com/photos/2177482/pexels-photo-2177482.jpeg?auto=compress&cs=tinysrgb&w=1920')",
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
-    overflow: 'hidden',
-    display: 'flex',
-    alignItems: 'center'
-  }}
->
-  {/* Dark Overlay */}
-  <Box
-    sx={{
-      position: 'absolute',
-      inset: 0,
-      backgroundColor: 'rgba(0, 0, 0, 0.58)',
-      zIndex: 1
-    }}
-  />
-
-  <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 2 }}>
-    <Grid container spacing={5} justifyContent="center">
-      <Grid size={{ xs: 12, md: 8, lg: 7 }} sx={{ textAlign: 'center' }}>
-        <Typography
-          component="h1"
-          variant="h1"
+      <Paper
+        sx={{
+          position: 'relative',
+          color: 'white',
+          mb: 6,
+          borderRadius: 0,
+          py: { xs: 10, md: 14 },
+          minHeight: { xs: '70vh', md: '90vh' },
+          backgroundImage:
+            "url('https://images.pexels.com/photos/2177482/pexels-photo-2177482.jpeg?auto=compress&cs=tinysrgb&w=1920')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          overflow: 'hidden',
+          display: 'flex',
+          alignItems: 'center'
+        }}
+      >
+        {/* Dark Overlay */}
+        <Box
           sx={{
-            fontSize: { xs: '2.8rem', md: '4.5rem' },
-            fontWeight: 800,
-            lineHeight: 1.12,
-            mb: 3,
-            textShadow: '3px 3px 12px rgba(0,0,0,0.8)'
+            position: 'absolute',
+            inset: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.58)',
+            zIndex: 1
           }}
-        >
-          Discover Your Next
-          <Box component="span" sx={{ color: '#ffca28', display: 'block' }}>
-            Favorite Book
-          </Box>
-        </Typography>
+        />
 
-        <Typography
-          variant="h5"
-          sx={{
-            maxWidth: 680,
-            mx: 'auto',
-            opacity: 0.95,
-            mb: 5,
-            fontWeight: 400,
-            px: 2
-          }}
-        >
-          Join our community of book lovers. Read honest reviews, share your thoughts, and find your next great read from thousands of books.
-        </Typography>
+        <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 2 }}>
+          <Grid container spacing={5} justifyContent="center">
+            <Grid size={{ xs: 12, md: 8, lg: 7 }} sx={{ textAlign: 'center' }}>
+              <Typography
+                component="h1"
+                variant="h1"
+                sx={{
+                  fontSize: { xs: '2.8rem', md: '4.5rem' },
+                  fontWeight: 800,
+                  lineHeight: 1.12,
+                  mb: 3,
+                  textShadow: '3px 3px 12px rgba(0,0,0,0.8)'
+                }}
+              >
+                Discover Your Next
+                <Box component="span" sx={{ color: '#ffca28', display: 'block' }}>
+                  Favorite Book
+                </Box>
+              </Typography>
 
-        <Stack 
-          direction={{ xs: 'column', sm: 'row' }} 
-          spacing={3} 
-          justifyContent="center"
-          alignItems="center"
-          sx={{ px: 2 }}
-        >
-          <Button
-            variant="contained"
-            size="large"
-            onClick={() => navigate('/books')}
-            sx={{
-              bgcolor: 'white',
-              color: 'primary.dark',
-              px: 5,
-              py: 1.8,
-              fontSize: '1.15rem',
-              fontWeight: 700,
-              borderRadius: 2,
-              minWidth: '200px',
-              '&:hover': {
-                bgcolor: 'grey.100',
-                transform: 'translateY(-3px)',
-                boxShadow: theme.shadows[6]
-              }
-            }}
-          >
-            Browse Books
-          </Button>
+              <Typography
+                variant="h5"
+                sx={{
+                  maxWidth: 680,
+                  mx: 'auto',
+                  opacity: 0.95,
+                  mb: 5,
+                  fontWeight: 400,
+                  px: 2
+                }}
+              >
+                Join our community of book lovers. Read honest reviews, share your thoughts, and find your next great read from thousands of books.
+              </Typography>
 
-          <Button
-            variant="outlined"
-            size="large"
-            onClick={() => window.scrollTo({ top: 800, behavior: 'smooth' })}
-            sx={{
-              borderColor: 'white',
-              color: 'white',
-              borderWidth: 2,
-              px: 5,
-              py: 1.8,
-              fontSize: '1.15rem',
-              fontWeight: 700,
-              borderRadius: 2,
-              minWidth: '200px',
-              '&:hover': {
-                borderColor: 'white',
-                bgcolor: 'rgba(255,255,255,0.15)',
-                transform: 'translateY(-3px)'
-              }
-            }}
-          >
-            Learn More
-          </Button>
-        </Stack>
-      </Grid>
-    </Grid>
-  </Container>
-</Paper>
+              <Stack
+                direction={{ xs: 'column', sm: 'row' }}
+                spacing={3}
+                justifyContent="center"
+                alignItems="center"
+                sx={{ px: 2 }}
+              >
+                <Button
+                  variant="contained"
+                  size="large"
+                  onClick={() => navigate('/books')}
+                  sx={{
+                    bgcolor: 'white',
+                    color: 'primary.dark',
+                    px: 5,
+                    py: 1.8,
+                    fontSize: '1.15rem',
+                    fontWeight: 700,
+                    borderRadius: 2,
+                    minWidth: '200px',
+                    '&:hover': {
+                      bgcolor: 'grey.100',
+                      transform: 'translateY(-3px)',
+                      boxShadow: theme.shadows[6]
+                    }
+                  }}
+                >
+                  Browse Books
+                </Button>
+
+                <Button
+                  variant="outlined"
+                  size="large"
+                  onClick={() => window.scrollTo({ top: 800, behavior: 'smooth' })}
+                  sx={{
+                    borderColor: 'white',
+                    color: 'white',
+                    borderWidth: 2,
+                    px: 5,
+                    py: 1.8,
+                    fontSize: '1.15rem',
+                    fontWeight: 700,
+                    borderRadius: 2,
+                    minWidth: '200px',
+                    '&:hover': {
+                      borderColor: 'white',
+                      bgcolor: 'rgba(255,255,255,0.15)',
+                      transform: 'translateY(-3px)'
+                    }
+                  }}
+                >
+                  Learn More
+                </Button>
+              </Stack>
+            </Grid>
+          </Grid>
+        </Container>
+      </Paper>
 
       <Container maxWidth="lg" sx={{ mb: 8 }}>
         {/* Stats Section */}

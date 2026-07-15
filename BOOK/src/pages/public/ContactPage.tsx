@@ -74,14 +74,14 @@ const ContactPage: React.FC = () => {
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
-    
+
     if (!formData.name.trim()) newErrors.name = 'Name is required';
     if (!formData.email.trim()) newErrors.email = 'Email is required';
     else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Email is invalid';
     if (!formData.subject.trim()) newErrors.subject = 'Subject is required';
     if (!formData.message.trim()) newErrors.message = 'Message is required';
     else if (formData.message.length < 10) newErrors.message = 'Message must be at least 10 characters';
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -89,7 +89,7 @@ const ContactPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
-    
+
     setLoading(true);
     try {
       await api.post('/contact', formData);
@@ -99,7 +99,7 @@ const ContactPage: React.FC = () => {
         severity: 'success'
       });
       setFormData({ name: '', email: '', subject: '', message: '' });
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       setNotification({
         open: true,
@@ -114,7 +114,7 @@ const ContactPage: React.FC = () => {
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       {/* Hero Section */}
-      <Box sx={{ 
+      <Box sx={{
         bgcolor: theme.palette.primary.main,
         color: 'white',
         py: 6,
@@ -136,14 +136,14 @@ const ContactPage: React.FC = () => {
             Get in Touch
           </Typography>
           <Typography variant="body1" color="text.secondary" paragraph>
-            Have a question about a book? Need help with your account? 
+            Have a question about a book? Need help with your account?
             Want to report an issue? We're here to help!
           </Typography>
-          
+
           <Box sx={{ mt: 4 }}>
             {contactInfo.map((info, index) => (
               <Box key={index} sx={{ display: 'flex', mb: 3 }}>
-                <Avatar sx={{ 
+                <Avatar sx={{
                   bgcolor: alpha(theme.palette.primary.main, 0.1),
                   color: theme.palette.primary.main,
                   mr: 2
@@ -169,9 +169,9 @@ const ContactPage: React.FC = () => {
               </Box>
             ))}
           </Box>
-          
+
           <Divider sx={{ my: 4 }} />
-          
+
           <Typography variant="h6" fontWeight={600} gutterBottom>
             Follow Us
           </Typography>
@@ -187,7 +187,7 @@ const ContactPage: React.FC = () => {
             </IconButton>
           </Box>
         </Grid>
-        
+
         {/* Contact Form */}
         <Grid size={{ xs: 12, md: 7 }}>
           <Card sx={{ p: 4 }}>
@@ -197,7 +197,7 @@ const ContactPage: React.FC = () => {
             <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
               We'll respond within 24-48 hours
             </Typography>
-            
+
             <form onSubmit={handleSubmit}>
               <Grid container spacing={3}>
                 <Grid size={{ xs: 12, sm: 6 }}>
