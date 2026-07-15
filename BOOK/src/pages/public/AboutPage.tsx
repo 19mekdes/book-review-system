@@ -1,4 +1,3 @@
-// src/pages/public/AboutPage.tsx
 import React from 'react';
 import {
   Container,
@@ -124,7 +123,7 @@ const AboutPage: React.FC = () => {
   return (
     <Box sx={{ bgcolor: '#f8fafc', minHeight: '100vh' }}>
       {/* Hero Section */}
-      <Box sx={{ 
+      <Box sx={{
         background: `linear-gradient(135deg, ${theme.palette.primary.dark} 0%, ${theme.palette.primary.main} 100%)`,
         color: 'white',
         py: { xs: 6, md: 10 },
@@ -133,29 +132,29 @@ const AboutPage: React.FC = () => {
         overflow: 'hidden'
       }}>
         <Container maxWidth="lg">
-          <Typography 
-            variant="h2" 
-            component="h1" 
-            fontWeight={800} 
-            gutterBottom 
+          <Typography
+            variant="h2"
+            component="h1"
+            fontWeight={800}
+            gutterBottom
             align="center"
             sx={{ fontSize: { xs: '2.5rem', md: '3.5rem' } }}
           >
             About BookReview
           </Typography>
-          <Typography 
-            variant="h5" 
-            align="center" 
+          <Typography
+            variant="h5"
+            align="center"
             sx={{ maxWidth: 700, mx: 'auto', opacity: 0.95, mb: 4 }}
           >
             Connecting readers with great books through authentic reviews and a passionate community
           </Typography>
           <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, flexWrap: 'wrap' }}>
-            <Button 
-              variant="contained" 
+            <Button
+              variant="contained"
               size="large"
-              sx={{ 
-                bgcolor: 'white', 
+              sx={{
+                bgcolor: 'white',
                 color: theme.palette.primary.main,
                 '&:hover': { bgcolor: '#f5f5f5' }
               }}
@@ -163,8 +162,8 @@ const AboutPage: React.FC = () => {
             >
               Start Reading
             </Button>
-            <Button 
-              variant="outlined" 
+            <Button
+              variant="outlined"
               size="large"
               sx={{ color: 'white', borderColor: 'white', '&:hover': { borderColor: 'white', bgcolor: 'rgba(255,255,255,0.1)' } }}
               onClick={() => navigate('/contact')}
@@ -179,26 +178,26 @@ const AboutPage: React.FC = () => {
         {/* Mission Section */}
         <Grid container spacing={6} sx={{ mb: 8 }} alignItems="center">
           <Grid size={{ xs: 12, md: 6 }}>
-            <Chip 
-              label="Our Mission" 
-              color="primary" 
+            <Chip
+              label="Our Mission"
+              color="primary"
               sx={{ mb: 2, fontWeight: 600 }}
             />
             <Typography variant="h3" fontWeight={700} gutterBottom sx={{ fontSize: { xs: '2rem', md: '2.5rem' } }}>
               Why We Built This Platform
             </Typography>
             <Typography variant="body1" color="text.secondary" paragraph sx={{ fontSize: '1.1rem', lineHeight: 1.7 }}>
-              In a world flooded with book recommendations, finding genuine reviews can be challenging. 
-              BookReview was created to provide a trusted space where readers can share honest opinions 
+              In a world flooded with book recommendations, finding genuine reviews can be challenging.
+              BookReview was created to provide a trusted space where readers can share honest opinions
               and discover books that truly resonate with them.
             </Typography>
             <Typography variant="body1" color="text.secondary" paragraph sx={{ fontSize: '1.1rem', lineHeight: 1.7 }}>
-              We believe that every book deserves a fair review and every reader deserves to find 
-              their next favorite read. Our platform empowers readers to make informed decisions 
+              We believe that every book deserves a fair review and every reader deserves to find
+              their next favorite read. Our platform empowers readers to make informed decisions
               through authentic, community-driven reviews.
             </Typography>
-            <Button 
-              variant="contained" 
+            <Button
+              variant="contained"
               onClick={() => navigate('/register')}
               sx={{ mt: 2 }}
             >
@@ -206,7 +205,7 @@ const AboutPage: React.FC = () => {
             </Button>
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
-            <Paper sx={{ 
+            <Paper sx={{
               bgcolor: alpha(theme.palette.primary.main, 0.05),
               borderRadius: 4,
               p: 4,
@@ -237,13 +236,13 @@ const AboutPage: React.FC = () => {
           <Grid container spacing={3}>
             {stats.map((stat, index) => (
               <Grid size={{ xs: 12, sm: 6, md: 3 }} key={index}>
-                <Card sx={{ 
-                  textAlign: 'center', 
-                  p: 3, 
+                <Card sx={{
+                  textAlign: 'center',
+                  p: 3,
                   transition: 'transform 0.2s',
                   '&:hover': { transform: 'translateY(-8px)', boxShadow: theme.shadows[4] }
                 }}>
-                  <Avatar sx={{ 
+                  <Avatar sx={{
                     bgcolor: alpha(stat.color, 0.1),
                     color: stat.color,
                     width: 64,
@@ -276,14 +275,14 @@ const AboutPage: React.FC = () => {
           <Grid container spacing={4}>
             {features.map((feature, index) => (
               <Grid size={{ xs: 12, md: 6 }} key={index}>
-                <Card sx={{ 
-                  p: 3, 
+                <Card sx={{
+                  p: 3,
                   height: '100%',
                   transition: 'all 0.2s',
                   '&:hover': { boxShadow: theme.shadows[4] }
                 }}>
                   <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}>
-                    <Avatar sx={{ 
+                    <Avatar sx={{
                       bgcolor: alpha(feature.color, 0.1),
                       color: feature.color,
                       width: 56,
@@ -322,7 +321,7 @@ const AboutPage: React.FC = () => {
                     <ListItemIcon sx={{ color: theme.palette.primary.main }}>
                       {benefit.icon}
                     </ListItemIcon>
-                    <ListItemText 
+                    <ListItemText
                       primary={benefit.text}
                       primaryTypographyProps={{ variant: 'body1', fontWeight: 500 }}
                     />
@@ -331,7 +330,7 @@ const AboutPage: React.FC = () => {
               </List>
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
-              <Box sx={{ 
+              <Box sx={{
                 bgcolor: alpha(theme.palette.primary.main, 0.05),
                 borderRadius: 4,
                 p: 4,
@@ -346,8 +345,8 @@ const AboutPage: React.FC = () => {
                 <Typography variant="body2" color="text.secondary" paragraph>
                   Join thousands of readers who are already discovering great books
                 </Typography>
-                <Button 
-                  variant="contained" 
+                <Button
+                  variant="contained"
                   size="large"
                   onClick={() => navigate('/register')}
                   sx={{ mt: 2 }}
@@ -370,9 +369,9 @@ const AboutPage: React.FC = () => {
           <Grid container spacing={3}>
             {milestones.map((milestone, index) => (
               <Grid size={{ xs: 12, sm: 6, md: 3 }} key={index}>
-                <Card sx={{ 
-                  textAlign: 'center', 
-                  p: 3, 
+                <Card sx={{
+                  textAlign: 'center',
+                  p: 3,
                   position: 'relative',
                   '&::before': index !== milestones.length - 1 ? {
                     content: '""',
@@ -411,18 +410,18 @@ const AboutPage: React.FC = () => {
           <Grid container spacing={4}>
             {teamMembers.map((member, index) => (
               <Grid size={{ xs: 12, md: 4 }} key={index}>
-                <Card sx={{ 
-                  textAlign: 'center', 
-                  p: 4, 
+                <Card sx={{
+                  textAlign: 'center',
+                  p: 4,
                   height: '100%',
                   transition: 'transform 0.2s',
                   '&:hover': { transform: 'translateY(-4px)' }
                 }}>
                   <Avatar
-                    sx={{ 
-                      width: 100, 
-                      height: 100, 
-                      mx: 'auto', 
+                    sx={{
+                      width: 100,
+                      height: 100,
+                      mx: 'auto',
                       mb: 2,
                       bgcolor: theme.palette.primary.main,
                       fontSize: '2.5rem'
@@ -457,8 +456,8 @@ const AboutPage: React.FC = () => {
         </Box>
 
         {/* Call to Action */}
-        <Paper sx={{ 
-          p: { xs: 4, md: 6 }, 
+        <Paper sx={{
+          p: { xs: 4, md: 6 },
           textAlign: 'center',
           background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.05)} 0%, ${alpha(theme.palette.secondary.main, 0.05)} 100%)`,
           borderRadius: 4
@@ -470,22 +469,22 @@ const AboutPage: React.FC = () => {
             Be part of a growing community of readers who share their passion for books
           </Typography>
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} justifyContent="center">
-            <Button 
-              variant="contained" 
+            <Button
+              variant="contained"
               size="large"
               onClick={() => navigate('/register')}
             >
               Create Free Account
             </Button>
-            <Button 
-              variant="outlined" 
+            <Button
+              variant="outlined"
               size="large"
               onClick={() => navigate('/books')}
             >
               Browse Books
             </Button>
-            <Button 
-              variant="text" 
+            <Button
+              variant="text"
               size="large"
               startIcon={<EmailIcon />}
               onClick={() => navigate('/contact')}

@@ -74,7 +74,7 @@ export interface UserSettings {
     avatar?: string;
     coverImage?: string;
   };
-  
+
   // Notification Settings
   notifications: {
     emailNotifications: boolean;
@@ -86,7 +86,7 @@ export interface UserSettings {
     newsletterSubscription: boolean;
     marketingEmails: boolean;
   };
-  
+
   // Privacy Settings
   privacy: {
     profileVisibility: 'public' | 'followers' | 'private';
@@ -96,7 +96,7 @@ export interface UserSettings {
     allowTagging: boolean;
     allowMessages: 'everyone' | 'followers' | 'none';
   };
-  
+
   // Security Settings
   security: {
     twoFactorEnabled: boolean;
@@ -104,7 +104,7 @@ export interface UserSettings {
     deviceManagement: boolean;
     sessionTimeout: number;
   };
-  
+
   // Appearance Settings
   appearance: {
     theme: 'light' | 'dark' | 'system';
@@ -113,7 +113,7 @@ export interface UserSettings {
     compactMode: boolean;
     reducedMotion: boolean;
   };
-  
+
   // Language & Region
   localization: {
     language: string;
@@ -237,8 +237,8 @@ const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Cancel</Button>
-        <Button 
-          onClick={handleSubmit} 
+        <Button
+          onClick={handleSubmit}
           variant="contained"
           disabled={loading}
         >
@@ -478,7 +478,7 @@ const SettingsPage: React.FC = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const { user, updateUser } = useAuth();
-  
+
   // State
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -528,7 +528,7 @@ const SettingsPage: React.FC = () => {
     try {
       // Try to load from localStorage first
       const loaded = loadSettingsFromStorage();
-      
+
       if (!loaded) {
         // If no stored settings, create from user data
         const userSettings: UserSettings = {
@@ -637,7 +637,7 @@ const SettingsPage: React.FC = () => {
   // Save settings to localStorage
   const saveSettingsToStorage = (updatedSettings: UserSettings) => {
     localStorage.setItem('userSettings', JSON.stringify(updatedSettings));
-    
+
     // Also update user in auth context if profile changed
     if (updatedSettings.profile) {
       const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
@@ -650,7 +650,7 @@ const SettingsPage: React.FC = () => {
         avatar: updatedSettings.profile.avatar
       };
       localStorage.setItem('user', JSON.stringify(updatedUser));
-      
+
       if (updateUser) {
         updateUser(updatedUser);
       }
@@ -667,23 +667,23 @@ const SettingsPage: React.FC = () => {
 
   const handleProfileSave = async () => {
     if (!settings) return;
-    
+
     setSaving(true);
     try {
       const updatedSettings = {
         ...settings,
         profile: profileForm
       };
-      
+
       // Save to API
       await api.put('/users/me', profileForm);
-      
+
       // Update local state and storage
       setSettings(updatedSettings);
       saveSettingsToStorage(updatedSettings);
-      
+
       showNotification('Profile updated successfully', 'success');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error('Error saving profile:', err);
       showNotification(err.response?.data?.error || 'Failed to update profile', 'error');
@@ -710,9 +710,9 @@ const SettingsPage: React.FC = () => {
       // Update local state and storage
       setSettings(updatedSettings);
       saveSettingsToStorage(updatedSettings);
-      
+
       showNotification('Notification preferences updated', 'success');
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       showNotification('Failed to update preferences', 'error');
     }
@@ -731,12 +731,12 @@ const SettingsPage: React.FC = () => {
       };
 
       await api.put('/users/me/privacy', updatedSettings.privacy);
-      
+
       setSettings(updatedSettings);
       saveSettingsToStorage(updatedSettings);
-      
+
       showNotification('Privacy settings updated', 'success');
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       showNotification('Failed to update privacy settings', 'error');
     }
@@ -755,12 +755,12 @@ const SettingsPage: React.FC = () => {
       };
 
       await api.put('/users/me/security', updatedSettings.security);
-      
+
       setSettings(updatedSettings);
       saveSettingsToStorage(updatedSettings);
-      
+
       showNotification('Security settings updated', 'success');
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       showNotification('Failed to update security settings', 'error');
     }
@@ -779,12 +779,12 @@ const SettingsPage: React.FC = () => {
       };
 
       await api.put('/users/me/appearance', updatedSettings.appearance);
-      
+
       setSettings(updatedSettings);
       saveSettingsToStorage(updatedSettings);
-      
+
       showNotification('Appearance settings updated', 'success');
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       showNotification('Failed to update appearance settings', 'error');
     }
@@ -803,12 +803,12 @@ const SettingsPage: React.FC = () => {
       };
 
       await api.put('/users/me/localization', updatedSettings.localization);
-      
+
       setSettings(updatedSettings);
       saveSettingsToStorage(updatedSettings);
-      
+
       showNotification('Localization settings updated', 'success');
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       showNotification('Failed to update localization settings', 'error');
     }
@@ -818,7 +818,7 @@ const SettingsPage: React.FC = () => {
     try {
       await api.post('/auth/change-password', data);
       showNotification('Password changed successfully', 'success');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       showNotification(err.response?.data?.error || 'Failed to change password', 'error');
       throw err;
@@ -833,7 +833,7 @@ const SettingsPage: React.FC = () => {
       setTimeout(() => {
         navigate('/');
       }, 2000);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       showNotification(err.response?.data?.error || 'Failed to delete account', 'error');
       throw err;
@@ -866,7 +866,7 @@ const SettingsPage: React.FC = () => {
     try {
       await api.get('/users/me/export');
       showNotification('Your data export is being prepared. You will receive an email when ready.', 'info');
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       showNotification('Failed to export data', 'error');
     }
@@ -1619,7 +1619,7 @@ const SettingsPage: React.FC = () => {
               Backup Account
             </Button>
           </Grid>
-         <Grid size={{ xs: 12, md: 4 }}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <Button
               fullWidth
               variant="outlined"

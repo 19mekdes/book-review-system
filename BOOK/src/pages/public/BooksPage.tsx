@@ -314,7 +314,7 @@ const BooksPage: React.FC = () => {
     }
   }, [categories.length, categoriesLoading, dispatch]);
 
-  
+
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const params: any = {
@@ -377,7 +377,7 @@ const BooksPage: React.FC = () => {
   const handleCategoryChange = (event: SelectChangeEvent) => {
     const category = event.target.value;
     console.log("📂 Category selected:", category);
-    
+
     // Update temp filters (for UI)
     setTempFilters((prev) => ({ ...prev, category }));
     // Update main filters - this triggers the useEffect
@@ -936,9 +936,8 @@ const BooksPage: React.FC = () => {
           </Typography>
           <Chip
             icon={<SortIcon />}
-            label={`Sorted by: ${filters.sortBy} (${
-              filters.sortOrder === "asc" ? "A-Z" : "Z-A"
-            })`}
+            label={`Sorted by: ${filters.sortBy} (${filters.sortOrder === "asc" ? "A-Z" : "Z-A"
+              })`}
             variant="outlined"
             size="small"
           />
@@ -968,15 +967,15 @@ const BooksPage: React.FC = () => {
               {filters.search
                 ? `No books found matching "${filters.search}"`
                 : activeCategoryName
-                ? `No books found in ${activeCategoryName} category`
-                : "No books found"}
+                  ? `No books found in ${activeCategoryName} category`
+                  : "No books found"}
             </Typography>
             <Typography variant="body2" color="text.secondary" paragraph>
               {filters.search
                 ? "Try a different search term or clear the search to see all books."
                 : activeCategoryName
-                ? `There are no books in the ${activeCategoryName} category yet.`
-                : "Try adjusting your search or filters to find books."}
+                  ? `There are no books in the ${activeCategoryName} category yet.`
+                  : "Try adjusting your search or filters to find books."}
             </Typography>
             <Button variant="contained" onClick={handleResetFilters}>
               Clear All Filters
