@@ -19,7 +19,8 @@ import {
   Badge,
   useTheme,
   alpha,
-  CircularProgress} from '@mui/material';
+  CircularProgress
+} from '@mui/material';
 import {
   Favorite as FavoriteIcon,
   Comment as CommentIcon,
@@ -72,15 +73,15 @@ const NotificationsPage: React.FC = () => {
 
   useEffect(() => {
     fetchNotifications();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
   };
 
-  const filteredNotifications = tabValue === 0 
-    ? notifications 
+  const filteredNotifications = tabValue === 0
+    ? notifications
     : notifications.filter(n => !n.read);
 
   const getNotificationIcon = (type: string) => {
@@ -157,13 +158,13 @@ const NotificationsPage: React.FC = () => {
         {/* Tabs */}
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs value={tabValue} onChange={handleTabChange}>
-            <Tab 
-              label="All" 
+            <Tab
+              label="All"
               icon={<Badge badgeContent={notifications.length} color="primary" />}
               iconPosition="end"
             />
-            <Tab 
-              label="Unread" 
+            <Tab
+              label="Unread"
               icon={<Badge badgeContent={unreadCount} color="error" />}
               iconPosition="end"
             />
@@ -187,14 +188,14 @@ const NotificationsPage: React.FC = () => {
               {filteredNotifications.map((notification, index) => (
                 <React.Fragment key={notification.id}>
                   <ListItem onClick={() => handleNotificationClick(notification)} sx={{
-                      bgcolor: notification.read ? 'transparent' : alpha(theme.palette.primary.main, 0.04),
-                      borderRadius: 1,
-                      mb: 0.5,
-                      '&:hover': {
-                        bgcolor: notification.read ? 'action.hover' : alpha(theme.palette.primary.main, 0.08),
-                      },
-                      position: 'relative'
-                    }}
+                    bgcolor: notification.read ? 'transparent' : alpha(theme.palette.primary.main, 0.04),
+                    borderRadius: 1,
+                    mb: 0.5,
+                    '&:hover': {
+                      bgcolor: notification.read ? 'action.hover' : alpha(theme.palette.primary.main, 0.08),
+                    },
+                    position: 'relative'
+                  }}
                   >
                     <ListItemIcon>
                       <Avatar
@@ -286,10 +287,10 @@ const NotificationsPage: React.FC = () => {
               {filteredNotifications.map((notification, index) => (
                 <React.Fragment key={notification.id}>
                   <ListItem onClick={() => handleNotificationClick(notification)} sx={{
-                      bgcolor: alpha(theme.palette.primary.main, 0.04),
-                      borderRadius: 1,
-                      mb: 0.5
-                    }}
+                    bgcolor: alpha(theme.palette.primary.main, 0.04),
+                    borderRadius: 1,
+                    mb: 0.5
+                  }}
                   >
                     <ListItemIcon>
                       <Avatar

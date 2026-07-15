@@ -45,7 +45,7 @@ const Dashboard: React.FC = () => {
     // Get user from storage
     const token = localStorage.getItem('token') || sessionStorage.getItem('token');
     const userStr = localStorage.getItem('user') || sessionStorage.getItem('user');
-    
+
     if (!token) {
       navigate('/login');
       return;
@@ -55,7 +55,7 @@ const Dashboard: React.FC = () => {
       const userData = JSON.parse(userStr);
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setUser(userData);
-      
+
       // Redirect admin to admin dashboard
       if (userData.role === 'admin' || userData.roleId === 1) {
         navigate('/admin/dashboard');
@@ -70,7 +70,7 @@ const Dashboard: React.FC = () => {
           api.get('/books'),
           api.get('/reviews/user')
         ]);
-        
+
         setStats({
           totalBooks: booksRes.data.length,
           totalReviews: reviewsRes.data.length,
@@ -193,7 +193,7 @@ const Dashboard: React.FC = () => {
           <Typography variant="h4" gutterBottom>
             Welcome, {user.name}!
           </Typography>
-          
+
           <Grid container spacing={3} sx={{ mt: 2 }}>
             <Grid size={{ xs: 12, sm: 4 }}>
               <Card>
@@ -207,7 +207,7 @@ const Dashboard: React.FC = () => {
                 </CardContent>
               </Card>
             </Grid>
-            
+
             <Grid size={{ xs: 12, sm: 4 }}>
               <Card>
                 <CardContent>
@@ -220,7 +220,7 @@ const Dashboard: React.FC = () => {
                 </CardContent>
               </Card>
             </Grid>
-            
+
             <Grid size={{ xs: 12, sm: 4 }}>
               <Card>
                 <CardContent>
