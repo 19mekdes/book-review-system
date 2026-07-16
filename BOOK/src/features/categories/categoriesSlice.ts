@@ -1,13 +1,13 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import api from '../../services/api';
 
-// ============================================
+
 // Types
-// ============================================
+
 
 export interface Category {
   id: number;
-  name: string;        // This will hold the category name from API
+  name: string;
   description?: string;
   bookCount?: number;
   icon?: string;
@@ -61,11 +61,11 @@ export const fetchCategories = createAsyncThunk(
     try {
       const response = await api.get('/categories');
       console.log('Categories API response:', response.data);
-      
+
       // Handle the response structure: { success: true, data: [...] }
       if (response.data?.success && Array.isArray(response.data.data)) {
         return transformCategoryResponse(response.data.data);
-      } 
+      }
       // If response is directly an array
       else if (Array.isArray(response.data)) {
         return transformCategoryResponse(response.data);
@@ -74,10 +74,10 @@ export const fetchCategories = createAsyncThunk(
       else if (response.data?.data && Array.isArray(response.data.data)) {
         return transformCategoryResponse(response.data.data);
       }
-      
+
       console.warn('Unexpected categories response format:', response.data);
       return [];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error('Error fetching categories:', error);
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch categories');
@@ -135,19 +135,19 @@ const categoriesSlice = createSlice({
 // Selectors
 // ============================================
 
-export const selectAllCategories = (state: { categories: CategoryState }) => 
+export const selectAllCategories = (state: { categories: CategoryState }) =>
   state.categories.categories;
 
-export const selectCategoriesLoading = (state: { categories: CategoryState }) => 
+export const selectCategoriesLoading = (state: { categories: CategoryState }) =>
   state.categories.isLoading;
 
-export const selectCategoriesError = (state: { categories: CategoryState }) => 
+export const selectCategoriesError = (state: { categories: CategoryState }) =>
   state.categories.error;
 
-export const selectCategoryById = (state: { categories: CategoryState }, id: number) => 
+export const selectCategoryById = (state: { categories: CategoryState }, id: number) =>
   state.categories.categories.find(c => c.id === id);
 
-export const selectCategoryByName = (state: { categories: CategoryState }, name: string) => 
+export const selectCategoryByName = (state: { categories: CategoryState }, name: string) =>
   state.categories.categories.find(c => c.name.toLowerCase() === name.toLowerCase());
 
 // ============================================
