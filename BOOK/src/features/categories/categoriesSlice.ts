@@ -22,9 +22,9 @@ export interface CategoryState {
   error: string | null;
 }
 
-// ============================================
+
 // Initial State
-// ============================================
+
 
 const initialState: CategoryState = {
   categories: [],
@@ -32,15 +32,15 @@ const initialState: CategoryState = {
   error: null
 };
 
-// ============================================
+
 // Helper function to transform API response
-// ============================================
+
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const transformCategoryResponse = (data: any[]): Category[] => {
   return data.map(item => ({
     id: item.id,
-    name: item.category, // Map 'category' field from API to 'name'
+    name: item.category, 
     created_at: item.created_at,
     updated_at: item.updated_at,
     // Default values for optional fields
@@ -51,9 +51,9 @@ const transformCategoryResponse = (data: any[]): Category[] => {
   }));
 };
 
-// ============================================
+
 // Async Thunks
-// ============================================
+
 
 export const fetchCategories = createAsyncThunk(
   'categories/fetchAll',
