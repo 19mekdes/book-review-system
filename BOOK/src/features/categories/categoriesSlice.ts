@@ -85,9 +85,9 @@ export const fetchCategories = createAsyncThunk(
   }
 );
 
-// ============================================
+
 // Slice
-// ============================================
+
 
 const categoriesSlice = createSlice({
   name: 'categories',
@@ -131,9 +131,9 @@ const categoriesSlice = createSlice({
   }
 });
 
-// ============================================
+
 // Selectors
-// ============================================
+
 
 export const selectAllCategories = (state: { categories: CategoryState }) =>
   state.categories.categories;
