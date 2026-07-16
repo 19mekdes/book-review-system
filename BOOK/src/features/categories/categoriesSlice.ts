@@ -40,7 +40,7 @@ const initialState: CategoryState = {
 const transformCategoryResponse = (data: any[]): Category[] => {
   return data.map(item => ({
     id: item.id,
-    name: item.category, 
+    name: item.category,
     created_at: item.created_at,
     updated_at: item.updated_at,
     // Default values for optional fields
@@ -150,9 +150,8 @@ export const selectCategoryById = (state: { categories: CategoryState }, id: num
 export const selectCategoryByName = (state: { categories: CategoryState }, name: string) =>
   state.categories.categories.find(c => c.name.toLowerCase() === name.toLowerCase());
 
-// ============================================
+
 // Exports
-// ============================================
 
 export const { clearError, addCategory, updateCategory, removeCategory } = categoriesSlice.actions;
 export default categoriesSlice.reducer;
