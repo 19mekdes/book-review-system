@@ -1,7 +1,5 @@
-// ============================================
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // Category Types
-// ============================================
-
 export interface Category {
   id: number;
   name: string;
