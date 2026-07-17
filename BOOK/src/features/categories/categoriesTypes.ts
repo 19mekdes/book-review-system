@@ -393,9 +393,7 @@ export interface CategoryDisplayOptions {
   sortOrder: 'asc' | 'desc';
 }
 
-// ============================================
 // Category Event Types
-// ============================================
 
 export type CategoryEventType =
   | 'created'
@@ -420,10 +418,7 @@ export interface CategoryEvent {
   previousData?: unknown;
 }
 
-// ============================================
 // Category Validation Types
-// ============================================
-
 export interface CategoryValidationResult {
   isValid: boolean;
   errors: Array<{
@@ -445,9 +440,7 @@ export interface SlugValidationResult {
   message?: string;
 }
 
-// ============================================
 // Category Constants
-// ============================================
 
 export const CATEGORY_SORT_OPTIONS: CategorySortOption[] = [
   { field: 'name', label: 'Name', direction: 'asc' },
