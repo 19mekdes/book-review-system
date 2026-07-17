@@ -358,10 +358,7 @@ export interface CategoryBreadcrumb {
   fullPath: string;
 }
 
-// ============================================
 // Category Navigation Types
-// ============================================
-
 export interface CategoryNavItem {
   id: number;
   name: string;
@@ -381,9 +378,7 @@ export interface CategoryNavigation {
   maxDepth: number;
 }
 
-// ============================================
 // Category Display Types
-// ============================================
 
 export type CategoryViewMode = 'grid' | 'list' | 'tree' | 'accordion';
 export type CategorySortField = 'name' | 'booksCount' | 'createdAt' | 'sortOrder';
