@@ -42,21 +42,18 @@ export interface CategoryTree extends Category {
   filtered?: boolean;
 }
 
-// ============================================
 // Category Statistics Types
-// ============================================
-
 export interface CategoryStats {
   id: number;
   name: string;
   slug: string;
-  
+
   // Book statistics
   booksCount: number;
   publishedBooks: number;
   draftBooks: number;
   archivedBooks: number;
-  
+
   // Review statistics
   reviewsCount: number;
   averageRating: number;
@@ -65,13 +62,13 @@ export interface CategoryStats {
     count: number;
     percentage: number;
   }>;
-  
+
   // Engagement metrics
   totalViews: number;
   totalLikes: number;
   totalShares: number;
   totalBookmarks: number;
-  
+
   // Popular books
   popularBooks: Array<{
     id: number;
@@ -82,7 +79,7 @@ export interface CategoryStats {
     reviewsCount: number;
     views: number;
   }>;
-  
+
   // Top rated books
   topRatedBooks: Array<{
     id: number;
@@ -92,7 +89,7 @@ export interface CategoryStats {
     averageRating: number;
     reviewsCount: number;
   }>;
-  
+
   // Recent books
   recentBooks: Array<{
     id: number;
@@ -101,7 +98,7 @@ export interface CategoryStats {
     coverImage?: string;
     createdAt: string;
   }>;
-  
+
   // Monthly trends
   monthlyTrends: Array<{
     month: string;
@@ -109,7 +106,7 @@ export interface CategoryStats {
     reviewsAdded: number;
     averageRating: number;
   }>;
-  
+
   // Top authors in category
   topAuthors: Array<{
     id: number;
@@ -139,31 +136,28 @@ export interface CategoryPerformance {
   }>;
 }
 
-// ============================================
 // Category Filter Types
-// ============================================
-
 export interface CategoryFilters {
   // Search
   search?: string;
-  
+
   // Filter by properties
   parentId?: number | null;
   isActive?: boolean;
   isFeatured?: boolean;
   hasBooks?: boolean;
   hasSubcategories?: boolean;
-  
+
   // Date range
   createdAtFrom?: string;
   createdAtTo?: string;
   updatedAtFrom?: string;
   updatedAtTo?: string;
-  
+
   // Sorting
   sortBy?: 'name' | 'slug' | 'booksCount' | 'createdAt' | 'updatedAt' | 'sortOrder';
   sortOrder?: 'asc' | 'desc';
-  
+
   // Pagination
   page?: number;
   limit?: number;
@@ -188,10 +182,7 @@ export interface CategoryFilterOption {
   max?: number;
 }
 
-// ============================================
 // Category Form Types
-// ============================================
-
 export interface CategoryFormData {
   name: string;
   slug: string;
@@ -229,10 +220,7 @@ export interface CategoryFormState {
   isSubmitting: boolean;
 }
 
-// ============================================
 // Category API Types
-// ============================================
-
 export interface CategoriesApiResponse {
   success: boolean;
   message: string;
@@ -422,7 +410,7 @@ export interface CategoryDisplayOptions {
 // Category Event Types
 // ============================================
 
-export type CategoryEventType = 
+export type CategoryEventType =
   | 'created'
   | 'updated'
   | 'deleted'
