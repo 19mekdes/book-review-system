@@ -277,10 +277,7 @@ export interface ReorderResponse {
   data: Category[];
 }
 
-// ============================================
 // Category Selection Types
-// ============================================
-
 export interface CategorySelection {
   ids: number[];
   mode: 'include' | 'exclude';
@@ -296,9 +293,7 @@ export interface CategoryHierarchy {
   path: string;
 }
 
-// ============================================
 // Category Import/Export Types
-// ============================================
 
 export type CategoryExportFormat = 'csv' | 'json' | 'xml' | 'pdf';
 export type CategoryImportFormat = 'csv' | 'json' | 'xml';
@@ -349,10 +344,7 @@ export interface CategoryImportResult {
   }>;
 }
 
-// ============================================
 // Category Breadcrumb Types
-// ============================================
-
 export interface BreadcrumbItem {
   id: number;
   name: string;
