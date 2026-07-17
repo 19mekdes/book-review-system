@@ -2,10 +2,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { booksAPI } from './booksAPI';
 import { Book, Review, Category, BookFilters, PaginatedResponse } from '../../types';
 
-// ============================================
 // Types
-// ============================================
-
 export interface BooksState {
   // Books list
   books: PaginatedResponse<Book> | null;
@@ -96,9 +93,7 @@ export interface BooksState {
   successMessage: string | null;
 }
 
-// ============================================
 // Initial State
-// ============================================
 
 const initialState: BooksState = {
   books: null,
@@ -150,9 +145,7 @@ const initialState: BooksState = {
   successMessage: null
 };
 
-// ============================================
 // Helper function to extract books
-// ============================================
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const extractBooksFromResponse = (payload: any): PaginatedResponse<Book> | null => {
@@ -203,9 +196,7 @@ const extractBooksFromResponse = (payload: any): PaginatedResponse<Book> | null 
   return null;
 };
 
-// ============================================
 // Async Thunks
-// ============================================
 
 // ✅ FIXED: Changed parameter order - optional first, required last
 export const fetchBooks = createAsyncThunk(
