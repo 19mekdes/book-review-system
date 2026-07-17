@@ -536,10 +536,7 @@ export interface CategoryRolePermissions {
   viewer: CategoryPermissions;
 }
 
-// ============================================
 // Category Activity Types
-// ============================================
-
 export interface CategoryActivity {
   id: number;
   categoryId: number;
@@ -560,10 +557,7 @@ export interface CategoryActivityFeed {
   limit: number;
 }
 
-// ============================================
 // Category SEO Types
-// ============================================
-
 export interface CategorySEO {
   title: string;
   description: string;
@@ -591,10 +585,7 @@ export interface CategorySEOAudit {
   }>;
 }
 
-// ============================================
 // Category Cache Types
-// ============================================
-
 export interface CategoryCache {
   timestamp: number;
   data: Category[];
