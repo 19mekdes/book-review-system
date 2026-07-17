@@ -517,10 +517,7 @@ export interface CategoryComparisonData {
   growth: number;
 }
 
-// ============================================
 // Category Permission Types
-// ============================================
-
 export interface CategoryPermissions {
   canView: boolean;
   canCreate: boolean;
