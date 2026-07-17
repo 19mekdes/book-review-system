@@ -490,10 +490,7 @@ export const CATEGORY_ICONS = [
   'spa'
 ];
 
-// ============================================
 // Category Chart Types
-// ============================================
-
 export interface CategoryChartData {
   labels: string[];
   datasets: Array<{
