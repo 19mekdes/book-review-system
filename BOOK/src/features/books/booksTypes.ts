@@ -225,10 +225,7 @@ export interface CategoryTree extends Category {
   path: string;
 }
 
-// ============================================
 // Author Types
-// ============================================
-
 export interface Author {
   id: number;
   name: string;
@@ -263,10 +260,7 @@ export interface AuthorStats {
   coAuthors?: Author[];
 }
 
-// ============================================
 // Filter Types
-// ============================================
-
 export interface DateRange {
   start: string | null;
   end: string | null;
@@ -345,9 +339,7 @@ export interface FilterOption {
   icon?: React.ReactNode;
 }
 
-// ============================================
 // Reading List Types
-// ============================================
 
 export type ReadingStatus = 'to-read' | 'reading' | 'completed' | 'abandoned' | 'wishlist';
 
