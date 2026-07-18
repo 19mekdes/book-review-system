@@ -8,22 +8,22 @@ export interface BooksState {
   books: PaginatedResponse<Book> | null;
   booksLoading: boolean;
   booksError: string | null;
-  
+
   // Current book
   currentBook: Book | null;
   currentBookLoading: boolean;
   currentBookError: string | null;
-  
+
   // Book reviews
   reviews: PaginatedResponse<Review> | null;
   reviewsLoading: boolean;
   reviewsError: string | null;
-  
+
   // Categories
   categories: Category[];
   categoriesLoading: boolean;
   categoriesError: string | null;
-  
+
   // Category stats
   categoryStats: Array<{
     id: number;
@@ -33,35 +33,35 @@ export interface BooksState {
     averageRating: number;
   }> | null;
   categoryStatsLoading: boolean;
-  
+
   // Popular/Featured/Recent books
   popularBooks: Book[];
   popularBooksLoading: boolean;
-  
+
   featuredBooks: Book[];
   featuredBooksLoading: boolean;
-  
+
   recentBooks: Book[];
   recentBooksLoading: boolean;
-  
+
   // Similar books
   similarBooks: Book[];
   similarBooksLoading: boolean;
-  
+
   // User collections
   bookmarkedBooks: PaginatedResponse<Book> | null;
   bookmarkedBooksLoading: boolean;
-  
+
   likedBooks: PaginatedResponse<Book> | null;
   likedBooksLoading: boolean;
-  
+
   readingList: PaginatedResponse<Book> | null;
   readingListLoading: boolean;
-  
+
   // Recommendations
   recommendations: Book[];
   recommendationsLoading: boolean;
-  
+
   // Book statistics
   bookStats: {
     totalBooks: number;
@@ -73,22 +73,22 @@ export interface BooksState {
     recentBooks: Book[];
   } | null;
   bookStatsLoading: boolean;
-  
+
   // Filters
   filters: BookFilters;
-  
+
   // UI State
   selectedBookIds: number[];
   viewMode: 'grid' | 'list' | 'compact';
   sortField: string;
   sortDirection: 'asc' | 'desc';
-  
+
   // Operation status
   createBookLoading: boolean;
   updateBookLoading: boolean;
   deleteBookLoading: boolean;
   bulkOperationLoading: boolean;
-  
+
   // Success messages
   successMessage: string | null;
 }
@@ -150,7 +150,7 @@ const initialState: BooksState = {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const extractBooksFromResponse = (payload: any): PaginatedResponse<Book> | null => {
   if (!payload) return null;
-  
+
   if (payload.success && payload.data) {
     const data = payload.data;
     if (data.books && Array.isArray(data.books)) {
@@ -172,7 +172,7 @@ const extractBooksFromResponse = (payload: any): PaginatedResponse<Book> | null 
       };
     }
   }
-  
+
   if (payload.books && Array.isArray(payload.books)) {
     return {
       data: payload.books,
@@ -182,7 +182,7 @@ const extractBooksFromResponse = (payload: any): PaginatedResponse<Book> | null 
       totalPages: payload.totalPages || 1
     };
   }
-  
+
   if (Array.isArray(payload)) {
     return {
       data: payload,
@@ -192,7 +192,7 @@ const extractBooksFromResponse = (payload: any): PaginatedResponse<Book> | null 
       totalPages: 1
     };
   }
-  
+
   return null;
 };
 
@@ -205,7 +205,7 @@ export const fetchBooks = createAsyncThunk(
     try {
       const response = await booksAPI.getBooks(params);
       return response;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to fetch books');
     }
@@ -218,7 +218,7 @@ export const fetchBookById = createAsyncThunk(
     try {
       const response = await booksAPI.getBookById(id);
       return response.data;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to fetch book');
     }
@@ -231,7 +231,7 @@ export const fetchBookBySlug = createAsyncThunk(
     try {
       const response = await booksAPI.getBookBySlug(slug);
       return response.data;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to fetch book');
     }
@@ -245,7 +245,7 @@ export const createBook = createAsyncThunk(
     try {
       const response = await booksAPI.createBook(data);
       return response.data;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to create book');
     }
@@ -259,7 +259,7 @@ export const updateBook = createAsyncThunk(
     try {
       const response = await booksAPI.updateBook(id, data);
       return response.data;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to update book');
     }
@@ -272,7 +272,7 @@ export const deleteBook = createAsyncThunk(
     try {
       await booksAPI.deleteBook(id);
       return id;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to delete book');
     }
@@ -285,7 +285,7 @@ export const bulkDeleteBooks = createAsyncThunk(
     try {
       const response = await booksAPI.bulkDeleteBooks(ids);
       return { ids, count: response.deletedCount };
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to delete books');
     }
@@ -298,7 +298,7 @@ export const bulkUpdateStatus = createAsyncThunk(
     try {
       const response = await booksAPI.bulkUpdateStatus(ids, status);
       return { ids, status, count: response.updatedCount };
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to update books');
     }
@@ -311,7 +311,7 @@ export const fetchPopularBooks = createAsyncThunk(
     try {
       const response = await booksAPI.getPopularBooks(limit);
       return response.data;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to fetch popular books');
     }
@@ -324,7 +324,7 @@ export const fetchFeaturedBooks = createAsyncThunk(
     try {
       const response = await booksAPI.getFeaturedBooks(limit);
       return response.data;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to fetch featured books');
     }
@@ -337,7 +337,7 @@ export const fetchRecentBooks = createAsyncThunk(
     try {
       const response = await booksAPI.getRecentBooks(limit);
       return response.data;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to fetch recent books');
     }
@@ -350,7 +350,7 @@ export const fetchBooksByCategory = createAsyncThunk(
     try {
       const response = await booksAPI.getBooksByCategory(categoryId, params);
       return response.data;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to fetch books by category');
     }
@@ -363,7 +363,7 @@ export const fetchBooksByAuthor = createAsyncThunk(
     try {
       const response = await booksAPI.getBooksByAuthor(author, params);
       return response.data;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to fetch books by author');
     }
@@ -376,7 +376,7 @@ export const searchBooks = createAsyncThunk(
     try {
       const response = await booksAPI.searchBooks(query, params);
       return response.data;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to search books');
     }
@@ -389,7 +389,7 @@ export const fetchBookStats = createAsyncThunk(
     try {
       const response = await booksAPI.getBookStats();
       return response.data;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to fetch book stats');
     }
@@ -402,7 +402,7 @@ export const fetchBookReviews = createAsyncThunk(
     try {
       const response = await booksAPI.getBookReviews(bookId, params);
       return response.data;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to fetch reviews');
     }
@@ -416,7 +416,7 @@ export const addReview = createAsyncThunk(
     try {
       const response = await booksAPI.addReview(bookId, data);
       return response.data;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to add review');
     }
@@ -430,7 +430,7 @@ export const updateReview = createAsyncThunk(
     try {
       const response = await booksAPI.updateReview(bookId, reviewId, data);
       return response.data;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to update review');
     }
@@ -443,7 +443,7 @@ export const deleteReview = createAsyncThunk(
     try {
       await booksAPI.deleteReview(bookId, reviewId);
       return reviewId;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to delete review');
     }
@@ -456,7 +456,7 @@ export const markReviewHelpful = createAsyncThunk(
     try {
       const response = await booksAPI.markReviewHelpful(bookId, reviewId);
       return { reviewId, ...response };
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to mark review as helpful');
     }
@@ -469,7 +469,7 @@ export const reportReview = createAsyncThunk(
     try {
       const response = await booksAPI.reportReview(bookId, reviewId, reason);
       return { reviewId, ...response };
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to report review');
     }
@@ -482,7 +482,7 @@ export const fetchCategories = createAsyncThunk(
     try {
       const response = await booksAPI.getCategories();
       return response.data;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to fetch categories');
     }
@@ -495,7 +495,7 @@ export const fetchCategoryStats = createAsyncThunk(
     try {
       const response = await booksAPI.getCategoryStats();
       return response.data;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to fetch category stats');
     }
@@ -508,7 +508,7 @@ export const createCategory = createAsyncThunk(
     try {
       const response = await booksAPI.createCategory(name, description);
       return response.data;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to create category');
     }
@@ -521,7 +521,7 @@ export const updateCategory = createAsyncThunk(
     try {
       const response = await booksAPI.updateCategory(id, data);
       return response.data;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to update category');
     }
@@ -534,7 +534,7 @@ export const deleteCategory = createAsyncThunk(
     try {
       await booksAPI.deleteCategory(id);
       return id;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to delete category');
     }
@@ -547,7 +547,7 @@ export const bookmarkBook = createAsyncThunk(
     try {
       const response = await booksAPI.bookmarkBook(bookId);
       return { bookId, ...response };
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to bookmark book');
     }
@@ -560,7 +560,7 @@ export const unbookmarkBook = createAsyncThunk(
     try {
       const response = await booksAPI.unbookmarkBook(bookId);
       return { bookId, ...response };
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to unbookmark book');
     }
@@ -573,7 +573,7 @@ export const fetchBookmarkedBooks = createAsyncThunk(
     try {
       const response = await booksAPI.getBookmarkedBooks(params);
       return response.data;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to fetch bookmarked books');
     }
@@ -586,7 +586,7 @@ export const likeBook = createAsyncThunk(
     try {
       const response = await booksAPI.likeBook(bookId);
       return { bookId, ...response };
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to like book');
     }
@@ -599,7 +599,7 @@ export const unlikeBook = createAsyncThunk(
     try {
       const response = await booksAPI.unlikeBook(bookId);
       return { bookId, ...response };
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to unlike book');
     }
@@ -612,7 +612,7 @@ export const fetchLikedBooks = createAsyncThunk(
     try {
       const response = await booksAPI.getLikedBooks(params);
       return response.data;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to fetch liked books');
     }
@@ -625,7 +625,7 @@ export const addToReadingList = createAsyncThunk(
     try {
       const response = await booksAPI.addToReadingList(bookId);
       return { bookId, ...response };
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to add to reading list');
     }
@@ -638,7 +638,7 @@ export const removeFromReadingList = createAsyncThunk(
     try {
       const response = await booksAPI.removeFromReadingList(bookId);
       return { bookId, ...response };
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to remove from reading list');
     }
@@ -651,7 +651,7 @@ export const fetchReadingList = createAsyncThunk(
     try {
       const response = await booksAPI.getReadingList(params);
       return response.data;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to fetch reading list');
     }
@@ -664,7 +664,7 @@ export const fetchSimilarBooks = createAsyncThunk(
     try {
       const response = await booksAPI.getSimilarBooks(bookId, limit);
       return response.data;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to fetch similar books');
     }
@@ -677,7 +677,7 @@ export const fetchRecommendations = createAsyncThunk(
     try {
       const response = await booksAPI.getRecommendations(limit);
       return response.data;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to fetch recommendations');
     }
@@ -698,7 +698,7 @@ export const exportBooks = createAsyncThunk(
       link.remove();
       window.URL.revokeObjectURL(url);
       return { success: true, format };
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to export books');
     }
@@ -894,7 +894,7 @@ const booksSlice = createSlice({
     builder
       .addCase(bulkUpdateStatus.fulfilled, (state, action) => {
         if (state.books) {
-          state.books.data = state.books.data.map((book: Book) => 
+          state.books.data = state.books.data.map((book: Book) =>
             action.payload.ids.includes(book.id)
               ? { ...book, status: action.payload.status }
               : book
@@ -980,85 +980,85 @@ const booksSlice = createSlice({
         state.readingListLoading = false;
       })
 
-    // ============================================
-// Fetch Popular Books
-// ============================================
-builder
-  .addCase(fetchPopularBooks.pending, (state) => {
-    state.popularBooksLoading = true;
-  })
-  .addCase(fetchPopularBooks.fulfilled, (state, action) => {
-    state.popularBooksLoading = false;
-    state.popularBooks = action.payload?.data || [];
-  })
-  .addCase(fetchPopularBooks.rejected, (state) => {
-    state.popularBooksLoading = false;
-    state.popularBooks = [];
-  })
+    
+    // Fetch Popular Books
+    
+    builder
+      .addCase(fetchPopularBooks.pending, (state) => {
+        state.popularBooksLoading = true;
+      })
+      .addCase(fetchPopularBooks.fulfilled, (state, action) => {
+        state.popularBooksLoading = false;
+        state.popularBooks = action.payload?.data || [];
+      })
+      .addCase(fetchPopularBooks.rejected, (state) => {
+        state.popularBooksLoading = false;
+        state.popularBooks = [];
+      })
 
-// ============================================
-// Fetch Featured Books
-// ============================================
-builder
-  .addCase(fetchFeaturedBooks.pending, (state) => {
-    state.featuredBooksLoading = true;
-  })
-  .addCase(fetchFeaturedBooks.fulfilled, (state, action) => {
-    state.featuredBooksLoading = false;
-    state.featuredBooks = action.payload?.data || [];
-  })
-  .addCase(fetchFeaturedBooks.rejected, (state) => {
-    state.featuredBooksLoading = false;
-    state.featuredBooks = [];
-  })
+    
+    // Fetch Featured Books
+    
+    builder
+      .addCase(fetchFeaturedBooks.pending, (state) => {
+        state.featuredBooksLoading = true;
+      })
+      .addCase(fetchFeaturedBooks.fulfilled, (state, action) => {
+        state.featuredBooksLoading = false;
+        state.featuredBooks = action.payload?.data || [];
+      })
+      .addCase(fetchFeaturedBooks.rejected, (state) => {
+        state.featuredBooksLoading = false;
+        state.featuredBooks = [];
+      })
 
-// ============================================
-// Fetch Recent Books
-// ============================================
-builder
-  .addCase(fetchRecentBooks.pending, (state) => {
-    state.recentBooksLoading = true;
-  })
-  .addCase(fetchRecentBooks.fulfilled, (state, action) => {
-    state.recentBooksLoading = false;
-    state.recentBooks = action.payload?.data || [];
-  })
-  .addCase(fetchRecentBooks.rejected, (state) => {
-    state.recentBooksLoading = false;
-    state.recentBooks = [];
-  })
+    
+    // Fetch Recent Books
+    
+    builder
+      .addCase(fetchRecentBooks.pending, (state) => {
+        state.recentBooksLoading = true;
+      })
+      .addCase(fetchRecentBooks.fulfilled, (state, action) => {
+        state.recentBooksLoading = false;
+        state.recentBooks = action.payload?.data || [];
+      })
+      .addCase(fetchRecentBooks.rejected, (state) => {
+        state.recentBooksLoading = false;
+        state.recentBooks = [];
+      })
 
-// ============================================
-// Fetch Similar Books
-// ============================================
-builder
-  .addCase(fetchSimilarBooks.pending, (state) => {
-    state.similarBooksLoading = true;
-  })
-  .addCase(fetchSimilarBooks.fulfilled, (state, action) => {
-    state.similarBooksLoading = false;
-    state.similarBooks = action.payload?.data || [];
-  })
-  .addCase(fetchSimilarBooks.rejected, (state) => {
-    state.similarBooksLoading = false;
-    state.similarBooks = [];
-  })
+   
+    // Fetch Similar Books
+    
+    builder
+      .addCase(fetchSimilarBooks.pending, (state) => {
+        state.similarBooksLoading = true;
+      })
+      .addCase(fetchSimilarBooks.fulfilled, (state, action) => {
+        state.similarBooksLoading = false;
+        state.similarBooks = action.payload?.data || [];
+      })
+      .addCase(fetchSimilarBooks.rejected, (state) => {
+        state.similarBooksLoading = false;
+        state.similarBooks = [];
+      })
 
-// ============================================
-// Fetch Recommendations
-// ============================================
-builder
-  .addCase(fetchRecommendations.pending, (state) => {
-    state.recommendationsLoading = true;
-  })
-  .addCase(fetchRecommendations.fulfilled, (state, action) => {
-    state.recommendationsLoading = false;
-    state.recommendations = action.payload?.data || [];
-  })
-  .addCase(fetchRecommendations.rejected, (state) => {
-    state.recommendationsLoading = false;
-    state.recommendations = [];
-  })
+    
+    // Fetch Recommendations
+    
+    builder
+      .addCase(fetchRecommendations.pending, (state) => {
+        state.recommendationsLoading = true;
+      })
+      .addCase(fetchRecommendations.fulfilled, (state, action) => {
+        state.recommendationsLoading = false;
+        state.recommendations = action.payload?.data || [];
+      })
+      .addCase(fetchRecommendations.rejected, (state) => {
+        state.recommendationsLoading = false;
+        state.recommendations = [];
+      })
     // Add Review
     builder
       .addCase(addReview.fulfilled, (state, action) => {
@@ -1098,34 +1098,34 @@ builder
       })
 
     // Like Book
-builder
-  .addCase(likeBook.fulfilled, (state, action) => {
-    if (state.currentBook?.id === action.payload.bookId) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const currentBook = state.currentBook as any;
-      state.currentBook = {
-        ...state.currentBook,
-        isLiked: true,
-        likes: (currentBook.likes || 0) + 1
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any;
-    }
-  })
+    builder
+      .addCase(likeBook.fulfilled, (state, action) => {
+        if (state.currentBook?.id === action.payload.bookId) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const currentBook = state.currentBook as any;
+          state.currentBook = {
+            ...state.currentBook,
+            isLiked: true,
+            likes: (currentBook.likes || 0) + 1
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          } as any;
+        }
+      })
 
-// Unlike Book
-builder
-  .addCase(unlikeBook.fulfilled, (state, action) => {
-    if (state.currentBook?.id === action.payload.bookId) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const currentBook = state.currentBook as any;
-      state.currentBook = {
-        ...state.currentBook,
-        isLiked: false,
-        likes: Math.max(0, (currentBook.likes || 0) - 1)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any;
-    }
-  })
+    // Unlike Book
+    builder
+      .addCase(unlikeBook.fulfilled, (state, action) => {
+        if (state.currentBook?.id === action.payload.bookId) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const currentBook = state.currentBook as any;
+          state.currentBook = {
+            ...state.currentBook,
+            isLiked: false,
+            likes: Math.max(0, (currentBook.likes || 0) - 1)
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          } as any;
+        }
+      })
 
     // Add to Reading List
     builder
