@@ -501,10 +501,8 @@ export interface BookStats {
   featuredBooks: Book[];
 }
 
-// ============================================
-// Book Activity Types
-// ============================================
 
+// Book Activity Types
 export interface BookActivity {
   id: number;
   userId: number;
@@ -524,10 +522,7 @@ export interface BookActivityFeed {
   limit: number;
 }
 
-// ============================================
 // API Response Types
-// ============================================
-
 export interface BooksApiResponse {
   success: boolean;
   message: string;
@@ -628,10 +623,7 @@ export interface ImportResult {
   }>;
 }
 
-// ============================================
 // Chart/Visualization Types
-// ============================================
-
 export interface ChartDataPoint {
   label: string;
   value: number;
