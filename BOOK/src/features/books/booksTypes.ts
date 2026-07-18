@@ -381,10 +381,7 @@ export interface ReadingListStats {
   }>;
 }
 
-// ============================================
 // Book Collection Types
-// ============================================
-
 export interface BookCollection {
   id: number;
   userId: number;
@@ -413,10 +410,7 @@ export interface BookCollectionStats {
   recentBooks: Book[];
 }
 
-// ============================================
 // Book Series Types
-// ============================================
-
 export interface BookSeries {
   id: number;
   name: string;
@@ -437,10 +431,7 @@ export interface BookSeries {
   updatedAt: string;
 }
 
-// ============================================
 // Book Statistics Types
-// ============================================
-
 export interface BookStats {
   // Overview
   totalBooks: number;
