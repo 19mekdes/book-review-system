@@ -1,25 +1,26 @@
-// ============================================
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 // Book Types
-// ============================================
+
 
 export type BookFormat = 'paperback' | 'hardcover' | 'ebook' | 'audiobook';
 export type BookStatus = 'published' | 'draft' | 'archived' | 'pending';
-export type BookLanguage = 
-  | 'English' 
-  | 'Spanish' 
-  | 'French' 
-  | 'German' 
-  | 'Italian' 
-  | 'Portuguese' 
-  | 'Russian' 
-  | 'Chinese' 
-  | 'Japanese' 
-  | 'Korean' 
-  | 'Arabic' 
-  | 'Hindi' 
-  | 'Turkish' 
-  | 'Dutch' 
-  | 'Polish' 
+export type BookLanguage =
+  | 'English'
+  | 'Spanish'
+  | 'French'
+  | 'German'
+  | 'Italian'
+  | 'Portuguese'
+  | 'Russian'
+  | 'Chinese'
+  | 'Japanese'
+  | 'Korean'
+  | 'Arabic'
+  | 'Hindi'
+  | 'Turkish'
+  | 'Dutch'
+  | 'Polish'
   | 'Other';
 
 export interface Book {
@@ -38,7 +39,7 @@ export interface Book {
   price?: number;
   coverImage?: string;
   status: BookStatus;
-  
+
   // Statistics
   reviewsCount: number;
   averageRating: number;
@@ -46,7 +47,7 @@ export interface Book {
   likes: number;
   shares?: number;
   bookmarks?: number;
-  
+
   // Metadata
   tags: string[];
   series?: string;
@@ -55,13 +56,13 @@ export interface Book {
   characters?: string[];
   settings?: string[];
   genres?: string[];
-  
+
   // User interactions
   isBookmarked?: boolean;
   isLiked?: boolean;
   isInReadingList?: boolean;
   readingProgress?: number;
-  
+
   // Timestamps
   createdAt: string;
   updatedAt: string;
@@ -89,9 +90,8 @@ export interface BookMetadata {
   translator?: string;
 }
 
-// ============================================
+
 // Review Types
-// ============================================
 
 export type ReviewStatus = 'approved' | 'pending' | 'flagged' | 'rejected' | 'spam';
 export type ReviewFlagReason = 'inappropriate' | 'spam' | 'offensive' | 'copyright' | 'spoiler' | 'other';
@@ -124,16 +124,16 @@ export interface Review {
   moderationNotes?: string;
   moderatedBy?: number;
   moderatedAt?: string;
-  
+
   // User interactions
   isHelpful?: boolean;
   isReported?: boolean;
   canModify?: boolean;
-  
+
   // Replies
   replies?: ReviewReply[];
   repliesCount?: number;
-  
+
   // Timestamps
   createdAt: string;
   updatedAt: string;
@@ -176,9 +176,8 @@ export interface ReviewStats {
   }>;
 }
 
-// ============================================
+
 // Category Types
-// ============================================
 
 export interface Category {
   id: number;
@@ -276,57 +275,57 @@ export interface DateRange {
 export interface BookFilters {
   // Search
   search?: string;
-  
+
   // Basic filters
   categoryId?: number;
   categoryIds?: number[];
   author?: string;
   authorId?: number;
   publisher?: string;
-  
+
   // Rating filters
   minRating?: number;
   maxRating?: number;
-  
+
   // Price filters
   minPrice?: number;
   maxPrice?: number;
-  
+
   // Format filters
   format?: BookFormat[];
-  
+
   // Language filters
   language?: BookLanguage[];
-  
+
   // Status filters
   status?: BookStatus[];
-  
+
   // Tag filters
   tags?: string[];
-  
+
   // Date filters
   publishDateFrom?: string;
   publishDateTo?: string;
   createdAtFrom?: string;
   createdAtTo?: string;
-  
+
   // Year filters
   yearFrom?: number;
   yearTo?: number;
-  
+
   // Series filters
   series?: string;
   hasSeries?: boolean;
-  
+
   // Feature filters
   featured?: boolean;
   hasAwards?: boolean;
   hasReviews?: boolean;
-  
+
   // Sorting
   sortBy?: 'title' | 'author' | 'rating' | 'reviews' | 'createdAt' | 'updatedAt' | 'price' | 'popularity' | 'views' | 'likes';
   sortOrder?: 'asc' | 'desc';
-  
+
   // Pagination
   page?: number;
   limit?: number;
@@ -459,16 +458,16 @@ export interface BookStats {
   totalLikes: number;
   totalShares: number;
   totalBookmarks: number;
-  
+
   // Status breakdown
   booksByStatus: Record<BookStatus, number>;
-  
+
   // Format breakdown
   booksByFormat: Record<BookFormat, number>;
-  
+
   // Language breakdown
   booksByLanguage: Record<string, number>;
-  
+
   // Category breakdown
   booksByCategory: Array<{
     categoryId: number;
@@ -477,7 +476,7 @@ export interface BookStats {
     averageRating: number;
     totalReviews: number;
   }>;
-  
+
   // Author breakdown
   topAuthors: Array<{
     authorId: number;
@@ -485,36 +484,36 @@ export interface BookStats {
     bookCount: number;
     averageRating: number;
   }>;
-  
+
   // Rating distribution
   ratingDistribution: Array<{
     rating: number;
     count: number;
     percentage: number;
   }>;
-  
+
   // Time-based stats
   booksAddedByMonth: Array<{
     month: string;
     count: number;
   }>;
-  
+
   reviewsByMonth: Array<{
     month: string;
     count: number;
     averageRating: number;
   }>;
-  
+
   // Top books
   topRatedBooks: Book[];
   mostReviewedBooks: Book[];
   mostViewedBooks: Book[];
   mostLikedBooks: Book[];
   mostBookmarkedBooks: Book[];
-  
+
   // Recent books
   recentBooks: Book[];
-  
+
   // Featured books
   featuredBooks: Book[];
 }
@@ -687,7 +686,7 @@ export interface ComparisonData {
 export const BOOK_FORMATS: BookFormat[] = ['paperback', 'hardcover', 'ebook', 'audiobook'];
 export const BOOK_STATUSES: BookStatus[] = ['published', 'draft', 'archived', 'pending'];
 export const BOOK_LANGUAGES: BookLanguage[] = [
-  'English', 'Spanish', 'French', 'German', 'Italian', 
+  'English', 'Spanish', 'French', 'German', 'Italian',
   'Portuguese', 'Russian', 'Chinese', 'Japanese', 'Korean',
   'Arabic', 'Hindi', 'Turkish', 'Dutch', 'Polish', 'Other'
 ];
