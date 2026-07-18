@@ -592,9 +592,8 @@ export interface ApiError {
   path?: string;
 }
 
-// ============================================
+
 // Import/Export Types
-// ============================================
 
 export type ExportFormat = 'csv' | 'pdf' | 'excel' | 'json';
 export type ImportFormat = 'csv' | 'excel' | 'json';
@@ -654,9 +653,7 @@ export interface ComparisonData {
   trend: 'up' | 'down' | 'stable';
 }
 
-// ============================================
 // Constants
-// ============================================
 
 export const BOOK_FORMATS: BookFormat[] = ['paperback', 'hardcover', 'ebook', 'audiobook'];
 export const BOOK_STATUSES: BookStatus[] = ['published', 'draft', 'archived', 'pending'];
