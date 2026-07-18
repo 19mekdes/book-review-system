@@ -198,7 +198,7 @@ const extractBooksFromResponse = (payload: any): PaginatedResponse<Book> | null 
 
 // Async Thunks
 
-// ✅ FIXED: Changed parameter order - optional first, required last
+//  Changed parameter order - optional first, required last
 export const fetchBooks = createAsyncThunk(
   'books/fetchBooks',
   async (params: BookFilters = {}, { rejectWithValue }) => {
@@ -705,9 +705,8 @@ export const exportBooks = createAsyncThunk(
   }
 );
 
-// ============================================
+
 // Books Slice
-// ============================================
 
 const booksSlice = createSlice({
   name: 'books',
@@ -1150,9 +1149,9 @@ const booksSlice = createSlice({
   }
 });
 
-// ============================================
+
 // Selectors
-// ============================================
+
 
 export const selectBooks = (state: { books: BooksState }) => state.books.books;
 export const selectBooksLoading = (state: { books: BooksState }) => state.books.booksLoading;
@@ -1213,9 +1212,9 @@ export const selectBulkOperationLoading = (state: { books: BooksState }) => stat
 
 export const selectSuccessMessage = (state: { books: BooksState }) => state.books.successMessage;
 
-// ============================================
+
 // Exports
-// ============================================
+
 
 export const {
   clearErrors,
