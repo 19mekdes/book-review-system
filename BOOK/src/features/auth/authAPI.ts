@@ -276,7 +276,7 @@ class AuthAPI {
   async updateProfile(data: UpdateProfileData): Promise<User> {
     try {
       const formData = new FormData();
-      
+
       Object.entries(data).forEach(([key, value]) => {
         if (value !== undefined) {
           if (key === 'avatar' && value instanceof File) {
