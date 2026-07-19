@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import api from '../../services/api';
 import { AxiosResponse } from 'axios';
 import { Book, Review, Category, BookFilters, PaginatedResponse } from '../../types';

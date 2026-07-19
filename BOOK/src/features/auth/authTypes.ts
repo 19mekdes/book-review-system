@@ -1,5 +1,3 @@
-
-
 export type UserRole = 'Admin' | 'Moderator' | 'User';
 export type UserStatus = 'active' | 'suspended' | 'pending' | 'banned';
 export type UserVerificationStatus = 'verified' | 'unverified' | 'pending';
