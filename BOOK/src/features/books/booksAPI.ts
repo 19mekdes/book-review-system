@@ -2,9 +2,7 @@ import api from '../../services/api';
 import { AxiosResponse } from 'axios';
 import { Book, Review, Category, BookFilters, PaginatedResponse } from '../../types';
 
-// ============================================
 // Types
-// ============================================
 
 export interface CreateBookData {
   title: string;
@@ -74,9 +72,7 @@ export interface APIError {
   statusCode: number;
 }
 
-// ============================================
 // Books API Class
-// ============================================
 
 class BooksAPI {
   private readonly baseUrl = '/books';
@@ -542,7 +538,7 @@ class BooksAPI {
     try {
       const formData = new FormData();
       formData.append('file', file);
-      
+
       const response: AxiosResponse<{ success: boolean; message: string; importedCount: number }> = await api.post(`${this.baseUrl}/import`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
