@@ -202,12 +202,12 @@ function Input({
         }}
       />
 
-     {maxLength && value != null && (
-  <CharacterCount
-    current={String(value).length}
-    max={maxLength}
-  />
-)}
+      {maxLength && value != null && (
+        <CharacterCount
+          current={String(value).length}
+          max={maxLength}
+        />
+      )}
       {displayHelperText && (
         <FormHelperText error={hasError} sx={{ mx: 0 }}>
           {displayHelperText}
