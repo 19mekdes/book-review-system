@@ -77,7 +77,7 @@ const DotsContainer = styled(Box)({
   justifyContent: 'center',
 });
 
-const Dot = styled(Box)<{ $color: string; $size: number; $delay: number }>`
+const Dot = styled(Box) <{ $color: string; $size: number; $delay: number }>`
   width: ${props => props.$size}px;
   height: ${props => props.$size}px;
   border-radius: 50%;
@@ -86,7 +86,7 @@ const Dot = styled(Box)<{ $color: string; $size: number; $delay: number }>`
   animation-delay: ${props => props.$delay}s;
 `;
 
-const SpinnerContainer = styled(Box)<{ $size: number }>`
+const SpinnerContainer = styled(Box) <{ $size: number }>`
   width: ${props => props.$size}px;
   height: ${props => props.$size}px;
   border: 3px solid rgba(0, 0, 0, 0.1);
@@ -123,7 +123,7 @@ const sizeMap = {
 // Dots Loader
 const DotsLoader: React.FC<{ color: string; size: LoaderSize }> = ({ color, size }) => {
   const dotSize = sizeMap[size].dot;
-  
+
   return (
     <DotsContainer>
       <Dot $color={color} $size={dotSize} $delay={0} />
@@ -136,7 +136,7 @@ const DotsLoader: React.FC<{ color: string; size: LoaderSize }> = ({ color, size
 // Spinner Loader
 const SpinnerLoader: React.FC<{ color: string; size: LoaderSize }> = ({ color, size }) => {
   const spinnerSize = sizeMap[size].spinner;
-  
+
   return (
     <SpinnerContainer $size={spinnerSize} sx={{ color }} />
   );
