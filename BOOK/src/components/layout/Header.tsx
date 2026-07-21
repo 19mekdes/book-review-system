@@ -64,9 +64,9 @@ interface HeaderProps {
   position?: 'fixed' | 'absolute' | 'sticky' | 'static' | 'relative';
 }
 
-const Header: React.FC<HeaderProps> = ({ 
-  user, 
-  onLogout, 
+const Header: React.FC<HeaderProps> = ({
+  user,
+  onLogout,
   onMenuClick,
   mobileMenuOpen = false,
   onMobileMenuClose
@@ -75,7 +75,7 @@ const Header: React.FC<HeaderProps> = ({
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  
+
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -154,7 +154,7 @@ const Header: React.FC<HeaderProps> = ({
     { text: 'Contact', icon: <ContactIcon />, path: '/contact' },
   ];
 
-  
+
   const userMenuItems: MenuItemType[] = [
     { text: 'Profile', icon: <PersonIcon />, path: '/profile' },
     { text: 'Settings', icon: <SettingsIcon />, path: '/settings' },
@@ -208,7 +208,7 @@ const Header: React.FC<HeaderProps> = ({
               gap: 1
             }}
           >
-             Book Review
+            Book Review
             {isAdmin && (
               <Box
                 component="span"
@@ -236,10 +236,10 @@ const Header: React.FC<HeaderProps> = ({
               <Button color="inherit" onClick={() => navigate('/about')}>About</Button>
               <Button color="inherit" onClick={() => navigate('/contact')}>Contact</Button>
               {isAdmin && (
-                <Button 
-                  color="inherit" 
+                <Button
+                  color="inherit"
                   onClick={() => navigate('/admin')}
-                  sx={{ 
+                  sx={{
                     bgcolor: 'rgba(255,255,255,0.1)',
                     '&:hover': { bgcolor: 'rgba(255,255,255,0.2)' }
                   }}
@@ -280,9 +280,9 @@ const Header: React.FC<HeaderProps> = ({
                       }
                     >
                       <Avatar
-                        sx={{ 
-                          width: 35, 
-                          height: 35, 
+                        sx={{
+                          width: 35,
+                          height: 35,
                           bgcolor: isAdmin ? 'secondary.main' : 'primary.dark',
                           fontSize: '1rem'
                         }}
@@ -423,13 +423,13 @@ const Header: React.FC<HeaderProps> = ({
           }
         }}
       >
-        <Box sx={{ 
-          p: 2, 
-          bgcolor: isAdmin ? 'secondary.main' : 'primary.main', 
-          color: 'white' 
+        <Box sx={{
+          p: 2,
+          bgcolor: isAdmin ? 'secondary.main' : 'primary.main',
+          color: 'white'
         }}>
           <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-             Book Review
+            Book Review
           </Typography>
           {isAuthenticated && user && (
             <>
@@ -437,16 +437,16 @@ const Header: React.FC<HeaderProps> = ({
                 Welcome, {user.name}
               </Typography>
               {isAdmin && (
-                <Chip 
-                  label="ADMIN" 
-                  size="small" 
-                  sx={{ 
-                    mt: 1, 
-                    bgcolor: 'white', 
+                <Chip
+                  label="ADMIN"
+                  size="small"
+                  sx={{
+                    mt: 1,
+                    bgcolor: 'white',
                     color: 'secondary.main',
                     fontWeight: 'bold',
                     height: 20
-                  }} 
+                  }}
                 />
               )}
             </>

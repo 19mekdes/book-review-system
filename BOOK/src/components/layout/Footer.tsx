@@ -101,7 +101,7 @@ const Footer: React.FC<FooterProps> = ({
               gutterBottom
               sx={{ letterSpacing: '0.5px' }}
             >
-             {companyName}
+              {companyName}
             </Typography>
 
             <Typography variant="body2" sx={{ opacity: 0.8, maxWidth: 420, mb: 3 }}>
@@ -224,9 +224,9 @@ const Footer: React.FC<FooterProps> = ({
             </Typography>
             <Stack spacing={1.2}>
               {quickLinks.slice(0, 6).map((link, i) => (
-                <FooterLink 
-                  key={i} 
-                  href={link.url} 
+                <FooterLink
+                  key={i}
+                  href={link.url}
                   underline="hover"
                 >
                   {link.label}
