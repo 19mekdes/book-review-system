@@ -15,7 +15,8 @@ import {
   useTheme,
   useMediaQuery,
   Badge,
-  Chip} from '@mui/material';
+  Chip
+} from '@mui/material';
 import {
   Menu as MenuIcon,
   ChevronLeft as ChevronLeftIcon,
@@ -36,7 +37,8 @@ import {
   Person as PersonIcon,
   AdminPanelSettings as AdminIcon,
   Star as StarIcon,
-  TrendingUp as TrendingUpIcon} from '@mui/icons-material';
+  TrendingUp as TrendingUpIcon
+} from '@mui/icons-material';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 
 export interface User {
@@ -93,12 +95,12 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   const navItems: NavItem[] = [
     { id: 'home', label: 'Home', path: '/', icon: <HomeIcon /> },
-    { 
-      id: 'dashboard', 
-      label: 'Dashboard', 
-      path: '/dashboard', 
-      icon: <DashboardIcon />, 
-      roles: ['User', 'Admin'] 
+    {
+      id: 'dashboard',
+      label: 'Dashboard',
+      path: '/dashboard',
+      icon: <DashboardIcon />,
+      roles: ['User', 'Admin']
     },
     {
       id: 'books',
@@ -124,54 +126,54 @@ const Sidebar: React.FC<SidebarProps> = ({
       icon: <AdminIcon />,
       roles: ['Admin'],
       children: [
-        { 
-          id: 'admin-dashboard', 
-          label: 'Dashboard', 
-          path: '/admin', 
+        {
+          id: 'admin-dashboard',
+          label: 'Dashboard',
+          path: '/admin',
           icon: <DashboardIcon />,
-        
+
         },
-        { 
-          id: 'manage-users', 
-          label: 'Manage Users', 
-          path: '/admin/users', 
-          icon: <PeopleIcon />, 
+        {
+          id: 'manage-users',
+          label: 'Manage Users',
+          path: '/admin/users',
+          icon: <PeopleIcon />,
           badge: 12,
-          
+
         },
-        { 
-          id: 'manage-books', 
-          label: 'Manage Books', 
-          path: '/admin/books', 
+        {
+          id: 'manage-books',
+          label: 'Manage Books',
+          path: '/admin/books',
           icon: <BookIcon />,
-        
+
         },
-        { 
-          id: 'manage-categories', 
-          label: 'Manage Categories', 
-          path: '/admin/categories', 
+        {
+          id: 'manage-categories',
+          label: 'Manage Categories',
+          path: '/admin/categories',
           icon: <CategoryIcon />,
         },
-        { 
-          id: 'manage-reviews', 
-          label: 'All Reviews', 
-          path: '/admin/reviews', 
+        {
+          id: 'manage-reviews',
+          label: 'All Reviews',
+          path: '/admin/reviews',
           icon: <ReviewIcon />,
-          
+
         },
-        { 
-          id: 'reports', 
-          label: 'Reports', 
-          path: '/admin/reports', 
+        {
+          id: 'reports',
+          label: 'Reports',
+          path: '/admin/reports',
           icon: <AssessmentIcon />,
-        
+
         },
-        { 
-          id: 'admin-settings', 
-          label: 'Settings', 
-          path: '/admin/settings', 
+        {
+          id: 'admin-settings',
+          label: 'Settings',
+          path: '/admin/settings',
           icon: <SettingsIcon />,
-        
+
         }
       ]
     }
@@ -233,34 +235,34 @@ const Sidebar: React.FC<SidebarProps> = ({
               ...(depth > 0 && { pl: open ? 4 + depth * 2 : 2.5 })
             }}
           >
-            <ListItemIcon 
-              sx={{ 
-                minWidth: 0, 
-                mr: open ? 2 : 'auto', 
-                justifyContent: 'center', 
-                color: isActive ? theme.palette.primary.main : 'inherit' 
+            <ListItemIcon
+              sx={{
+                minWidth: 0,
+                mr: open ? 2 : 'auto',
+                justifyContent: 'center',
+                color: isActive ? theme.palette.primary.main : 'inherit'
               }}
             >
               {item.icon}
             </ListItemIcon>
             {open && (
               <>
-                <ListItemText 
-                  primary={item.label} 
-                  sx={{ 
-                    '& .MuiTypography-root': { 
+                <ListItemText
+                  primary={item.label}
+                  sx={{
+                    '& .MuiTypography-root': {
                       fontWeight: isActive ? 600 : 400,
                       fontSize: item.id === 'admin' ? '0.875rem' : '1rem',
                       letterSpacing: item.id === 'admin' ? '0.1em' : 'normal'
-                    } 
-                  }} 
+                    }
+                  }}
                 />
                 {item.badge ? (
-                  <Chip 
-                    label={item.badge} 
-                    size="small" 
-                    color="primary" 
-                    sx={{ ml: 1, height: 20, minWidth: 20 }} 
+                  <Chip
+                    label={item.badge}
+                    size="small"
+                    color="primary"
+                    sx={{ ml: 1, height: 20, minWidth: 20 }}
                   />
                 ) : hasChildren ? (
                   isSubmenuOpen ? <ExpandLess /> : <ExpandMore />
@@ -297,21 +299,21 @@ const Sidebar: React.FC<SidebarProps> = ({
           backgroundColor: theme.palette.background.default,
           borderRight: `1px solid ${theme.palette.divider}`,
           overflowX: 'hidden',
-          transition: theme.transitions.create('width', { 
-            easing: theme.transitions.easing.sharp, 
-            duration: theme.transitions.duration.enteringScreen 
+          transition: theme.transitions.create('width', {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.enteringScreen
           })
         }
       }}
     >
       {/* Header */}
-      <Box sx={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: open ? 'space-between' : 'center', 
-        p: 2, 
-        minHeight: 64, 
-        borderBottom: `1px solid ${theme.palette.divider}` 
+      <Box sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: open ? 'space-between' : 'center',
+        p: 2,
+        minHeight: 64,
+        borderBottom: `1px solid ${theme.palette.divider}`
       }}>
         {open && (
           <Typography variant="h6" sx={{ fontWeight: 600, ml: 1 }}>
@@ -325,22 +327,22 @@ const Sidebar: React.FC<SidebarProps> = ({
 
       {/* User Profile */}
       {user && open && (
-        <Box sx={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          p: 2, 
+        <Box sx={{
+          display: 'flex',
+          alignItems: 'center',
+          p: 2,
           borderBottom: `1px solid ${theme.palette.divider}`,
-          background: theme.palette.mode === 'dark' 
-            ? 'rgba(255,255,255,0.05)' 
+          background: theme.palette.mode === 'dark'
+            ? 'rgba(255,255,255,0.05)'
             : 'rgba(0,0,0,0.02)'
         }}>
-          <Avatar 
-            src={user.avatar} 
-            sx={{ 
-              width: 48, 
-              height: 48, 
+          <Avatar
+            src={user.avatar}
+            sx={{
+              width: 48,
+              height: 48,
               bgcolor: theme.palette.primary.main,
-              mr: 2 
+              mr: 2
             }}
           >
             {user.name?.charAt(0).toUpperCase()}
@@ -376,23 +378,23 @@ const Sidebar: React.FC<SidebarProps> = ({
             <ListItem disablePadding>
               <ListItemButton
                 onClick={onLogout}
-                sx={{ 
-                  minHeight: 48, 
-                  justifyContent: open ? 'initial' : 'center', 
-                  px: 2.5, 
-                  mx: 1, 
-                  my: 0.5, 
-                  borderRadius: 2, 
-                  color: theme.palette.error.main, 
-                  '&:hover': { backgroundColor: theme.palette.action.selected } 
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? 'initial' : 'center',
+                  px: 2.5,
+                  mx: 1,
+                  my: 0.5,
+                  borderRadius: 2,
+                  color: theme.palette.error.main,
+                  '&:hover': { backgroundColor: theme.palette.action.selected }
                 }}
               >
-                <ListItemIcon 
-                  sx={{ 
-                    minWidth: 0, 
-                    mr: open ? 2 : 'auto', 
-                    justifyContent: 'center', 
-                    color: 'inherit' 
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 2 : 'auto',
+                    justifyContent: 'center',
+                    color: 'inherit'
                   }}
                 >
                   <LogoutIcon />
