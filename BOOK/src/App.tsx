@@ -51,41 +51,41 @@ const LoadingFallback = () => (
 // Protected Route Component
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated } = useAuth();
-  
+
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
-  
+
   return <>{children}</>;
 };
 
 // Admin Route Component
 const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, isAuthenticated } = useAuth();
-  
-  console.log('🔍 AdminRoute Check:', { 
-    user, 
+
+  console.log('🔍 AdminRoute Check:', {
+    user,
     isAuthenticated,
     roleId: user?.roleId,
-    role: user?.role 
+    role: user?.role
   });
-  
+
   if (!isAuthenticated) {
     console.log('❌ Not authenticated - redirecting to login');
     return <Navigate to="/login" replace />;
   }
-  
-  const isAdmin = 
+
+  const isAdmin =
     user?.roleId === 1 ||
     user?.role === 'admin' ||
     user?.role === 'Admin' ||
     user?.role === 'ADMIN';
-  
+
   if (!isAdmin) {
     console.log(`❌ Not admin - redirecting to home`);
     return <Navigate to="/" replace />;
   }
-  
+
   console.log('✅ Admin access granted - showing admin page');
   return <>{children}</>;
 };
@@ -120,7 +120,7 @@ const AppContent: React.FC = () => {
     <>
       {/* Conditionally render Header */}
       {!shouldHideHeaderFooter && (
-        <Header 
+        <Header
           user={isAuthenticated ? user : undefined}
           onLogout={handleLogout}
           onLogin={handleLogin}
@@ -130,7 +130,7 @@ const AppContent: React.FC = () => {
           showSearch={true}
         />
       )}
-      
+
       <Routes>
         {/* Public Routes - Lazy loaded */}
         <Route path="/" element={
@@ -228,11 +228,11 @@ const AppContent: React.FC = () => {
             <ReportsPage />
           </AdminRoute>
         } />
-        
+
         {/* Fallback Route - 404 */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-      
+
       {/* Conditionally render Footer */}
       {!shouldHideHeaderFooter && <Footer />}
     </>
