@@ -6,7 +6,7 @@ const router = Router();
 router.post('/', async (req, res) => {
   try {
     const { name, email, subject, message } = req.body;
-    
+
     // Validation
     if (!name || !email || !subject || !message) {
       return res.status(400).json({
@@ -14,7 +14,7 @@ router.post('/', async (req, res) => {
         message: 'All fields are required'
       });
     }
-    
+
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
@@ -23,7 +23,7 @@ router.post('/', async (req, res) => {
         message: 'Invalid email address'
       });
     }
-    
+
     // Message length validation
     if (message.length < 10) {
       return res.status(400).json({
@@ -31,7 +31,7 @@ router.post('/', async (req, res) => {
         message: 'Message must be at least 10 characters'
       });
     }
-    
+
     // Log the message to console (for development)
     console.log('\n📧 ========== NEW CONTACT MESSAGE ==========');
     console.log(`📝 From: ${name}`);
@@ -41,7 +41,7 @@ router.post('/', async (req, res) => {
     console.log(`${message}`);
     console.log(`🕐 Time: ${new Date().toLocaleString()}`);
     console.log('==========================================\n');
-    
+
     // Return success
     res.status(200).json({
       success: true,
