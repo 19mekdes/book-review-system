@@ -21,23 +21,23 @@ export class ContactModel {
   static async create(messageData: CreateContactInput): Promise<ContactMessage> {
     try {
       const { name, email, subject, message } = messageData;
-      
+
       const query = `
         INSERT INTO contact_messages (name, email, subject, message, status, created_at, updated_at)
         VALUES ($1, $2, $3, $4, 'pending', NOW(), NOW())
         RETURNING *
       `;
-      
+
       const values = [name, email, subject, message];
       const result = await pool.query(query, values);
-      
+
       return result.rows[0];
     } catch (error) {
       console.error('Error in ContactModel.create:', error);
       throw error;
     }
   }
-  
+
   static async findAll(limit: number = 100, offset: number = 0): Promise<ContactMessage[]> {
     try {
       const query = `
@@ -52,7 +52,7 @@ export class ContactModel {
       throw error;
     }
   }
-  
+
   static async findById(id: number): Promise<ContactMessage | null> {
     try {
       const query = 'SELECT * FROM contact_messages WHERE id = $1';
@@ -63,7 +63,7 @@ export class ContactModel {
       throw error;
     }
   }
-  
+
   static async updateStatus(id: number, status: string): Promise<ContactMessage | null> {
     try {
       const query = `
@@ -79,7 +79,7 @@ export class ContactModel {
       throw error;
     }
   }
-  
+
   static async delete(id: number): Promise<boolean> {
     try {
       const query = 'DELETE FROM contact_messages WHERE id = $1';

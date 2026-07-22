@@ -1,7 +1,7 @@
 import db from '../config/database';
 export interface Category {
   id: number;
-  category: string;  
+  category: string;
   created_at?: string;
   updated_at?: string;
   slug?: string;
@@ -75,7 +75,7 @@ export class CategoryModel {
         GROUP BY bc.id, bc.category
         ORDER BY "bookCount" DESC
       `;
-      
+
       const result = await db.query(query);
       return result.rows;
     } catch (error) {

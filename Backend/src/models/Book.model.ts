@@ -6,7 +6,7 @@ export interface Book {
   author: string;
   description: string;
   categoryId: number;
-  cover_image?: string;  
+  cover_image?: string;
 }
 
 export interface BookWithDetails extends Book {
@@ -14,7 +14,7 @@ export interface BookWithDetails extends Book {
   category?: string;
   avg_rating: number;
   review_count: number;
-  cover_image?: string;  
+  cover_image?: string;
 }
 
 export interface CreateBookInput {
@@ -22,7 +22,7 @@ export interface CreateBookInput {
   author: string;
   description?: string;
   categoryId: number;
-  cover_image?: string;  
+  cover_image?: string;
 }
 
 export interface UpdateBookInput {
@@ -30,11 +30,11 @@ export interface UpdateBookInput {
   author?: string;
   description?: string;
   categoryId?: number;
-  cover_image?: string;  
+  cover_image?: string;
 }
 
 export class BookModel {
-  
+
   static async findAll(): Promise<BookWithDetails[]> {
     try {
       const query = `
@@ -67,11 +67,11 @@ export class BookModel {
     }
   }
 
-  
+
   static async findById(id: number): Promise<any | null> {
     try {
       console.log(`🔍 BookModel.findById called with ID: ${id}`);
-      
+
       // Get book with basic info
       const bookQuery = `
         SELECT 
@@ -98,7 +98,7 @@ export class BookModel {
       }
 
       const book = bookResult.rows[0];
-      
+
       // Get all reviews for this book - WITHOUT avatar
       const reviewsQuery = `
         SELECT 
@@ -116,9 +116,9 @@ export class BookModel {
       `;
 
       const reviewsResult = await pool.query(reviewsQuery, [id]);
-      
+
       console.log(`📚 Found ${reviewsResult.rows.length} reviews for book ID: ${id}`);
-      
+
       // Format the book object for frontend
       const formattedBook = {
         id: book.id,
@@ -206,7 +206,7 @@ export class BookModel {
         paramIndex++;
       }
 
-      if (updates.cover_image !== undefined) {  
+      if (updates.cover_image !== undefined) {
         setClauses.push(`cover_image = $${paramIndex}`);
         values.push(updates.cover_image);
         paramIndex++;
@@ -314,7 +314,7 @@ export class BookModel {
       if (limit !== undefined) {
         query += ` LIMIT $2`;
         params.push(limit);
-        
+
         if (offset !== undefined) {
           query += ` OFFSET $3`;
           params.push(offset);
@@ -369,7 +369,7 @@ export class BookModel {
       if (limit !== undefined) {
         query += ` LIMIT $2`;
         params.push(limit);
-        
+
         if (offset !== undefined) {
           query += ` OFFSET $3`;
           params.push(offset);
