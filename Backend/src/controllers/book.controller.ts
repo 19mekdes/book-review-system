@@ -85,7 +85,7 @@ export class BookController {
     return res.status(501).json(ApiResponseUtil.error('Method not implemented'));
   }
 
-  
+
   static async getAllBooks(req: Request, res: Response) {
     try {
       const filters = {
@@ -101,7 +101,7 @@ export class BookController {
 
       console.log('📚 Fetching books with filters:', filters);
       const result = await BookService.getAllBooks(filters);
-      
+
       return res.json(
         ApiResponseUtil.success(result, 'Books retrieved successfully')
       );
@@ -113,36 +113,36 @@ export class BookController {
     }
   }
 
-  
+
   static async getBookById(req: Request, res: Response) {
     try {
       const idParam = getRouteParam(req.params.id);
       const bookId = parseInt(idParam || '', 10);
-      
+
       console.log(`🔍 BookController.getBookById called with ID: ${bookId}`);
-      
+
       if (isNaN(bookId)) {
         console.error('❌ Invalid book ID:', idParam);
         return res.status(400).json(
           ApiResponseUtil.badRequest('Invalid book ID')
         );
       }
-      
+
       console.log(`📖 Fetching book with ID: ${bookId} from service`);
       const book = await BookService.getBookById(bookId);
-      
+
       console.log(`✅ Book found:`, book ? book.title : 'No book found');
-      
+
       return res.json(
         ApiResponseUtil.success(book, 'Book retrieved successfully')
       );
     } catch (error: any) {
       console.error('❌ Error in getBookById controller:', error);
-      
+
       if (error.stack) {
         console.error('Stack trace:', error.stack);
       }
-      
+
       return res.status(error.statusCode || 500).json(
         ApiResponseUtil.error(error.message || 'Failed to get book')
       );
@@ -156,9 +156,9 @@ export class BookController {
     try {
       const limit = getQueryNumber(req.query.limit) || 10;
       console.log(`📊 Fetching ${limit} popular books`);
-      
+
       const books = await BookService.getPopularBooks(limit);
-      
+
       return res.json(
         ApiResponseUtil.success(books, 'Popular books retrieved successfully')
       );
@@ -170,25 +170,25 @@ export class BookController {
     }
   }
 
-  
+
   static async getBooksByCategory(req: Request, res: Response) {
     try {
       const categoryIdParam = getRouteParam(req.params.categoryId);
       const categoryId = parseInt(categoryIdParam || '', 10);
-      
+
       if (isNaN(categoryId)) {
         return res.status(400).json(
           ApiResponseUtil.badRequest('Invalid category ID')
         );
       }
-      
+
       const page = getQueryNumber(req.query.page) || 1;
       const limit = getQueryNumber(req.query.limit) || 10;
 
       console.log(`📚 Fetching books for category ID: ${categoryId}, page: ${page}, limit: ${limit}`);
-      
+
       const result = await BookService.getBooksByCategory(categoryId, page, limit);
-      
+
       return res.json(
         ApiResponseUtil.success(result, 'Books retrieved successfully')
       );
@@ -207,20 +207,20 @@ export class BookController {
     try {
       const authorParam = getRouteParam(req.params.author);
       const author = authorParam || '';
-      
+
       if (!author) {
         return res.status(400).json(
           ApiResponseUtil.badRequest('Author name is required')
         );
       }
-      
+
       const page = getQueryNumber(req.query.page) || 1;
       const limit = getQueryNumber(req.query.limit) || 10;
 
       console.log(`📚 Fetching books by author: ${author}, page: ${page}, limit: ${limit}`);
-      
+
       const result = await BookService.getBooksByAuthor(author, page, limit);
-      
+
       return res.json(
         ApiResponseUtil.success(result, 'Books retrieved successfully')
       );
@@ -253,9 +253,9 @@ export class BookController {
       };
 
       console.log(`🔍 Searching books with query: "${query}", filters:`, filters);
-      
+
       const result = await BookService.searchBooks(query, filters);
-      
+
       return res.json(
         ApiResponseUtil.success(result, 'Search completed successfully')
       );
@@ -273,9 +273,9 @@ export class BookController {
   static async getBookStats(req: Request, res: Response) {
     try {
       console.log('📊 Fetching book statistics');
-      
+
       const stats = await BookService.getBookStats();
-      
+
       return res.json(
         ApiResponseUtil.success(stats, 'Book statistics retrieved successfully')
       );
@@ -294,17 +294,17 @@ export class BookController {
     try {
       const idParam = getRouteParam(req.params.id);
       const bookId = parseInt(idParam || '', 10);
-      
+
       if (isNaN(bookId)) {
         return res.status(400).json(
           ApiResponseUtil.badRequest('Invalid book ID')
         );
       }
-      
+
       console.log(`📖 Fetching book summary for ID: ${bookId}`);
-      
+
       const summary = await BookService.getBookWithReviewSummary(bookId);
-      
+
       return res.json(
         ApiResponseUtil.success(summary, 'Book summary retrieved successfully')
       );
@@ -322,10 +322,10 @@ export class BookController {
   static async createBook(req: AuthRequest, res: Response) {
     try {
       // ✅ FIXED: Extract cover_image from request body
-      const { 
-        title, 
-        author, 
-        description, 
+      const {
+        title,
+        author,
+        description,
         categoryId,
         cover_image  // ✅ ADD THIS
       } = req.body;
@@ -338,7 +338,7 @@ export class BookController {
 
       console.log(`📝 Creating new book: ${title} by ${author}`);
       console.log(`🖼️ Cover image: ${cover_image ? 'Present' : 'Not provided'}`);
-      
+
       // ✅ FIXED: Pass cover_image to service
       const book = await BookService.createBook({
         title,
@@ -368,16 +368,16 @@ export class BookController {
     try {
       const idParam = getRouteParam(req.params.id);
       const bookId = parseInt(idParam || '', 10);
-      
+
       if (isNaN(bookId)) {
         return res.status(400).json(
           ApiResponseUtil.badRequest('Invalid book ID')
         );
       }
-      
+
       // ✅ FIXED: Extract all updates including cover_image
       const updates: any = {};
-      
+
       if (req.body.title !== undefined) updates.title = req.body.title;
       if (req.body.author !== undefined) updates.author = req.body.author;
       if (req.body.description !== undefined) updates.description = req.body.description;
@@ -395,9 +395,9 @@ export class BookController {
       if (req.body.isFeatured !== undefined) updates.is_featured = req.body.isFeatured;
 
       console.log(`📝 Updating book ID: ${bookId} with:`, Object.keys(updates));
-      
+
       const book = await BookService.updateBook(bookId, updates);
-      
+
       return res.json(
         ApiResponseUtil.success(book, 'Book updated successfully')
       );
@@ -416,17 +416,17 @@ export class BookController {
     try {
       const idParam = getRouteParam(req.params.id);
       const bookId = parseInt(idParam || '', 10);
-      
+
       if (isNaN(bookId)) {
         return res.status(400).json(
           ApiResponseUtil.badRequest('Invalid book ID')
         );
       }
-      
+
       console.log(`🗑️ Deleting book ID: ${bookId}`);
-      
+
       await BookService.deleteBook(bookId);
-      
+
       return res.json(
         ApiResponseUtil.success(null, 'Book deleted successfully')
       );
@@ -452,10 +452,10 @@ export class BookController {
       }
 
       console.log(`📚 Bulk creating ${books.length} books`);
-      
+
       // ✅ FIXED: Pass through the books array as is (includes cover_image)
       const createdBooks = await BookService.bulkCreateBooks(books);
-      
+
       return res.status(201).json(
         ApiResponseUtil.success(createdBooks, `${createdBooks.length} books created successfully`)
       );

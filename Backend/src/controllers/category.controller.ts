@@ -52,20 +52,20 @@ export class CategoryController {
     try {
       const idParam = getRouteParam(req.params.id);
       const categoryId = parseInt(idParam || '', 10);
-      
+
       if (isNaN(categoryId)) {
         return res.status(400).json(
           ApiResponseUtil.badRequest('Invalid category ID')
         );
       }
-      
+
       const category = await CategoryService.getCategoryById(categoryId);
       if (!category) {
         return res.status(404).json(
           ApiResponseUtil.notFound('Category not found')
         );
       }
-      
+
       return res.json(
         ApiResponseUtil.success(category, 'Category retrieved successfully')
       );
@@ -88,14 +88,14 @@ export class CategoryController {
           ApiResponseUtil.badRequest('Category name is required')
         );
       }
-      
+
       const category = await CategoryService.getCategoryByName(name);
       if (!category) {
         return res.status(404).json(
           ApiResponseUtil.notFound('Category not found')
         );
       }
-      
+
       return res.json(
         ApiResponseUtil.success(category, 'Category retrieved successfully')
       );
@@ -170,7 +170,7 @@ export class CategoryController {
           ApiResponseUtil.badRequest('Search query is required')
         );
       }
-      
+
       const categories = await CategoryService.searchCategories(query);
       return res.json(
         ApiResponseUtil.success(categories, 'Categories retrieved successfully')
@@ -190,13 +190,13 @@ export class CategoryController {
     try {
       const query = getQueryString(req.query.q);
       const limit = getQueryNumber(req.query.limit) || 10;
-      
+
       if (!query) {
         return res.status(400).json(
           ApiResponseUtil.badRequest('Search query is required')
         );
       }
-      
+
       const suggestions = await CategoryService.getCategorySuggestions(query, limit);
       return res.json(
         ApiResponseUtil.success(suggestions, 'Category suggestions retrieved successfully')
@@ -216,13 +216,13 @@ export class CategoryController {
     try {
       const idParam = getRouteParam(req.params.id);
       const categoryId = parseInt(idParam || '', 10);
-      
+
       if (isNaN(categoryId)) {
         return res.status(400).json(
           ApiResponseUtil.badRequest('Invalid category ID')
         );
       }
-      
+
       const stats = await CategoryService.getCategoryStats(categoryId);
       return res.json(
         ApiResponseUtil.success(stats, 'Category stats retrieved successfully')
@@ -242,13 +242,13 @@ export class CategoryController {
     try {
       const idParam = getRouteParam(req.params.id);
       const categoryId = parseInt(idParam || '', 10);
-      
+
       if (isNaN(categoryId)) {
         return res.status(400).json(
           ApiResponseUtil.badRequest('Invalid category ID')
         );
       }
-      
+
       const usage = await CategoryService.getCategoryUsage(categoryId);
       return res.json(
         ApiResponseUtil.success(usage, 'Category usage retrieved successfully')
@@ -268,16 +268,16 @@ export class CategoryController {
     try {
       const idParam = getRouteParam(req.params.id);
       const categoryId = parseInt(idParam || '', 10);
-      
+
       if (isNaN(categoryId)) {
         return res.status(400).json(
           ApiResponseUtil.badRequest('Invalid category ID')
         );
       }
-      
+
       const page = getQueryNumber(req.query.page) || 1;
       const limit = getQueryNumber(req.query.limit) || 10;
-      
+
       const result = await CategoryService.getBooksByCategory(categoryId, page, limit);
       return res.json(
         ApiResponseUtil.success(result, 'Books retrieved successfully')
@@ -301,7 +301,7 @@ export class CategoryController {
           ApiResponseUtil.badRequest('Category name is required')
         );
       }
-      
+
       const validation = await CategoryService.validateCategoryName(name);
       return res.json(
         ApiResponseUtil.success(validation, 'Category name validation completed')
@@ -320,13 +320,13 @@ export class CategoryController {
   static async createCategory(req: AuthRequest, res: Response) {
     try {
       const { name } = req.body;
-      
+
       if (!name) {
         return res.status(400).json(
           ApiResponseUtil.badRequest('Category name is required')
         );
       }
-      
+
       const category = await CategoryService.createCategory(name);
       return res.status(201).json(
         ApiResponseUtil.created(category, 'Category created successfully')
@@ -345,13 +345,13 @@ export class CategoryController {
   static async bulkCreateCategories(req: AuthRequest, res: Response) {
     try {
       const { categories } = req.body;
-      
+
       if (!categories || !Array.isArray(categories) || categories.length === 0) {
         return res.status(400).json(
           ApiResponseUtil.badRequest('Categories array is required')
         );
       }
-      
+
       const created = await CategoryService.bulkCreateCategories(categories);
       return res.status(201).json(
         ApiResponseUtil.created(created, `${created.length} categories created successfully`)
@@ -371,23 +371,23 @@ export class CategoryController {
     try {
       const idParam = getRouteParam(req.params.id);
       const categoryId = parseInt(idParam || '', 10);
-      
+
       if (isNaN(categoryId)) {
         return res.status(400).json(
           ApiResponseUtil.badRequest('Invalid category ID')
         );
       }
-      
+
       const { name } = req.body;
       if (!name) {
         return res.status(400).json(
           ApiResponseUtil.badRequest('Category name is required')
         );
       }
-      
+
       // FIXED: Pass only the name string, not an object
       const category = await CategoryService.updateCategory(categoryId, name);
-      
+
       return res.json(
         ApiResponseUtil.success(category, 'Category updated successfully')
       );
@@ -406,13 +406,13 @@ export class CategoryController {
     try {
       const idParam = getRouteParam(req.params.id);
       const categoryId = parseInt(idParam || '', 10);
-      
+
       if (isNaN(categoryId)) {
         return res.status(400).json(
           ApiResponseUtil.badRequest('Invalid category ID')
         );
       }
-      
+
       await CategoryService.deleteCategory(categoryId);
       return res.json(
         ApiResponseUtil.success(null, 'Category deleted successfully')
@@ -431,13 +431,13 @@ export class CategoryController {
   static async mergeCategories(req: AuthRequest, res: Response) {
     try {
       const { sourceId, targetId } = req.body;
-      
+
       if (!sourceId || !targetId) {
         return res.status(400).json(
           ApiResponseUtil.badRequest('Source and target category IDs are required')
         );
       }
-      
+
       const result = await CategoryService.mergeCategories(parseInt(sourceId), parseInt(targetId));
       return res.json(
         ApiResponseUtil.success(result, 'Categories merged successfully')
@@ -456,7 +456,7 @@ export class CategoryController {
   static async exportCategories(req: AuthRequest, res: Response) {
     try {
       const categories = await CategoryService.getAllCategories();
-      
+
       // Format as CSV
       const csvHeaders = ['ID', 'Name', 'Book Count', 'Review Count', 'Avg Rating', 'Created At'];
       const csvRows = categories.map(cat => [
@@ -467,15 +467,15 @@ export class CategoryController {
         cat.avgRating.toFixed(2),
         cat.created_at || ''
       ]);
-      
+
       const csvContent = [csvHeaders, ...csvRows]
         .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
         .join('\n');
-      
+
       res.setHeader('Content-Type', 'text/csv');
       res.setHeader('Content-Disposition', `attachment; filename=categories-${new Date().toISOString().split('T')[0]}.csv`);
       res.send(csvContent);
-      
+
     } catch (error: any) {
       console.error('Error in exportCategories:', error);
       return res.status(error.statusCode || 500).json(
@@ -490,29 +490,29 @@ export class CategoryController {
   static async importCategories(req: AuthRequest, res: Response) {
     try {
       const file = (req as any).file;
-      
+
       if (!file) {
         return res.status(400).json(
           ApiResponseUtil.badRequest('No file uploaded')
         );
       }
-      
+
       // Parse CSV content
       const content = file.buffer.toString('utf-8');
       const lines = content.split('\n').filter((line: string) => line.trim());
-      
+
       if (lines.length < 2) {
         return res.status(400).json(
           ApiResponseUtil.badRequest('File must contain headers and data')
         );
       }
-      
+
       // Parse CSV line
       const parseCSVLine = (line: string): string[] => {
         const result: string[] = [];
         let current = '';
         let inQuotes = false;
-        
+
         for (let i = 0; i < line.length; i++) {
           const char = line[i];
           if (char === '"') {
@@ -527,45 +527,45 @@ export class CategoryController {
         result.push(current);
         return result.map(cell => cell.replace(/^"|"$/g, '').replace(/""/g, '"'));
       };
-      
+
       const headers = parseCSVLine(lines[0]);
       const nameIndex = headers.findIndex(h => h.toLowerCase() === 'name');
-      
+
       if (nameIndex === -1) {
         return res.status(400).json(
           ApiResponseUtil.badRequest('CSV must contain a "Name" column')
         );
       }
-      
+
       const categories: string[] = [];
       const errors: string[] = [];
-      
+
       for (let i = 1; i < lines.length; i++) {
         const values = parseCSVLine(lines[i]);
         const name = values[nameIndex]?.trim();
-        
+
         if (name) {
           categories.push(name);
         } else {
           errors.push(`Row ${i + 1}: Missing category name`);
         }
       }
-      
+
       if (categories.length === 0) {
         return res.status(400).json(
           ApiResponseUtil.badRequest('No valid categories found in file')
         );
       }
-      
+
       const created = await CategoryService.bulkCreateCategories(categories);
-      
+
       return res.status(201).json(
         ApiResponseUtil.created(
           { created: created.length, total: categories.length, errors },
           `${created.length} categories imported successfully`
         )
       );
-      
+
     } catch (error: any) {
       console.error('Error in importCategories:', error);
       return res.status(error.statusCode || 500).json(

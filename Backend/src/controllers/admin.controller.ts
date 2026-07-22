@@ -80,7 +80,7 @@ export class AdminController {
   static async getDashboardStats(req: AuthRequest, res: Response) {
     try {
       console.log('📊 Fetching dashboard stats...');
-      
+
       let stats;
       try {
         stats = await AdminService.getDashboardStats();
@@ -91,7 +91,7 @@ export class AdminController {
           ApiResponseUtil.success(fallbackStats, 'Dashboard stats retrieved (fallback data)')
         );
       }
-      
+
       // Transform the stats to match frontend expectations
       const transformedStats = {
         totalUsers: stats.totalUsers || 0,
@@ -108,9 +108,9 @@ export class AdminController {
         newUsersToday: stats.recentUsers?.length || 0,
         newBooksToday: stats.recentBooks?.length || 0,
         newReviewsToday: stats.recentReviews?.length || 0,
-        averageRating: stats.ratingDistribution && stats.ratingDistribution.length > 0 ? 
-          Number((stats.ratingDistribution.reduce((acc, r) => acc + (r.rating * r.count), 0) / 
-           stats.ratingDistribution.reduce((acc, r) => acc + r.count, 0)).toFixed(1)) : 4.2,
+        averageRating: stats.ratingDistribution && stats.ratingDistribution.length > 0 ?
+          Number((stats.ratingDistribution.reduce((acc, r) => acc + (r.rating * r.count), 0) /
+            stats.ratingDistribution.reduce((acc, r) => acc + r.count, 0)).toFixed(1)) : 4.2,
         totalViews: 0,
         totalLikes: 0,
         responseTime: 234,
@@ -137,7 +137,7 @@ export class AdminController {
         })) || [],
         dailyActivity: AdminController.generateDailyActivity(stats)
       };
-      
+
       return res.json(
         ApiResponseUtil.success(transformedStats, 'Dashboard stats retrieved successfully')
       );
@@ -157,7 +157,7 @@ export class AdminController {
     try {
       const limit = getQueryNumber(req.query.limit) || 5;
       console.log(`📋 Fetching ${limit} recent activities`);
-      
+
       let stats;
       try {
         stats = await AdminService.getDashboardStats();
@@ -168,7 +168,7 @@ export class AdminController {
           ApiResponseUtil.success(mockActivities, 'Activities retrieved (mock)')
         );
       }
-      
+
       // Combine different activity types
       const activities = [
         ...(stats.recentUsers?.slice(0, limit).map(user => ({
@@ -199,12 +199,12 @@ export class AdminController {
           status: 'success' as const
         })) || [])
       ];
-      
+
       // Sort by timestamp (newest first) and limit
       const sorted = activities
         .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
         .slice(0, limit);
-      
+
       return res.json(
         ApiResponseUtil.success(sorted, 'Activities retrieved successfully')
       );
@@ -247,7 +247,7 @@ export class AdminController {
           ApiResponseUtil.success(mockAnalytics, 'Analytics retrieved (mock)')
         );
       }
-      
+
       const analytics = {
         daily: AdminController.generateDailyActivity(stats),
         categories: stats.categoryStats?.map(cat => ({
@@ -261,7 +261,7 @@ export class AdminController {
           color: AdminController.getRatingColor(r.rating)
         })) || []
       };
-      
+
       return res.json(
         ApiResponseUtil.success(analytics, 'Analytics retrieved successfully')
       );
@@ -318,13 +318,13 @@ export class AdminController {
     try {
       const idParam = getRouteParam(req.params.id);
       const userId = parseInt(idParam || '', 10);
-      
+
       if (isNaN(userId)) {
         return res.status(400).json(
           ApiResponseUtil.badRequest('Invalid user ID')
         );
       }
-      
+
       const user = await AdminService.getUserById(userId);
       return res.json(
         ApiResponseUtil.success(user, 'User retrieved successfully')
@@ -367,13 +367,13 @@ export class AdminController {
     try {
       const idParam = getRouteParam(req.params.id);
       const userId = parseInt(idParam || '', 10);
-      
+
       if (isNaN(userId)) {
         return res.status(400).json(
           ApiResponseUtil.badRequest('Invalid user ID')
         );
       }
-      
+
       const updates = req.body;
 
       const user = await AdminService.updateUser(userId, updates);
@@ -394,13 +394,13 @@ export class AdminController {
     try {
       const idParam = getRouteParam(req.params.id);
       const userId = parseInt(idParam || '', 10);
-      
+
       if (isNaN(userId)) {
         return res.status(400).json(
           ApiResponseUtil.badRequest('Invalid user ID')
         );
       }
-      
+
       const adminUserId = req.user?.id;
       if (!adminUserId) {
         return res.status(401).json(
@@ -419,7 +419,7 @@ export class AdminController {
     }
   }
 
-  
+
   private static getFallbackStats() {
     return {
       totalUsers: 15234,
