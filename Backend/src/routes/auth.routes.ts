@@ -8,11 +8,10 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-this-in-pro
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET || 'your-refresh-secret-key-change-this';
 
 
-
 const generateTokens = (user: any) => {
   const accessToken = jwt.sign(
-    { 
-      id: user.id, 
+    {
+      id: user.id,
       email: user.email,
       name: user.name,
       roleId: user.roleId
@@ -56,48 +55,48 @@ router.post('/register', async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    console.log('Registration attempt:', { 
-      name: name || 'missing', 
-      email: email || 'missing', 
-      hasPassword: !!password 
+    console.log('Registration attempt:', {
+      name: name || 'missing',
+      email: email || 'missing',
+      hasPassword: !!password
     });
 
     // Validate input
     if (!name || !email || !password) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        error: 'Name, email and password are required' 
+        error: 'Name, email and password are required'
       });
     }
 
     if (name.length < 2) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        error: 'Name must be at least 2 characters' 
+        error: 'Name must be at least 2 characters'
       });
     }
 
     if (!validateEmail(email)) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        error: 'Invalid email format' 
+        error: 'Invalid email format'
       });
     }
 
     const passwordValidation = validatePassword(password);
     if (!passwordValidation.isValid) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        error: passwordValidation.message 
+        error: passwordValidation.message
       });
     }
 
     // Check if user already exists
     const existingUser = await pool.query('SELECT id FROM users WHERE email = $1', [email]);
     if (existingUser.rows.length > 0) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        error: 'User with this email already exists' 
+        error: 'User with this email already exists'
       });
     }
 
@@ -108,7 +107,7 @@ router.post('/register', async (req, res) => {
     // Get default role (user role = 2)
     const roleResult = await pool.query("SELECT id FROM roles WHERE name = 'user'");
     let roleId = 2;
-    
+
     if (roleResult.rows.length > 0) {
       roleId = roleResult.rows[0].id;
     }
@@ -159,10 +158,10 @@ router.post('/register', async (req, res) => {
     if (error.code) console.error('Error code:', error.code);
     if (error.detail) console.error('Error detail:', error.detail);
     console.error('========================================');
-    
-    res.status(500).json({ 
+
+    res.status(500).json({
       success: false,
-      error: 'Registration failed: ' + error.message 
+      error: 'Registration failed: ' + error.message
     });
   }
 });
@@ -178,9 +177,9 @@ router.post('/login', async (req, res) => {
     console.log('Login attempt:', { email, hasPassword: !!password });
 
     if (!email || !password) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        error: 'Email and password are required' 
+        error: 'Email and password are required'
       });
     }
 
@@ -198,9 +197,9 @@ router.post('/login', async (req, res) => {
     const user = result.rows[0];
 
     if (!user) {
-      return res.status(401).json({ 
+      return res.status(401).json({
         success: false,
-        error: 'Invalid email or password' 
+        error: 'Invalid email or password'
       });
     }
 
@@ -209,9 +208,9 @@ router.post('/login', async (req, res) => {
     console.log('Password valid:', validPassword);
 
     if (!validPassword) {
-      return res.status(401).json({ 
+      return res.status(401).json({
         success: false,
-        error: 'Invalid email or password' 
+        error: 'Invalid email or password'
       });
     }
 
@@ -253,10 +252,10 @@ router.post('/login', async (req, res) => {
     if (error.code) console.error('Error code:', error.code);
     if (error.detail) console.error('Error detail:', error.detail);
     console.error('================================');
-    
-    res.status(500).json({ 
+
+    res.status(500).json({
       success: false,
-      error: 'Login failed: ' + error.message 
+      error: 'Login failed: ' + error.message
     });
   }
 });
@@ -267,9 +266,9 @@ router.post('/refresh-token', async (req, res) => {
     const { refreshToken } = req.body;
 
     if (!refreshToken) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        error: 'Refresh token is required' 
+        error: 'Refresh token is required'
       });
     }
 
@@ -283,9 +282,9 @@ router.post('/refresh-token', async (req, res) => {
     );
 
     if (userResult.rows.length === 0) {
-      return res.status(401).json({ 
+      return res.status(401).json({
         success: false,
-        error: 'Invalid refresh token' 
+        error: 'Invalid refresh token'
       });
     }
 
@@ -293,8 +292,8 @@ router.post('/refresh-token', async (req, res) => {
 
     // Generate new access token
     const accessToken = jwt.sign(
-      { 
-        id: user.id, 
+      {
+        id: user.id,
         email: user.email,
         name: user.name,
         roleId: user.roleId
@@ -310,9 +309,9 @@ router.post('/refresh-token', async (req, res) => {
 
   } catch (error) {
     console.error('Token refresh error:', error);
-    res.status(401).json({ 
+    res.status(401).json({
       success: false,
-      error: 'Invalid or expired refresh token' 
+      error: 'Invalid or expired refresh token'
     });
   }
 });
@@ -332,16 +331,16 @@ router.post('/logout', async (req, res) => {
       );
     }
 
-    res.json({ 
+    res.json({
       success: true,
-      message: 'Logout successful' 
+      message: 'Logout successful'
     });
 
   } catch (error) {
     console.error('Logout error:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
-      error: 'Logout failed' 
+      error: 'Logout failed'
     });
   }
 });
@@ -356,9 +355,9 @@ router.post('/change-password', async (req, res) => {
     const token = req.headers.authorization?.split(' ')[1];
 
     if (!token) {
-      return res.status(401).json({ 
+      return res.status(401).json({
         success: false,
-        error: 'Authentication required' 
+        error: 'Authentication required'
       });
     }
 
@@ -366,17 +365,17 @@ router.post('/change-password', async (req, res) => {
     const decoded = jwt.verify(token, JWT_SECRET) as any;
 
     if (!currentPassword || !newPassword) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        error: 'Current password and new password are required' 
+        error: 'Current password and new password are required'
       });
     }
 
     const passwordValidation = validatePassword(newPassword);
     if (!passwordValidation.isValid) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        error: passwordValidation.message 
+        error: passwordValidation.message
       });
     }
 
@@ -389,18 +388,18 @@ router.post('/change-password', async (req, res) => {
     const user = userResult.rows[0];
 
     if (!user) {
-      return res.status(404).json({ 
+      return res.status(404).json({
         success: false,
-        error: 'User not found' 
+        error: 'User not found'
       });
     }
 
     // Verify current password
     const validPassword = await bcrypt.compare(currentPassword, user.password);
     if (!validPassword) {
-      return res.status(401).json({ 
+      return res.status(401).json({
         success: false,
-        error: 'Current password is incorrect' 
+        error: 'Current password is incorrect'
       });
     }
 
@@ -413,16 +412,16 @@ router.post('/change-password', async (req, res) => {
       [hashedPassword, decoded.id]
     );
 
-    res.json({ 
+    res.json({
       success: true,
-      message: 'Password changed successfully' 
+      message: 'Password changed successfully'
     });
 
   } catch (error) {
     console.error('Change password error:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
-      error: 'Failed to change password' 
+      error: 'Failed to change password'
     });
   }
 });
@@ -436,9 +435,9 @@ router.post('/forgot-password', async (req, res) => {
     const { email } = req.body;
 
     if (!email) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        error: 'Email is required' 
+        error: 'Email is required'
       });
     }
 
@@ -448,9 +447,9 @@ router.post('/forgot-password', async (req, res) => {
     );
 
     if (userResult.rows.length === 0) {
-      return res.json({ 
+      return res.json({
         success: true,
-        message: 'If your email exists in our system, you will receive a reset link' 
+        message: 'If your email exists in our system, you will receive a reset link'
       });
     }
 
@@ -471,7 +470,7 @@ router.post('/forgot-password', async (req, res) => {
 
     console.log(`Password reset link: http://localhost:5173/reset-password?token=${resetToken}`);
 
-    res.json({ 
+    res.json({
       success: true,
       message: 'If your email exists in our system, you will receive a reset link',
       ...(process.env.NODE_ENV === 'development' && { resetToken })
@@ -479,9 +478,9 @@ router.post('/forgot-password', async (req, res) => {
 
   } catch (error) {
     console.error('Forgot password error:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
-      error: 'Failed to process request' 
+      error: 'Failed to process request'
     });
   }
 });
@@ -495,17 +494,17 @@ router.post('/reset-password', async (req, res) => {
     const { token, newPassword } = req.body;
 
     if (!token || !newPassword) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        error: 'Token and new password are required' 
+        error: 'Token and new password are required'
       });
     }
 
     const passwordValidation = validatePassword(newPassword);
     if (!passwordValidation.isValid) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        error: passwordValidation.message 
+        error: passwordValidation.message
       });
     }
 
@@ -519,9 +518,9 @@ router.post('/reset-password', async (req, res) => {
     );
 
     if (userResult.rows.length === 0) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        error: 'Invalid or expired reset token' 
+        error: 'Invalid or expired reset token'
       });
     }
 
@@ -534,16 +533,16 @@ router.post('/reset-password', async (req, res) => {
       [hashedPassword, decoded.id]
     );
 
-    res.json({ 
+    res.json({
       success: true,
-      message: 'Password reset successful. You can now login with your new password.' 
+      message: 'Password reset successful. You can now login with your new password.'
     });
 
   } catch (error) {
     console.error('Reset password error:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
-      error: 'Failed to reset password' 
+      error: 'Failed to reset password'
     });
   }
 });
@@ -557,9 +556,9 @@ router.get('/verify-email', async (req, res) => {
     const { token } = req.query;
 
     if (!token) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        error: 'Verification token is required' 
+        error: 'Verification token is required'
       });
     }
 
@@ -573,22 +572,22 @@ router.get('/verify-email', async (req, res) => {
     );
 
     if (result.rows.length === 0) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        error: 'Invalid verification token' 
+        error: 'Invalid verification token'
       });
     }
 
-    res.json({ 
+    res.json({
       success: true,
-      message: 'Email verified successfully' 
+      message: 'Email verified successfully'
     });
 
   } catch (error) {
     console.error('Email verification error:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
-      error: 'Failed to verify email' 
+      error: 'Failed to verify email'
     });
   }
 });
@@ -602,9 +601,9 @@ router.get('/me', async (req, res) => {
     const token = req.headers.authorization?.split(' ')[1];
 
     if (!token) {
-      return res.status(401).json({ 
+      return res.status(401).json({
         success: false,
-        error: 'Authentication required' 
+        error: 'Authentication required'
       });
     }
 
@@ -622,9 +621,9 @@ router.get('/me', async (req, res) => {
     );
 
     if (result.rows.length === 0) {
-      return res.status(404).json({ 
+      return res.status(404).json({
         success: false,
-        error: 'User not found' 
+        error: 'User not found'
       });
     }
 
@@ -635,9 +634,9 @@ router.get('/me', async (req, res) => {
 
   } catch (error) {
     console.error('Get profile error:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
-      error: 'Failed to get user profile' 
+      error: 'Failed to get user profile'
     });
   }
 });

@@ -1,4 +1,3 @@
-// backend/src/services/notification.service.ts
 import { NotificationModel, CreateNotificationInput } from '../models/Notification.model';
 import { ApiError } from '../middleware/error.middleware';
 import pool from '../config/database';
