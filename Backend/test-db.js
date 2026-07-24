@@ -7,7 +7,7 @@ const pool = new Pool({
   port: 5432,
   database: 'book_review_system',
   user: 'postgres',
-  password: '21mek#BDU',  // Hardcoded password
+  password: '21mek#BDU',  
 });
 
 pool.query('SELECT NOW()', (err, res) => {
