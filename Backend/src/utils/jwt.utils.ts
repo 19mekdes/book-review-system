@@ -5,7 +5,6 @@ import crypto from 'crypto';
  * JWT Utility
  * Handles token generation, verification, and management
  */
-
 export interface TokenPayload {
   id: number;
   email: string;
@@ -50,7 +49,7 @@ export class JwtUtils {
         audience: this.AUDIENCE,
         algorithm: 'HS256'
       };
-      
+
       return jwt.sign(payload, this.SECRET, options);
     } catch (error) {
       throw new Error(`Access token generation failed: ${(error as Error).message}`);
@@ -68,10 +67,10 @@ export class JwtUtils {
         audience: this.AUDIENCE,
         algorithm: 'HS256'
       };
-      
+
       const tokenId = crypto.randomBytes(16).toString('hex');
       const tokenPayload = { ...payload, tokenId };
-      
+
       const token = jwt.sign(tokenPayload, this.REFRESH_SECRET, options);
 
       // Store refresh token
@@ -94,9 +93,9 @@ export class JwtUtils {
   static generateTokens(payload: TokenPayload): TokenResponse {
     const accessToken = this.generateAccessToken(payload);
     const refreshToken = this.generateRefreshToken(payload);
-    
+
     const decoded = jwt.decode(accessToken) as { exp: number };
-    
+
     return {
       accessToken,
       refreshToken,
@@ -166,7 +165,7 @@ export class JwtUtils {
   static refreshAccessToken(refreshToken: string): TokenResponse {
     try {
       const decoded = this.verifyRefreshToken(refreshToken);
-      
+
       // Remove old refresh token
       if (decoded.tokenId) {
         this.refreshTokenStore.delete(decoded.tokenId);
@@ -225,12 +224,12 @@ export class JwtUtils {
    */
   static extractTokenFromHeader(authHeader?: string): string | null {
     if (!authHeader) return null;
-    
+
     const parts = authHeader.split(' ');
     if (parts.length === 2 && parts[0] === 'Bearer') {
       return parts[1];
     }
-    
+
     return null;
   }
 
@@ -264,7 +263,7 @@ export class JwtUtils {
   static getTokenTimeToLive(token: string): number | null {
     const expiration = this.getTokenExpiration(token);
     if (!expiration) return null;
-    
+
     const ttl = Math.floor((expiration.getTime() - Date.now()) / 1000);
     return ttl > 0 ? ttl : 0;
   }
@@ -275,14 +274,14 @@ export class JwtUtils {
   static cleanupExpiredTokens(): number {
     const now = new Date();
     let count = 0;
-    
+
     for (const [tokenId, data] of this.refreshTokenStore.entries()) {
       if (data.expiresAt < now) {
         this.refreshTokenStore.delete(tokenId);
         count++;
       }
     }
-    
+
     return count;
   }
 
@@ -295,7 +294,7 @@ export class JwtUtils {
     expiresAt: Date;
   }> {
     const sessions = [];
-    
+
     for (const [tokenId, data] of this.refreshTokenStore.entries()) {
       if (data.userId === userId) {
         sessions.push({
@@ -305,7 +304,7 @@ export class JwtUtils {
         });
       }
     }
-    
+
     return sessions;
   }
 
@@ -325,7 +324,7 @@ export class JwtUtils {
       expiresIn: '24h',
       algorithm: 'HS256'
     };
-    
+
     return jwt.sign(
       { email, purpose: 'email-verification' },
       this.SECRET,
@@ -341,7 +340,7 @@ export class JwtUtils {
       expiresIn: '1h',
       algorithm: 'HS256'
     };
-    
+
     return jwt.sign(
       { userId, purpose: 'password-reset' },
       this.SECRET,
@@ -358,11 +357,11 @@ export class JwtUtils {
   ): { valid: boolean; data?: any; error?: string } {
     try {
       const decoded = jwt.verify(token, this.SECRET) as any;
-      
+
       if (decoded.purpose !== expectedPurpose) {
         return { valid: false, error: 'Invalid token purpose' };
       }
-      
+
       return { valid: true, data: decoded };
     } catch (error) {
       if (error instanceof jwt.TokenExpiredError) {

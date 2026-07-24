@@ -1,7 +1,4 @@
 import bcrypt from 'bcrypt';
-
-
-
 export class BcryptUtils {
   private static readonly SALT_ROUNDS = parseInt(process.env.BCRYPT_SALT_ROUNDS || '10');
 
