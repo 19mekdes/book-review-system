@@ -67,7 +67,7 @@ export class NotificationService {
   }
 
   /**
-   * 🔔 Trigger notification when new review is created
+   *  Trigger notification when new review is created
    * Notifies all users who follow this book
    */
   static async notifyOnNewReview(
@@ -139,7 +139,7 @@ export class NotificationService {
   }
 
   /**
-   * 🔔 Trigger notification when someone likes a review
+   *  Trigger notification when someone likes a review
    */
   static async notifyOnReviewLike(
     reviewId: number, 
@@ -182,7 +182,7 @@ export class NotificationService {
   }
 
   /**
-   * 🔔 Trigger notification when a book is followed
+   *  Trigger notification when a book is followed
    */
   static async notifyOnFollowBook(
     userId: number,
@@ -214,7 +214,7 @@ export class NotificationService {
   }
 
   /**
-   * 🔔 Trigger notification when a user replies to a review
+   *  Trigger notification when a user replies to a review
    */
   static async notifyOnReply(
     reviewId: number,
