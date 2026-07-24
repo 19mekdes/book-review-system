@@ -11,7 +11,7 @@ async function startServer() {
     // Test database connection
     const result = await pool.query('SELECT NOW()');
     console.log('✅ Database connected successfully at:', result.rows[0].now);
-    
+
     console.log('📊 Using database:', process.env.DB_NAME);
     console.log('👤 As user:', process.env.DB_USER);
 

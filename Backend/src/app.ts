@@ -8,7 +8,7 @@ import bookRoutes from './routes/book.routes';
 import reviewRoutes from './routes/review.routes';
 import adminRoutes from './routes/admin.routes';
 import categoryRoutes from './routes/category.routes';
-import uploadRoutes from './routes/upload.routes'; 
+import uploadRoutes from './routes/upload.routes';
 import contactRoutes from './routes/contact.routes';
 import notificationRoutes from './routes/notification.routes';
 
@@ -30,7 +30,7 @@ app.use(cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (like mobile apps, Postman, curl)
     if (!origin) return callback(null, true);
-    
+
     // Check if the origin is allowed
     if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
       callback(null, true);
@@ -57,14 +57,14 @@ app.use('/api/categories', categoryRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/admin', adminRoutes);
-app.use('/api/upload', uploadRoutes); 
+app.use('/api/upload', uploadRoutes);
 app.use('/api/contact', contactRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
-  res.json({ 
-    status: 'OK', 
-    timestamp: new Date(), 
+  res.json({
+    status: 'OK',
+    timestamp: new Date(),
     service: 'Book Review API',
     cors: {
       allowedOrigins,
@@ -75,7 +75,7 @@ app.get('/api/health', (req, res) => {
 
 // 404 handler
 app.use('*', (req, res) => {
-  res.status(404).json({ 
+  res.status(404).json({
     error: 'Route not found',
     path: req.originalUrl,
     method: req.method

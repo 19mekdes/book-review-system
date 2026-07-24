@@ -291,7 +291,7 @@ export class NotificationService {
   }
 
   /**
-   * 🕒 Helper: Get time ago string
+   *  Helper: Get time ago string
    */
   private static getTimeAgo(date: Date): string {
     const now = new Date();
