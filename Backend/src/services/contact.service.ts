@@ -4,7 +4,6 @@ import { ApiError } from '../middleware/error.middleware';
 export class ContactService {
   static async sendMessage(messageData: CreateContactInput): Promise<ContactMessage> {
     try {
-      // Validation
       if (!messageData.name?.trim()) {
         throw new ApiError(400, 'Name is required');
       }
