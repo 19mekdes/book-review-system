@@ -63,7 +63,7 @@ export class ApiResponseUtil {
     message: string = 'Data retrieved successfully'
   ): ApiResponse<T[]> {
     const totalPages = Math.ceil(total / limit);
-    
+
     return {
       success: true,
       message,

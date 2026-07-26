@@ -116,7 +116,7 @@ export class BcryptUtils {
       if (!hasLowerCase) missing.push('lowercase letter');
       if (!hasNumbers) missing.push('number');
       if (!hasSpecialChar) missing.push('special character');
-      
+
       message = `Password must include: ${missing.join(', ')}`;
     }
 
