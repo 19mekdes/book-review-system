@@ -68,7 +68,7 @@ export class UserController {
       const isAdmin = req.user.roleId === 1 || req.user.role === 'admin';
       if (!isAdmin) {
         return res.status(403).json(
-          ApiResponseUtil.error('Admin access required', )
+          ApiResponseUtil.error('Admin access required',)
         );
       }
 
@@ -111,13 +111,13 @@ export class UserController {
     try {
       const idParam = getRouteParam(req.params.id);
       const userId = parseInt(idParam || '', 10);
-      
+
       if (isNaN(userId)) {
         return res.status(400).json(
           ApiResponseUtil.badRequest('Invalid user ID')
         );
       }
-      
+
       const user = await UserService.getUserById(userId);
       return res.json(
         ApiResponseUtil.success(user, 'User retrieved successfully')
@@ -162,18 +162,18 @@ export class UserController {
     try {
       const idParam = getRouteParam(req.params.id);
       const userId = parseInt(idParam || '', 10);
-      
+
       if (isNaN(userId)) {
         return res.status(400).json(
           ApiResponseUtil.badRequest('Invalid user ID')
         );
       }
-      
+
       const profile = await UserService.getUserProfile(userId);
-      
+
       // Remove sensitive information for public profile
       const { email, ...publicProfile } = profile;
-      
+
       return res.json(
         ApiResponseUtil.success(publicProfile, 'User profile retrieved successfully')
       );
@@ -200,7 +200,7 @@ export class UserController {
       const isAdmin = req.user.roleId === 1 || req.user.role === 'admin';
       if (!isAdmin) {
         return res.status(403).json(
-          ApiResponseUtil.error('Admin access required', )
+          ApiResponseUtil.error('Admin access required',)
         );
       }
 
@@ -271,19 +271,19 @@ export class UserController {
       const isAdmin = req.user.roleId === 1 || req.user.role === 'admin';
       if (!isAdmin) {
         return res.status(403).json(
-          ApiResponseUtil.error('Admin access required', )
+          ApiResponseUtil.error('Admin access required',)
         );
       }
 
       const idParam = getRouteParam(req.params.id);
       const userId = parseInt(idParam || '', 10);
-      
+
       if (isNaN(userId)) {
         return res.status(400).json(
           ApiResponseUtil.badRequest('Invalid user ID')
         );
       }
-      
+
       const updates = req.body;
 
       const user = await UserService.updateUser(userId, updates, true);
@@ -312,13 +312,13 @@ export class UserController {
 
       const idParam = getRouteParam(req.params.id);
       const userId = parseInt(idParam || '', 10);
-      
+
       if (isNaN(userId)) {
         return res.status(400).json(
           ApiResponseUtil.badRequest('Invalid user ID')
         );
       }
-      
+
       const adminUserId = req.user.id;
 
       await UserService.deleteUser(userId, adminUserId);
@@ -348,7 +348,7 @@ export class UserController {
       const isAdmin = req.user.roleId === 1 || req.user.role === 'admin';
       if (!isAdmin) {
         return res.status(403).json(
-          ApiResponseUtil.error('Admin access required', )
+          ApiResponseUtil.error('Admin access required',)
         );
       }
 
@@ -379,7 +379,7 @@ export class UserController {
       const isAdmin = req.user.roleId === 1 || req.user.role === 'admin';
       if (!isAdmin) {
         return res.status(403).json(
-          ApiResponseUtil.error('Admin access required', )
+          ApiResponseUtil.error('Admin access required',)
         );
       }
 
@@ -425,7 +425,7 @@ export class UserController {
       const isAdmin = req.user.roleId === 1 || req.user.role === 'admin';
       if (!isAdmin) {
         return res.status(403).json(
-          ApiResponseUtil.error('Admin access required', )
+          ApiResponseUtil.error('Admin access required',)
         );
       }
 
@@ -519,13 +519,13 @@ export class UserController {
     try {
       const idParam = getRouteParam(req.params.id);
       const userId = parseInt(idParam || '', 10);
-      
+
       if (isNaN(userId)) {
         return res.status(400).json(
           ApiResponseUtil.badRequest('Invalid user ID')
         );
       }
-      
+
       const activity = await UserService.getUserActivitySummary(userId);
       return res.json(
         ApiResponseUtil.success(activity, 'User activity retrieved successfully')

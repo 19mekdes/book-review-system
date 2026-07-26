@@ -40,11 +40,11 @@ export class ReviewController {
       const search = getQueryString(req.query.search);
       const sortBy = getQueryString(req.query.sortBy) || 'created_at';
       const sortOrder = (getQueryString(req.query.sortOrder) as 'asc' | 'desc') || 'desc';
-      
+
       console.log(`📋 Getting public reviews - page: ${page}, limit: ${limit}, search: ${search}`);
-      
+
       const result = await ReviewService.getAllReviews(page, limit, undefined, search);
-      
+
       // Sort the results
       if (result.reviews && result.reviews.length > 0) {
         result.reviews.sort((a, b) => {
@@ -57,7 +57,7 @@ export class ReviewController {
           }
         });
       }
-      
+
       return res.json(
         ApiResponseUtil.success(result, 'Reviews retrieved successfully')
       );
@@ -95,9 +95,9 @@ export class ReviewController {
       const search = getQueryString(req.query.search);
 
       console.log(`📋 Admin getting all reviews - page: ${page}, limit: ${limit}`);
-      
+
       const result = await ReviewService.getAllReviews(page, limit, status, search);
-      
+
       return res.json(
         ApiResponseUtil.success(result, 'All reviews retrieved successfully')
       );
@@ -186,7 +186,7 @@ export class ReviewController {
 
       const reviewIdParam = getRouteParam(req.params.id);
       const reviewId = parseInt(reviewIdParam || '', 10);
-      
+
       if (isNaN(reviewId)) {
         return res.status(400).json(
           ApiResponseUtil.badRequest('Invalid review ID')
@@ -234,7 +234,7 @@ export class ReviewController {
 
       const reviewIdParam = getRouteParam(req.params.id);
       const reviewId = parseInt(reviewIdParam || '', 10);
-      
+
       if (isNaN(reviewId)) {
         return res.status(400).json(
           ApiResponseUtil.badRequest('Invalid review ID')
@@ -264,7 +264,7 @@ export class ReviewController {
     try {
       const bookIdParam = getRouteParam(req.params.bookId);
       const bookId = parseInt(bookIdParam || '', 10);
-      
+
       if (isNaN(bookId)) {
         return res.status(400).json(
           ApiResponseUtil.badRequest('Invalid book ID')
@@ -323,7 +323,7 @@ export class ReviewController {
     try {
       const bookIdParam = getRouteParam(req.params.bookId);
       const bookId = parseInt(bookIdParam || '', 10);
-      
+
       if (isNaN(bookId)) {
         return res.status(400).json(
           ApiResponseUtil.badRequest('Invalid book ID')
@@ -357,7 +357,7 @@ export class ReviewController {
 
       const bookIdParam = getRouteParam(req.params.bookId);
       const bookId = parseInt(bookIdParam || '', 10);
-      
+
       if (isNaN(bookId)) {
         return res.status(400).json(
           ApiResponseUtil.badRequest('Invalid book ID')
@@ -392,7 +392,7 @@ export class ReviewController {
 
       const bookIdParam = getRouteParam(req.params.bookId);
       const bookId = parseInt(bookIdParam || '', 10);
-      
+
       if (isNaN(bookId)) {
         return res.status(400).json(
           ApiResponseUtil.badRequest('Invalid book ID')
@@ -427,7 +427,7 @@ export class ReviewController {
 
       const reviewIdParam = getRouteParam(req.params.id);
       const reviewId = parseInt(reviewIdParam || '', 10);
-      
+
       if (isNaN(reviewId)) {
         return res.status(400).json(
           ApiResponseUtil.badRequest('Invalid review ID')
@@ -462,7 +462,7 @@ export class ReviewController {
 
       const reviewIdParam = getRouteParam(req.params.id);
       const reviewId = parseInt(reviewIdParam || '', 10);
-      
+
       if (isNaN(reviewId)) {
         return res.status(400).json(
           ApiResponseUtil.badRequest('Invalid review ID')
