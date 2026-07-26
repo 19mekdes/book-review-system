@@ -1,6 +1,5 @@
 import dotenv from 'dotenv';
 dotenv.config();
-
 import app from './app';
 import pool from './config/database';
 
@@ -30,7 +29,6 @@ async function startServer() {
     process.exit(1);
   }
 }
-
 
 process.on('unhandledRejection', (err) => {
   console.error('❌ Unhandled Rejection:', err);
