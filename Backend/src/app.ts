@@ -24,7 +24,7 @@ const allowedOrigins = [
   'http://127.0.0.1:5173',
   'http://127.0.0.1:5174',
   process.env.CLIENT_URL || 'http://localhost:5173'
-].filter(Boolean); // Remove undefined values
+].filter(Boolean); 
 
 app.use(cors({
   origin: (origin, callback) => {
@@ -40,7 +40,7 @@ app.use(cors({
     }
   },
   credentials: true, // Allow cookies/auth headers
-  optionsSuccessStatus: 200 // Some legacy browsers choke on 204
+  optionsSuccessStatus: 200 
 }));
 
 // Middleware
