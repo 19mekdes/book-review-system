@@ -1,6 +1,6 @@
 import { UserModel, User, UserWithRole } from '../models/User.model';
-import { BcryptUtils } from '../utils/bcrypt.utils';        
-import { JwtUtils, TokenResponse } from '../utils/jwt.utils'; 
+import { BcryptUtils } from '../utils/bcrypt.utils';
+import { JwtUtils, TokenResponse } from '../utils/jwt.utils';
 import { ApiError } from '../middleware/error.middleware';
 
 export interface RegisterInput {
@@ -55,7 +55,7 @@ export class AuthService {
       });
 
       // Generate tokens - using static method, no await needed
-      const tokens = JwtUtils.generateTokens({ 
+      const tokens = JwtUtils.generateTokens({
         id: newUser.id,
         email: newUser.email,
         roleId: newUser.roleId,
@@ -244,7 +244,7 @@ export class AuthService {
     try {
       // Verify token
       const verification = JwtUtils.verifyPurposeToken(token, 'password-reset'); // ✅ Fixed - static method
-      
+
       if (!verification.valid) {
         throw new ApiError(401, verification.error || 'Invalid or expired token');
       }
@@ -277,7 +277,7 @@ export class AuthService {
   static async verifyEmail(token: string): Promise<boolean> {
     try {
       const verification = JwtUtils.verifyPurposeToken(token, 'email-verification'); // ✅ Fixed - static method
-      
+
       if (!verification.valid) {
         throw new ApiError(401, verification.error || 'Invalid or expired token');
       }

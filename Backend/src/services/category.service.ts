@@ -17,13 +17,13 @@ export class CategoryService {
       console.log('📚 CategoryService.getAllCategories() called');
       const categories = await CategoryModel.findAll();
       const stats = await CategoryModel.getCategoriesWithStats();
-      
+
       const result: CategoryWithStats[] = categories.map(category => {
         const stat = stats.find(s => s.category === category.category);
         return {
           id: category.id,
-          name: category.category,  
-          category: category.category,  
+          name: category.category,
+          category: category.category,
           created_at: category.created_at,
           updated_at: category.updated_at,
           bookCount: stat?.bookCount || 0,
@@ -31,7 +31,7 @@ export class CategoryService {
           avgRating: stat?.avgRating || 0
         };
       });
-      
+
       console.log(`✅ Returning ${result.length} categories`);
       return result;
     } catch (error) {
@@ -49,14 +49,14 @@ export class CategoryService {
       if (!category) {
         return null;
       }
-      
+
       const stats = await CategoryModel.getCategoriesWithStats();
       const stat = stats.find(s => s.category === category.category);
-      
+
       return {
         id: category.id,
-        name: category.category,  
-        category: category.category,  
+        name: category.category,
+        category: category.category,
         created_at: category.created_at,
         updated_at: category.updated_at,
         bookCount: stat?.bookCount || 0,
@@ -94,11 +94,11 @@ export class CategoryService {
       const exists = existingCategories.some(
         c => c.category.toLowerCase() === categoryName.toLowerCase()
       );
-      
+
       if (exists) {
         throw new ApiError(400, 'Category already exists');
       }
-      
+
       const newCategory = await CategoryModel.create(categoryName);
       console.log(`✅ Created new category: ${categoryName}`);
       return newCategory;
@@ -140,22 +140,22 @@ export class CategoryService {
       if (!category) {
         throw new ApiError(404, 'Category not found');
       }
-      
+
       // Check if new name already exists
       const allCategories = await CategoryModel.findAll();
       const nameExists = allCategories.some(
         c => c.category.toLowerCase() === categoryName.toLowerCase() && c.id !== categoryId
       );
-      
+
       if (nameExists) {
         throw new ApiError(400, 'Category name already exists');
       }
-      
+
       const updatedCategory = await CategoryModel.update(categoryId, categoryName);
       if (!updatedCategory) {
         throw new ApiError(500, 'Failed to update category');
       }
-      
+
       console.log(`✅ Updated category ${categoryId} to ${categoryName}`);
       return updatedCategory;
     } catch (error) {
@@ -173,15 +173,15 @@ export class CategoryService {
       if (!category) {
         throw new ApiError(404, 'Category not found');
       }
-      
+
       // Check if category has books
       const books = await BookModel.findAll();
       const booksInCategory = books.filter(b => b.categoryId === categoryId);
-      
+
       if (booksInCategory.length > 0) {
         throw new ApiError(400, `Cannot delete category "${category.category}" because it has ${booksInCategory.length} books`);
       }
-      
+
       const deleted = await CategoryModel.delete(categoryId);
       console.log(`✅ Deleted category: ${category.category}`);
       return deleted;
@@ -204,15 +204,15 @@ export class CategoryService {
       if (!category) {
         throw new ApiError(404, 'Category not found');
       }
-      
+
       const allBooks = await BookModel.findAll();
       const categoryBooks = allBooks.filter(book => book.categoryId === categoryId);
-      
+
       const total = categoryBooks.length;
       const totalPages = Math.ceil(total / limit);
       const start = (page - 1) * limit;
       const paginatedBooks = categoryBooks.slice(start, start + limit);
-      
+
       return {
         books: paginatedBooks,
         total,
@@ -260,10 +260,10 @@ export class CategoryService {
       if (!category) {
         throw new ApiError(404, 'Category not found');
       }
-      
+
       const stats = await CategoryModel.getCategoriesWithStats();
       const stat = stats.find(s => s.category === category.category);
-      
+
       return {
         category: category.category,
         bookCount: stat?.bookCount || 0,
@@ -298,7 +298,7 @@ export class CategoryService {
     try {
       const allCategories = await this.getAllCategories();
       const lowerSearch = searchTerm.toLowerCase();
-      
+
       return allCategories.filter(
         c => c.name?.toLowerCase().includes(lowerSearch) || c.category?.toLowerCase().includes(lowerSearch)
       );
@@ -326,22 +326,22 @@ export class CategoryService {
     try {
       const source = await CategoryModel.findById(sourceId);
       const target = await CategoryModel.findById(targetId);
-      
+
       if (!source || !target) {
         throw new ApiError(404, 'Category not found');
       }
-      
+
       // Update all books from source to target
       const allBooks = await BookModel.findAll();
       const booksToUpdate = allBooks.filter(book => book.categoryId === sourceId);
-      
+
       for (const book of booksToUpdate) {
         await BookModel.update(book.id, { categoryId: targetId });
       }
-      
+
       // Delete the source category
       await CategoryModel.delete(sourceId);
-      
+
       return { merged: true };
     } catch (error) {
       if (error instanceof ApiError) throw error;
@@ -357,24 +357,24 @@ export class CategoryService {
       if (!name || name.trim().length === 0) {
         return { valid: false, message: 'Category name is required' };
       }
-      
+
       if (name.length < 2) {
         return { valid: false, message: 'Category name must be at least 2 characters' };
       }
-      
+
       if (name.length > 50) {
         return { valid: false, message: 'Category name must be less than 50 characters' };
       }
-      
+
       const existingCategories = await CategoryModel.findAll();
       const exists = existingCategories.some(
         c => c.category.toLowerCase() === name.toLowerCase()
       );
-      
+
       if (exists) {
         return { valid: false, message: 'Category name already exists' };
       }
-      
+
       return { valid: true };
     } catch (error) {
       throw new ApiError(500, `Failed to validate category name: ${(error as Error).message}`);

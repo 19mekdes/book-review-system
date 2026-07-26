@@ -9,7 +9,7 @@ export interface CreateBookInput {
   author: string;
   description?: string;
   categoryId: number;
-  cover_image?: string;  
+  cover_image?: string;
 }
 
 
@@ -18,7 +18,7 @@ export interface UpdateBookInput {
   author?: string;
   description?: string;
   categoryId?: number;
-  cover_image?: string;  
+  cover_image?: string;
   isbn?: string;
   publisher?: string;
   publish_date?: string;
@@ -97,7 +97,7 @@ export class BookService {
       if (search) {
         const searchLower = search.toLowerCase();
         books = books.filter(
-          b => 
+          b =>
             b.title.toLowerCase().includes(searchLower) ||
             b.author.toLowerCase().includes(searchLower) ||
             b.description?.toLowerCase().includes(searchLower)
@@ -148,7 +148,7 @@ export class BookService {
   static async getBookById(bookId: number): Promise<BookDetailsResponse> {
     try {
       console.log(`📖 BookService.getBookById called with ID: ${bookId}`);
-      
+
       // Get book details from BookModel.findById
       const book = await BookModel.findById(bookId);
       if (!book) {
@@ -163,7 +163,7 @@ export class BookService {
       try {
         const allReviews = await ReviewModel.findAll();
         reviews = allReviews.filter(r => r.book_id === bookId) || [];
-        
+
         reviews = reviews.map(r => ({
           id: r.id,
           userId: r.user_id,
@@ -188,8 +188,8 @@ export class BookService {
       try {
         const allBooks = await BookModel.findAll() || [];
         similarBooks = allBooks
-          .filter(b => 
-            b.categoryId === book.categoryId && 
+          .filter(b =>
+            b.categoryId === book.categoryId &&
             b.id !== book.id
           )
           .sort((a, b) => (b.avg_rating || 0) - (a.avg_rating || 0))
@@ -228,7 +228,7 @@ export class BookService {
     }
   }
 
-  
+
   static async createBook(input: CreateBookInput): Promise<Book> {
     try {
       console.log('📝 Creating book with input:', {
@@ -237,7 +237,7 @@ export class BookService {
         categoryId: input.categoryId,
         hasCoverImage: !!input.cover_image
       });
-      
+
       // Validate category exists
       if (input.categoryId) {
         const category = await CategoryModel.findById(input.categoryId);
@@ -250,20 +250,20 @@ export class BookService {
       const existingBooks = await BookModel.findAll();
       const duplicate = existingBooks.find(
         b => b.title.toLowerCase() === input.title.toLowerCase() &&
-             b.author.toLowerCase() === input.author.toLowerCase()
+          b.author.toLowerCase() === input.author.toLowerCase()
       );
 
       if (duplicate) {
         throw new ApiError(400, 'Book with this title and author already exists');
       }
 
-    
+
       const bookData = {
         title: input.title,
         author: input.author,
         description: input.description || '',
         categoryId: input.categoryId,
-        cover_image: input.cover_image || undefined  
+        cover_image: input.cover_image || undefined
       };
 
       const newBook = await BookModel.create(bookData);
@@ -299,12 +299,12 @@ export class BookService {
       if (updates.title || updates.author) {
         const title = updates.title || existingBook.title;
         const author = updates.author || existingBook.author;
-        
+
         const existingBooks = await BookModel.findAll();
         const duplicate = existingBooks.find(
           b => b.id !== bookId &&
-               b.title.toLowerCase() === title.toLowerCase() &&
-               b.author.toLowerCase() === author.toLowerCase()
+            b.title.toLowerCase() === title.toLowerCase() &&
+            b.author.toLowerCase() === author.toLowerCase()
         );
 
         if (duplicate) {
@@ -312,7 +312,7 @@ export class BookService {
         }
       }
 
-      
+
       const updateData: any = {};
       if (updates.title !== undefined) updateData.title = updates.title;
       if (updates.author !== undefined) updateData.author = updates.author;
@@ -432,8 +432,8 @@ export class BookService {
     try {
       const authorLower = author.toLowerCase();
       const allBooks = await BookModel.findAll();
-      
-      const authorBooks = allBooks.filter(b => 
+
+      const authorBooks = allBooks.filter(b =>
         b.author.toLowerCase().includes(authorLower)
       );
 
@@ -485,7 +485,7 @@ export class BookService {
 
       // Calculate average rating
       const totalRating = reviews.reduce((sum, r) => sum + r.rating, 0);
-      const averageRating = reviews.length > 0 
+      const averageRating = reviews.length > 0
         ? Number((totalRating / reviews.length).toFixed(1))
         : 0;
 
@@ -495,10 +495,10 @@ export class BookService {
         categories.map(async (cat) => {
           const catBooks = books.filter(b => b.categoryId === cat.id);
           const catReviews = await ReviewModel.findAll();
-          const catBookReviews = catReviews.filter(r => 
+          const catBookReviews = catReviews.filter(r =>
             catBooks.some(b => b.id === r.book_id)
           );
-          
+
           const avgRating = catBookReviews.length > 0
             ? Number((catBookReviews.reduce((sum, r) => sum + r.rating, 0) / catBookReviews.length).toFixed(1))
             : 0;
@@ -549,10 +549,10 @@ export class BookService {
 
       const distribution = [5, 4, 3, 2, 1].map(rating => {
         const count = reviews.filter(r => r && r.rating === rating).length;
-        const percentage = totalReviews > 0 
+        const percentage = totalReviews > 0
           ? Number(((count / totalReviews) * 100).toFixed(1))
           : 0;
-        
+
         return { rating, count, percentage };
       });
 
@@ -660,7 +660,7 @@ export class BookService {
           const existingBooks = await BookModel.findAll();
           const duplicate = existingBooks.find(
             b => b.title.toLowerCase() === bookData.title.toLowerCase() &&
-                 b.author.toLowerCase() === bookData.author.toLowerCase()
+              b.author.toLowerCase() === bookData.author.toLowerCase()
           );
 
           if (duplicate) {
