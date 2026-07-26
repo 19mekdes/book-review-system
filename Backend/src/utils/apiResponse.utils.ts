@@ -1,8 +1,3 @@
-/**
- * Standard API Response Utility
- * Provides consistent response formatting across the application
- */
-
 export interface ApiResponse<T = any> {
   success: boolean;
   message: string;
